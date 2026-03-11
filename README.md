@@ -1,0 +1,1 @@
+# Lõputöö PetalSpeak-
