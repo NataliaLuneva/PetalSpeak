@@ -12,6 +12,10 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(FRONT_DIR, "index.html"));
 });
 
+app.get("/test", (req, res) => {
+  res.sendFile(path.join(FRONT_DIR, "test.html"));
+});
+
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });

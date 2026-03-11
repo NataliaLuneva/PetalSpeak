@@ -10,6 +10,10 @@
 
 *{ box-sizing:border-box; }
 
+html{
+  scroll-behavior:smooth;
+}
+
 body{
   margin:0;
   font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
@@ -50,7 +54,9 @@ body{
   opacity:.8;
 }
 
-.nav a:hover{ opacity:1; }
+.nav a:hover{
+  opacity:1;
+}
 
 #lang-switch{
   margin-left:16px;
@@ -154,7 +160,9 @@ body{
   background:var(--panel2);
 }
 
-.panel h2, .panel h3, .panel h4{
+.panel h2,
+.panel h3,
+.panel h4{
   margin:0 0 10px;
   font-family: Georgia, serif;
   font-weight:500;
@@ -170,6 +178,21 @@ body{
   text-align:center;
 }
 
+/* ================= ABOUT FIX ================= */
+
+#about{
+  scroll-margin-top:80px;
+}
+
+#about .panel{
+  max-width:720px;
+  text-align:center;
+}
+
+#about p{
+  line-height:1.7;
+}
+
 /* ================= HOW IT WORKS ================= */
 
 .how ul{
@@ -179,7 +202,7 @@ body{
 .center-btn{
   display:block;
   width: fit-content;
-  margin: 8px auto 0;
+  margin:8px auto 0;
 }
 
 /* ================= COLLECTION ================= */
@@ -192,14 +215,14 @@ body{
 
 .collection-item{
   display:grid;
-  grid-template-columns: 220px 1fr;
+  grid-template-columns:220px 1fr;
   gap:24px;
   align-items:center;
   padding:18px 0;
 }
 
 .collection-item + .collection-item{
-  border-top: 1px solid rgba(0,0,0,.08);
+  border-top:1px solid rgba(0,0,0,.08);
 }
 
 /* ===== IMAGE STYLE + HOVER ANIMATION ===== */
@@ -215,13 +238,13 @@ body{
   will-change: transform;
 }
 
-/* плавное увеличение */
 .collection-img:hover{
   transform: scale(1.07);
   box-shadow: 0 18px 40px rgba(0,0,0,.20);
 }
 
 /* отключаем hover на телефонах */
+
 @media (hover: none){
   .collection-img:hover{
     transform:none;
@@ -231,9 +254,13 @@ body{
 
 .collection-footer{
   width:min(920px, 92vw);
-  margin-top:20px;
-  line-height:1.6;
+  margin-top:40px;
+  text-align:center;
   font-family: Georgia, serif;
+  font-size:18px;
+  line-height:1.8;
+  color:#3f3a3a;
+  letter-spacing:0.02em;
 }
 
 /* ================= REVEAL ANIMATION ================= */
@@ -251,14 +278,14 @@ body{
 
 /* ================= RESPONSIVE ================= */
 
-@media (max-width: 900px){
+@media (max-width:900px){
 
   .logo-img{
     width:300px;
   }
 
   .collection-item{
-    grid-template-columns: 200px 1fr;
+    grid-template-columns:200px 1fr;
   }
 
   .collection-img{
@@ -267,7 +294,7 @@ body{
   }
 }
 
-@media (max-width: 600px){
+@media (max-width:600px){
 
   .hero{
     min-height:420px;
@@ -278,7 +305,7 @@ body{
   }
 
   .collection-item{
-    grid-template-columns: 1fr;
+    grid-template-columns:1fr;
   }
 
   .collection-img{
@@ -286,4 +313,48 @@ body{
     height:auto;
     max-height:320px;
   }
+}
+
+/* ===== LANGUAGE SWITCH ===== */
+
+.lang-switch{
+
+display:flex;
+gap:6px;
+margin-left:16px;
+
+background:var(--panel2);
+padding:4px;
+border-radius:20px;
+
+}
+
+.lang-btn{
+
+border:none;
+background:transparent;
+padding:4px 10px;
+
+font-size:12px;
+cursor:pointer;
+
+border-radius:14px;
+
+color:var(--text);
+
+transition:all .25s ease;
+
+}
+
+.lang-btn:hover{
+
+background:rgba(255,255,255,.5);
+
+}
+
+.lang-btn.active{
+
+background:var(--btn);
+box-shadow:0 4px 10px rgba(0,0,0,.12);
+
 }
