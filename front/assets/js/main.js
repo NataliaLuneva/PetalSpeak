@@ -36,7 +36,7 @@ li2:"We decode your emotions",
 li3:"You get a bouquet that speaks for you",
 
 collection_title:"Bouquet Collection",
-collection_subtitle:"Love & Romance",
+love_romance: "Love & Romance",
 
 b1_title:"Red Roses",
 b1_text:"The purest expression of deep, passionate love. Intense. Timeles. Unmistakable. They don't ask for attention. They simply mean everything.",
@@ -59,8 +59,10 @@ b6_text:"A symbol of admiration, tenderness, and quite devotion. Soft in form, s
 b7_title:"Alstroemeria",
 b7_text:"A symbol of admiration and a friendship strong enough to grow into love. Graceful. Loyal. Full of promise. A bloom that begins with connection and blossoms into something more.",
 
-collection_footer:
-"Each flower carries its own meaning —<br>but together, they tell one story.<br><br>Yours."
+collection_love:
+"Love is expressed in many forms — in bold red roses, in soft peonies, and in delicate blooms that speak without words.",
+
+collection_footer: "A bouquet can’t speak…yet every bloom tells your heart’s story.."
 
 },
 
@@ -102,7 +104,7 @@ li2:"Me tõlgendame sinu emotsioonid",
 li3:"Saad sobiva kimbu",
 
 collection_title:"Kimpude kollektsioon",
-collection_subtitle:"Armastus ja romantika",
+love_romance: "Armastus & Romantika",
 
 b1_title:"Punased roosid",
 b1_text:"Sügava ja kirgliku armastuse puhtaim väljendus. Intensiivne. Ajatu. Eksimatu. Nad ei küsi tähelepanu. Nad lihtsalt mõtlevad kõike.",
@@ -125,8 +127,10 @@ b6_text:"Imetluse, õrnuse ja täieliku pühendumuse sümbol. Pehme vormiga, tug
 b7_title:"Alstroomeeria",
 b7_text:"Imetluse ja sõpruse sümbol, mis on piisavalt tugev, et kasvada armastuseks. Graatsiline. Lojaalne. Täis lubadusi. Õitsemine, mis algab sidemest ja õitseb millekski enamaks.",
 
-collection_footer:
-"Igal lillel on oma tähendus —<br>kuid koos jutustavad nad ühe loo.<br><br>Sinu."
+collection_love:
+"Armastus väljendub paljudes vormides — julgetes punastes roosides, õrnades pojengides ja lilleõites, mis räägivad ilma sõnadeta.",
+
+collection_footer:"Kimp ei oska rääkida... ometi jutustab iga õis su südame lugu."
 
 },
 
@@ -168,7 +172,7 @@ li2:"Мы расшифруем эмоции",
 li3:"Вы получите рекомендацию букета",
 
 collection_title:"Коллекция букетов",
-collection_subtitle:"Любовь и романтика",
+love_romance: "Любовь и романтика",
 
 b1_title:"Красные розы",
 b1_text:"Чистейшее выражение глубокой и страстной любви. Интенсивная. Вне времени. Безошибочная. Они не ищут внимания. Они просто думают обо всем.",
@@ -191,7 +195,10 @@ b6_text:"Символ восхищения, нежности и безграни
 b7_title:"Альстромерия",
 b7_text:"Символ восхищения и дружбы, достаточно крепкой, чтобы перерасти в любовь. Изящный. Преданный. Полный надежд. Цветок, который начинается как связь и расцветает во что-то большее.",
 
-collection_footer:"У каждого цветка своё значение —<br>но вместе они рассказывают одну историю.<br><br>Твою."
+collection_love:
+"Любовь выражается по-разному — в ярких красных розах, нежных пионах и цветах, которые говорят без слов.",
+
+collection_footer:"Букет не может говорить... но каждый цветок рассказывает историю вашего сердца."
 
 }
 
@@ -282,3 +289,25 @@ elements.forEach(el => observer.observe(el));
 }
 
 initReveal();
+
+/* accordion */
+
+document.querySelectorAll(".accordion-btn").forEach(btn=>{
+
+btn.addEventListener("click",()=>{
+
+const content = btn.nextElementSibling;
+
+if(content.style.maxHeight){
+
+content.style.maxHeight = null;
+
+}else{
+
+content.style.maxHeight = content.scrollHeight + "px";
+
+}
+
+});
+
+});
