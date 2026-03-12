@@ -1,3 +1,3 @@
 # Lõputöö PetalSpeak-
 
-javMK;L,MANKSBJDS
+rkkfr
