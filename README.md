@@ -1,3 +1,2 @@
 # Lõputöö PetalSpeak-
 
-gg
