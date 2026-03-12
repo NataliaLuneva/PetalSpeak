@@ -160,26 +160,14 @@ body{
   background:var(--panel2);
 }
 
-.panel h2{
-  margin:0 0 10px;
-  font-family: Georgia, serif;
-  font-weight:500;
-}
-
-/* заголовок коллекции */
-
-.panel h3{
-  margin:0 0 10px;
-  font-family: Georgia, serif;
-  font-weight:700;   /* жирный */
-}
-
-/* названия цветов */
-
+.panel h2,
+.panel h3,
 .panel h4{
-  margin:0 0 8px;
-  font-family: Georgia, serif;
-  font-weight:700;   /* жирный */
+
+margin:0 0 10px;
+font-family: Georgia, serif;
+font-weight:700;
+
 }
 
 .panel p{
