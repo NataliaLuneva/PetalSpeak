@@ -1,3 +1,3 @@
 # Lõputöö PetalSpeak-
 
-rkkfr
+ggggg
