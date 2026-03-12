@@ -39,25 +39,25 @@ collection_title:"Bouquet Collection",
 collection_subtitle:"Love & Romance",
 
 b1_title:"Red Roses",
-b1_text:"The purest expression of deep passionate love.",
+b1_text:"The purest expression of deep, passionate love. Intense. Timeles. Unmistakable. They don't ask for attention. They simply mean everything.",
 
-b2_title:"Peonies",
-b2_text:"A symbol of romance and tenderness.",
+b2_title: "Peonies",
+b2_text: "A symbol of happy union, romance, and quiet prosperty. Full blooms that carry promise and warmth. Red peonies speak of passion. Pink peonies whisper tenderness.",
 
 b3_title:"Tulips",
-b3_text:"A symbol of happiness and new beginnings.",
+b3_text:"A symbol of sincere feelings, happiness, and love just beginning to unfload, Simple. Honest. Full of light. Pink tulips express gentle affection. Red tulips declare love with quiet confidence.",
 
 b4_title:"Orchids",
-b4_text:"A symbol of rare and elegant love.",
+b4_text:"A symbol of rare , exotic love. Elegant. Itense. Unforgettable. They embody passion and beauty in their most refined form.",
 
 b5_title:"Gerberas",
-b5_text:"Bright flowers symbolising joy and sincerity.",
+b5_text:"A celebration of joy, happiness, and heartfelt sincerity. Bright. Open. Full of life. Perfect for confessions that shine without hesitation.",
 
-b6_title:"Lisianthus",
-b6_text:"A flower expressing admiration and grace.",
+b6_title:"Lisianthus (Eustoma)",
+b6_text:"A symbol of admiration, tenderness, and quite devotion. Soft in form, strong in meaning. A bloom that speak gently, yet stays forever.",
 
 b7_title:"Alstroemeria",
-b7_text:"A symbol of friendship and loyalty.",
+b7_text:"A symbol of admiration and a friendship strong enough to grow into love. Graceful. Loyal. Full of promise. A bloom that begins with connection and blossoms into something more.",
 
 collection_footer:
 "Each flower carries its own meaning —<br>but together, they tell one story.<br><br>Yours."
@@ -105,25 +105,25 @@ collection_title:"Kimpude kollektsioon",
 collection_subtitle:"Armastus ja romantika",
 
 b1_title:"Punased roosid",
-b1_text:"Sügava ja kirgliku armastuse sümbol.",
+b1_text:"Sügava ja kirgliku armastuse puhtaim väljendus. Intensiivne. Ajatu. Eksimatu. Nad ei küsi tähelepanu. Nad lihtsalt mõtlevad kõike.",
 
 b2_title:"Pojengid",
-b2_text:"Romantika ja õnne sümbol.",
+b2_text:"Õnneliku liidu, romantika ja vaikse õitsengu sümbol. Täidlased õied, mis kannavad endas paljulubavust ja soojust. Punased pojengid räägivad kirest. Roosad pojengid sosistavad õrnust.",
 
 b3_title:"Tulbid",
-b3_text:"Õnne ja uue alguse sümbol.",
+b3_text:"Siirate tunnete, õnne ja armastuse sümbol, mis alles hakkab voolama. Lihtne. Aus. Valgust täis. Roosad tulbid väljendavad õrna kiindumust. Punased tulbid kuulutavad armastust vaikse enesekindlusega.",
 
 b4_title:"Orhideed",
-b4_text:"Elegantsi ja haruldase armastuse sümbol.",
+b4_text:"Haruldase ja eksootilise armastuse sümbol. Elegantne. Intensiivne. Unustamatu. Nad kehastavad kirge ja ilu oma kõige rafineeritumal kujul.",
 
 b5_title:"Gerberad",
-b5_text:"Rõõmu ja siiruse sümbol.",
+b5_text:"Rõõmu, õnne ja südamliku siiruse tähistamine. Särav. Avatud. Elu täis. Täiuslik ülestunnistuste jaoks, mis säravad kõhklemata.",
 
 b6_title:"Lisianthus",
-b6_text:"Õrnuse ja imetluse sümbol.",
+b6_text:"Imetluse, õrnuse ja täieliku pühendumuse sümbol. Pehme vormiga, tugev tähendusega. Õis, mis kõneleb õrnalt, kuid jääb igaveseks.",
 
 b7_title:"Alstroomeeria",
-b7_text:"Sõpruse ja lojaalsuse sümbol.",
+b7_text:"Imetluse ja sõpruse sümbol, mis on piisavalt tugev, et kasvada armastuseks. Graatsiline. Lojaalne. Täis lubadusi. Õitsemine, mis algab sidemest ja õitseb millekski enamaks.",
 
 collection_footer:
 "Igal lillel on oma tähendus —<br>kuid koos jutustavad nad ühe loo.<br><br>Sinu."
@@ -171,25 +171,25 @@ collection_title:"Коллекция букетов",
 collection_subtitle:"Любовь и романтика",
 
 b1_title:"Красные розы",
-b1_text:"Символ глубокой и страстной любви.",
+b1_text:"Чистейшее выражение глубокой и страстной любви. Интенсивная. Вне времени. Безошибочная. Они не ищут внимания. Они просто думают обо всем.",
 
 b2_title:"Пионы",
-b2_text:"Символ романтики и счастья.",
+b2_text:"Символ счастливого союза, романтики и тихого расцвета. Пышные цветы несут в себе обещание и тепло. Красные пионы говорят о страсти. Розовые пионы шепчут о нежности.",
 
 b3_title:"Тюльпаны",
-b3_text:"Символ счастья и нового начала.",
+b3_text:"Символ искренних чувств, счастья и любви, которая только начинает расцветать. Простой. Честный. Полный света. Розовые тюльпаны выражают нежную привязанность. Красные тюльпаны с тихой уверенностью заявляют о любви.",
 
 b4_title:"Орхидеи",
-b4_text:"Символ редкой и изысканной любви.",
+b4_text:"Символ редкой и экзотической любви. Элегантный. Страстный. Незабываемый. Они воплощают страсть и красоту в их самой изысканной форме.",
 
 b5_title:"Герберы",
-b5_text:"Символ радости и искренности.",
+b5_text:"Праздник радости, счастья и искренней сердечности. Яркий. Открытый. Полный жизни. Идеально подходит для откровенных признаний, которые сияют без колебаний.",
 
 b6_title:"Лизиантус",
-b6_text:"Символ нежности и восхищения.",
+b6_text:"Символ восхищения, нежности и безграничной преданности. Нежный по форме, сильный по смыслу. Цветок, который говорит тихо, но остается навсегда.",
 
 b7_title:"Альстромерия",
-b7_text:"Символ дружбы и преданности.",
+b7_text:"Символ восхищения и дружбы, достаточно крепкой, чтобы перерасти в любовь. Изящный. Преданный. Полный надежд. Цветок, который начинается как связь и расцветает во что-то большее.",
 
 collection_footer:
 "У каждого цветка своё значение —<br>но вместе они рассказывают одну историю.<br><br>Твою."
