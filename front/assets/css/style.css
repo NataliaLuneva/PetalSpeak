@@ -160,12 +160,26 @@ body{
   background:var(--panel2);
 }
 
-.panel h2,
-.panel h3,
-.panel h4{
+.panel h2{
   margin:0 0 10px;
   font-family: Georgia, serif;
   font-weight:500;
+}
+
+/* заголовок коллекции */
+
+.panel h3{
+  margin:0 0 10px;
+  font-family: Georgia, serif;
+  font-weight:700;   /* жирный */
+}
+
+/* названия цветов */
+
+.panel h4{
+  margin:0 0 8px;
+  font-family: Georgia, serif;
+  font-weight:700;   /* жирный */
 }
 
 .panel p{
@@ -211,6 +225,7 @@ body{
   text-align:center;
   margin-bottom:18px;
   font-family: Georgia, serif;
+  font-weight:600;
 }
 
 .collection-item{
@@ -253,14 +268,16 @@ body{
 }
 
 .collection-footer{
-  width:min(920px, 92vw);
-  margin-top:40px;
-  text-align:center;
-  font-family: Georgia, serif;
-  font-size:18px;
-  line-height:1.8;
-  color:#3f3a3a;
-  letter-spacing:0.02em;
+
+margin-top:32px;
+padding-top:18px;
+border-top:1px solid rgba(0,0,0,.08);
+text-align:center;
+font-family:Georgia, serif;
+line-height:1.7;
+font-weight:600; 
+opacity:.95;
+
 }
 
 /* ================= REVEAL ANIMATION ================= */
@@ -356,5 +373,27 @@ background:rgba(255,255,255,.5);
 
 background:var(--btn);
 box-shadow:0 4px 10px rgba(0,0,0,.12);
+
+}
+
+/* ===== INTRO CENTER ALIGN ===== */
+
+.intro-panel{
+
+text-align:center;
+
+}
+
+.intro-panel h2{
+
+margin-bottom:18px;
+
+}
+
+.intro-panel p{
+
+max-width:620px;
+margin:10px auto;
+line-height:1.6;
 
 }
