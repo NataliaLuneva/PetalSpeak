@@ -485,3 +485,45 @@ body{
   background: var(--btnHover);
   transform: translateY(-1px);
 }
+
+.order-wrapper{
+    display:flex;
+    justify-content:center;
+    padding:60px 20px;
+}
+
+.order-card{
+    max-width:500px;
+    width:100%;
+    background:#fff;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.1);
+}
+
+.order-preview{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.order-preview img{
+    width:200px;
+    border-radius:15px;
+}
+
+.order-form input,
+.order-form textarea{
+    width:100%;
+    padding:12px;
+    margin-bottom:12px;
+    border-radius:10px;
+    border:1px solid #ddd;
+}
+
+.order-form textarea{
+    min-height:80px;
+}
+
+.order-form button{
+    width:100%;
+}

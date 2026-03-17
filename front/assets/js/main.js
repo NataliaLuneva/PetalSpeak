@@ -1,6 +1,6 @@
 let translations = {};
 
-/* ===== ЗАГРУЗКА ЯЗЫКА ===== */
+/* ===== LANGUAGE ===== */
 
 async function loadLanguage(lang){
     try{
@@ -15,8 +15,6 @@ async function loadLanguage(lang){
     }
 }
 
-/* ===== ПЕРЕВОДЫ ===== */
-
 function applyTranslations(){
     document.querySelectorAll("[data-i18n]").forEach(el=>{
         const key = el.getAttribute("data-i18n");
@@ -27,20 +25,16 @@ function applyTranslations(){
     });
 }
 
-/* ===== АКТИВНАЯ КНОПКА ===== */
-
 function setActiveButton(lang){
-    const buttons = document.querySelectorAll(".lang-btn");
-
-    buttons.forEach(btn => btn.classList.remove("active"));
+    document.querySelectorAll(".lang-btn").forEach(btn=>{
+        btn.classList.remove("active");
+    });
 
     const activeBtn = document.querySelector(`[data-lang="${lang}"]`);
-    if(activeBtn){
-        activeBtn.classList.add("active");
-    }
+    if(activeBtn) activeBtn.classList.add("active");
 }
 
-/* ===== REVEAL ===== */
+/* ===== UI ===== */
 
 function initReveal(){
     const elements = document.querySelectorAll(".reveal");
@@ -57,11 +51,9 @@ function initReveal(){
     elements.forEach(el => observer.observe(el));
 }
 
-/* ===== ACCORDION ===== */
-
 function initAccordion(){
-    document.querySelectorAll(".accordion-btn").forEach(btn => {
-        btn.addEventListener("click", () => {
+    document.querySelectorAll(".accordion-btn").forEach(btn=>{
+        btn.addEventListener("click", ()=>{
             const content = btn.nextElementSibling;
 
             btn.classList.toggle("active");
@@ -75,9 +67,9 @@ function initAccordion(){
     });
 }
 
-/* ===== ВОПРОСЫ ===== */
+/* ===== QUESTIONS ===== */
 
-const questions = [ /* 1–7 */ 
+const questions = [
   { question: "q1", answers: [
     { text: "q1_a1", type: "love" },
     { text: "q1_a2", type: "gratitude" },
@@ -122,7 +114,7 @@ const questions = [ /* 1–7 */
   ]}
 ];
 
-const advancedQuestions = [ /* 8–14 */
+const advancedQuestions = [
   { question: "q8", answers: [
     { text: "q8_a1", type: "love" },
     { text: "q8_a2", type: "comfort" },
@@ -167,7 +159,7 @@ const advancedQuestions = [ /* 8–14 */
   ]}
 ];
 
-/* ===== СОСТОЯНИЕ ===== */
+/* ===== STATE ===== */
 
 let currentQuestion = 0;
 let selectedType = null;
@@ -184,7 +176,7 @@ let scores = {
     celebration: 0
 };
 
-/* ===== БУКЕТЫ ===== */
+/* ===== BOUQUETS ===== */
 
 const bouquets = {
     love: { title: "bq_love", img: "/assets/img/b1.jpg" },
@@ -195,165 +187,193 @@ const bouquets = {
     celebration: { title: "bq_celebration", img: "/assets/img/b20.jpg" }
 };
 
-/* ===== ПОКАЗ ===== */
+/* ===== TEST ===== */
 
-function showQuestion() {
+function showQuestion(){
     const questionEl = document.getElementById("question");
     const answersEl = document.getElementById("answers");
     const prevBtn = document.getElementById("prev-btn");
 
+    if(!questionEl || !answersEl) return;
+
     const list = advancedMode ? advancedQuestions : questions;
     const q = list[currentQuestion];
 
-    questionEl.textContent = translations[q.question];
+    questionEl.textContent = translations[q.question] || q.question;
     answersEl.innerHTML = "";
 
     selectedType = answersChosen[currentQuestion] || null;
 
-    q.answers.forEach(answer => {
+    q.answers.forEach(answer=>{
         const btn = document.createElement("button");
-        btn.textContent = translations[answer.text];
+        btn.textContent = translations[answer.text] || answer.text;
 
-        if (answer.type === selectedType) btn.classList.add("active");
+        if(answer.type === selectedType){
+            btn.classList.add("active");
+        }
 
-        btn.onclick = () => {
+        btn.onclick = ()=>{
             selectedType = answer.type;
-            document.querySelectorAll("#answers button").forEach(b => b.classList.remove("active"));
+            document.querySelectorAll("#answers button").forEach(b=>b.classList.remove("active"));
             btn.classList.add("active");
         };
 
         answersEl.appendChild(btn);
     });
 
-    if (prevBtn) prevBtn.style.display = currentQuestion === 0 ? "none" : "block";
+    if(prevBtn){
+        prevBtn.style.display = currentQuestion === 0 ? "none" : "block";
+    }
 }
 
-/* ===== NEXT ===== */
-
-function nextQuestion() {
-    if (!selectedType) {
-        alert(translations["choose_answer"]);
+function nextQuestion(){
+    if(!selectedType){
+        alert(translations["choose_answer"] || "Choose an answer");
         return;
     }
 
-    if (answersChosen[currentQuestion]) {
-        scores[answersChosen[currentQuestion]]--;
+    if(answersChosen[currentQuestion]){
+        const oldType = answersChosen[currentQuestion];
+        scores[oldType] -= advancedMode ? 2 : 1;
     }
 
     answersChosen[currentQuestion] = selectedType;
     scores[selectedType] += advancedMode ? 2 : 1;
 
-    currentQuestion++;
-
     const list = advancedMode ? advancedQuestions : questions;
 
-    if (currentQuestion < list.length) {
+    if(currentQuestion < list.length - 1){
+        currentQuestion++;
         showQuestion();
-    } else {
+    }else{
         showResult();
     }
 }
 
-/* ===== PREV ===== */
-
-function prevQuestion() {
-    if (currentQuestion > 0) {
+function prevQuestion(){
+    if(currentQuestion > 0){
         currentQuestion--;
         showQuestion();
     }
 }
 
-/* ===== RESULT ===== */
+function getResult(){
+    let max = -Infinity;
+    let result = "love";
 
-function getResult() {
-    let max = 0, result = "love";
-    for (let key in scores) {
-        if (scores[key] > max) {
+    for(const key in scores){
+        if(scores[key] > max){
             max = scores[key];
             result = key;
         }
     }
+
     return result;
 }
 
-function showResult() {
+function showResult(){
     const questionEl = document.getElementById("question");
     const answersEl = document.getElementById("answers");
     const nextBtn = document.getElementById("next-btn");
     const prevBtn = document.getElementById("prev-btn");
 
+    if(!questionEl || !answersEl) return;
+
     const result = getResult();
     const bouquet = bouquets[result];
 
-    questionEl.textContent = translations["result_title"];
+    questionEl.textContent = translations["result_title"] || "Your Result";
 
     let refineHTML = "";
 
-    if (!refinedOnce) {
+    if(!refinedOnce){
         refineHTML = `
             <button id="refine-btn" style="margin-top:20px;">
-                ${translations["refine_btn"]}
+                ${translations["refine_btn"] || "Refine result"}
             </button>
         `;
     }
 
     answersEl.innerHTML = `
         <img src="${bouquet.img}" style="width:100%; border-radius:10px;">
-        <h3>${translations[bouquet.title]}</h3>
+        <h3>${translations[bouquet.title] || bouquet.title}</h3>
+
+        <button id="order-btn" style="margin-top:20px;">
+            ${translations["order_btn"] || "Order this bouquet"}
+        </button>
+
         ${refineHTML}
     `;
 
-    nextBtn.style.display = "none";
-    prevBtn.style.display = "none";
+    if(nextBtn) nextBtn.style.display = "none";
+    if(prevBtn) prevBtn.style.display = "none";
+
+    const orderBtn = document.getElementById("order-btn");
+    if(orderBtn){
+        orderBtn.onclick = ()=>{
+            localStorage.setItem("selectedBouquet", JSON.stringify({
+                type: result,
+                title: bouquet.title,
+                img: bouquet.img
+            }));
+
+            window.location.href = "/order.html";
+        };
+    }
 
     const refineBtn = document.getElementById("refine-btn");
-
-    if (refineBtn) {
-        refineBtn.onclick = () => {
+    if(refineBtn){
+        refineBtn.onclick = ()=>{
             refinedOnce = true;
             advancedMode = true;
             currentQuestion = 0;
             answersChosen = [];
 
-            for (let key in scores) scores[key] = 0;
+            for(const key in scores){
+                scores[key] = 0;
+            }
 
-            nextBtn.style.display = "block";
+            if(nextBtn) nextBtn.style.display = "block";
+            if(prevBtn) prevBtn.style.display = "none";
 
             showQuestion();
         };
     }
 }
 
-/* ===== START ===== */
+/* ===== INIT ===== */
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", ()=>{
     initReveal();
     initAccordion();
 
     const nextBtn = document.getElementById("next-btn");
     const prevBtn = document.getElementById("prev-btn");
+    const isTestPage = !!document.getElementById("question");
 
-    loadLanguage(localStorage.getItem("lang") || "en").then(showQuestion);
+    loadLanguage(localStorage.getItem("lang") || "en").then(()=>{
+        if(isTestPage){
+            showQuestion();
+        }
+    });
 
-    nextBtn.onclick = nextQuestion;
-    prevBtn.onclick = prevQuestion;
+    if(nextBtn){
+        nextBtn.onclick = nextQuestion;
+    }
 
-    document.querySelectorAll(".lang-btn").forEach(btn => {
-        btn.onclick = () => {
+    if(prevBtn){
+        prevBtn.onclick = prevQuestion;
+    }
+
+    document.querySelectorAll(".lang-btn").forEach(btn=>{
+        btn.onclick = ()=>{
             const lang = btn.dataset.lang;
             localStorage.setItem("lang", lang);
 
-            loadLanguage(lang).then(() => {
-                currentQuestion = 0;
-                answersChosen = [];
-                selectedType = null;
-                advancedMode = false;
-                refinedOnce = false;
-
-                for (let key in scores) scores[key] = 0;
-
-                nextBtn.style.display = "block";
-                showQuestion();
+            loadLanguage(lang).then(()=>{
+                if(isTestPage){
+                    showQuestion();
+                }
             });
         };
     });

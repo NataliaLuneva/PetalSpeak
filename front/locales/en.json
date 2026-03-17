@@ -254,5 +254,7 @@
     "q14_a3": "Respect",
     "q14_a4": "Joy", 
 
-    "refine_btn": "Find a more precise match"
+    "refine_btn": "Find a more precise match",
+
+    "order_btn": "Order this bouquet"
 }

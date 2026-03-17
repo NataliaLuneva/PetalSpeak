@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script type="module" src="/assets/js/main.js"></script>
+    
     <title>Feelings Test</title>
     <link rel="stylesheet" href="/assets/css/style.css" />
 </head>
@@ -30,5 +32,12 @@
         </div>
     </section>
     <script src="/assets/js/main.js"></script>
+
+    <script src="/assets/js/main.js"></script>
+
+    <script type="module">
+        import { saveTest } from "/assets/js/test-api.js";
+        window.saveTest = saveTest;
+    </script>
 </body>
 </html>

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin | PetalSpeak</title>
+</head>
+<body>
+    <h1>Admin Panel</h1>
+
+    <h2>Users</h2>
+    <div id="users"></div>
+
+    <h2>Orders</h2>
+    <div id="orders"></div>
+
+    <h2>Tests</h2>
+    <div id="tests"></div>
+
+    <script type="module">
+        import {
+            getCurrentUser,
+            getAdminUsers,
+            getAdminOrders,
+            getAdminTests,
+            updateOrderStatus
+        } from "/assets/js/api.js";
+
+        const user = getCurrentUser();
+
+        if (!user || user.role !== "admin") {
+            document.body.innerHTML = "<h2>Access denied</h2>";
+            throw new Error("Access denied");
+        }
+
+        async function loadUsers() {
+            const users = await getAdminUsers();
+            document.getElementById("users").innerHTML = users.map(user => `
+                <div>
+                    ${user.email} — ${user.role}
+                </div>
+            `).join("");
+        }
+
+        async function loadOrders() {
+            const orders = await getAdminOrders();
+            document.getElementById("orders").innerHTML = orders.map(order => `
+                <div style="margin-bottom: 16px; border-bottom: 1px solid #ccc; padding-bottom: 8px;">
+                    <div><strong>${order.customerName}</strong> (${order.email})</div>
+                    <div>${order.bouquetTitle}</div>
+                    <div>Status: ${order.status}</div>
+                    <button onclick="window.changeStatus('${order._id}', 'processing')">processing</button>
+                    <button onclick="window.changeStatus('${order._id}', 'done')">done</button>
+                </div>
+            `).join("");
+        }
+
+        async function loadTests() {
+            const tests = await getAdminTests();
+            document.getElementById("tests").innerHTML = tests.map(test => `
+                <div style="margin-bottom: 16px; border-bottom: 1px solid #ccc; padding-bottom: 8px;">
+                    <div>User: ${test.user ? test.user.email : "guest"}</div>
+                    <div>Result: ${test.resultType}</div>
+                    <div>Bouquet: ${test.bouquetTitle}</div>
+                </div>
+            `).join("");
+        }
+
+        window.changeStatus = async (id, status) => {
+            await updateOrderStatus(id, status);
+            loadOrders();
+        };
+
+        loadUsers();
+        loadOrders();
+        loadTests();
+    </script>
+</body>
+</html>

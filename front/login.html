@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login | PetalSpeak</title>
+</head>
+<body>
+    <h1>PetalSpeak Login</h1>
+
+    <h2>Register</h2>
+    <input type="email" id="reg-email" placeholder="Email">
+    <input type="password" id="reg-password" placeholder="Password">
+    <button id="register-btn">Register</button>
+
+    <h2>Login</h2>
+    <input type="email" id="login-email" placeholder="Email">
+    <input type="password" id="login-password" placeholder="Password">
+    <button id="login-btn">Login</button>
+
+    <p id="message"></p>
+
+    <script type="module">
+        import { register, login } from "/assets/js/api.js";
+
+        const message = document.getElementById("message");
+
+        document.getElementById("register-btn").onclick = async () => {
+            const email = document.getElementById("reg-email").value;
+            const password = document.getElementById("reg-password").value;
+
+            const data = await register(email, password);
+            message.textContent = data.message || data.error;
+        };
+
+        document.getElementById("login-btn").onclick = async () => {
+            const email = document.getElementById("login-email").value;
+            const password = document.getElementById("login-password").value;
+
+            const data = await login(email, password);
+
+            message.textContent = data.message || data.error;
+
+            if (data.token) {
+                window.location.href = "/";
+            }
+        };
+    </script>
+</body>
+</html>
