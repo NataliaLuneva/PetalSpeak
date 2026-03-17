@@ -77,70 +77,94 @@ function initAccordion(){
 
 /* ===== ВОПРОСЫ ===== */
 
-const questions = [
-  {
-    question: "q1",
-    answers: [
-      { text: "q1_a1", type: "love" },
-      { text: "q1_a2", type: "gratitude" },
-      { text: "q1_a3", type: "admiration" },
-      { text: "q1_a4", type: "friendship" }
-    ]
-  },
-  {
-    question: "q2",
-    answers: [
-      { text: "q2_a1", type: "love" },
-      { text: "q2_a2", type: "celebration" },
-      { text: "q2_a3", type: "comfort" },
-      { text: "q2_a4", type: "friendship" }
-    ]
-  },
-  {
-    question: "q3",
-    answers: [
-      { text: "q3_a1", type: "love" },
-      { text: "q3_a2", type: "gratitude" },
-      { text: "q3_a3", type: "friendship" },
-      { text: "q3_a4", type: "comfort" }
-    ]
-  },
-  {
-    question: "q4",
-    answers: [
-      { text: "q4_a1", type: "celebration" },
-      { text: "q4_a2", type: "love" },
-      { text: "q4_a3", type: "admiration" },
-      { text: "q4_a4", type: "comfort" }
-    ]
-  },
-  {
-    question: "q5",
-    answers: [
-      { text: "q5_a1", type: "love" },
-      { text: "q5_a2", type: "friendship" },
-      { text: "q5_a3", type: "gratitude" },
-      { text: "q5_a4", type: "admiration" }
-    ]
-  },
-  {
-    question: "q6",
-    answers: [
-      { text: "q6_a1", type: "comfort" },
-      { text: "q6_a2", type: "love" },
-      { text: "q6_a3", type: "friendship" },
-      { text: "q6_a4", type: "celebration" }
-    ]
-  },
-  {
-    question: "q7",
-    answers: [
-      { text: "q7_a1", type: "love" },
-      { text: "q7_a2", type: "gratitude" },
-      { text: "q7_a3", type: "celebration" },
-      { text: "q7_a4", type: "comfort" }
-    ]
-  }
+const questions = [ /* 1–7 */ 
+  { question: "q1", answers: [
+    { text: "q1_a1", type: "love" },
+    { text: "q1_a2", type: "gratitude" },
+    { text: "q1_a3", type: "admiration" },
+    { text: "q1_a4", type: "friendship" }
+  ]},
+  { question: "q2", answers: [
+    { text: "q2_a1", type: "love" },
+    { text: "q2_a2", type: "celebration" },
+    { text: "q2_a3", type: "comfort" },
+    { text: "q2_a4", type: "friendship" }
+  ]},
+  { question: "q3", answers: [
+    { text: "q3_a1", type: "love" },
+    { text: "q3_a2", type: "gratitude" },
+    { text: "q3_a3", type: "friendship" },
+    { text: "q3_a4", type: "comfort" }
+  ]},
+  { question: "q4", answers: [
+    { text: "q4_a1", type: "celebration" },
+    { text: "q4_a2", type: "love" },
+    { text: "q4_a3", type: "admiration" },
+    { text: "q4_a4", type: "comfort" }
+  ]},
+  { question: "q5", answers: [
+    { text: "q5_a1", type: "love" },
+    { text: "q5_a2", type: "friendship" },
+    { text: "q5_a3", type: "gratitude" },
+    { text: "q5_a4", type: "admiration" }
+  ]},
+  { question: "q6", answers: [
+    { text: "q6_a1", type: "comfort" },
+    { text: "q6_a2", type: "love" },
+    { text: "q6_a3", type: "friendship" },
+    { text: "q6_a4", type: "celebration" }
+  ]},
+  { question: "q7", answers: [
+    { text: "q7_a1", type: "love" },
+    { text: "q7_a2", type: "gratitude" },
+    { text: "q7_a3", type: "celebration" },
+    { text: "q7_a4", type: "comfort" }
+  ]}
+];
+
+const advancedQuestions = [ /* 8–14 */
+  { question: "q8", answers: [
+    { text: "q8_a1", type: "love" },
+    { text: "q8_a2", type: "comfort" },
+    { text: "q8_a3", type: "admiration" },
+    { text: "q8_a4", type: "friendship" }
+  ]},
+  { question: "q9", answers: [
+    { text: "q9_a1", type: "celebration" },
+    { text: "q9_a2", type: "love" },
+    { text: "q9_a3", type: "gratitude" },
+    { text: "q9_a4", type: "comfort" }
+  ]},
+  { question: "q10", answers: [
+    { text: "q10_a1", type: "love" },
+    { text: "q10_a2", type: "admiration" },
+    { text: "q10_a3", type: "friendship" },
+    { text: "q10_a4", type: "gratitude" }
+  ]},
+  { question: "q11", answers: [
+    { text: "q11_a1", type: "comfort" },
+    { text: "q11_a2", type: "love" },
+    { text: "q11_a3", type: "celebration" },
+    { text: "q11_a4", type: "friendship" }
+  ]},
+  { question: "q12", answers: [
+    { text: "q12_a1", type: "gratitude" },
+    { text: "q12_a2", type: "admiration" },
+    { text: "q12_a3", type: "love" },
+    { text: "q12_a4", type: "comfort" }
+  ]},
+  { question: "q13", answers: [
+    { text: "q13_a1", type: "celebration" },
+    { text: "q13_a2", type: "friendship" },
+    { text: "q13_a3", type: "love" },
+    { text: "q13_a4", type: "gratitude" }
+  ]},
+  { question: "q14", answers: [
+    { text: "q14_a1", type: "love" },
+    { text: "q14_a2", type: "comfort" },
+    { text: "q14_a3", type: "admiration" },
+    { text: "q14_a4", type: "celebration" }
+  ]}
 ];
 
 /* ===== СОСТОЯНИЕ ===== */
@@ -148,6 +172,8 @@ const questions = [
 let currentQuestion = 0;
 let selectedType = null;
 let answersChosen = [];
+let advancedMode = false;
+let refinedOnce = false;
 
 let scores = {
     love: 0,
@@ -161,42 +187,23 @@ let scores = {
 /* ===== БУКЕТЫ ===== */
 
 const bouquets = {
-    love: {
-        title: "bq_love",
-        img: "/assets/img/b1.jpg"
-    },
-    friendship: {
-        title: "bq_friendship",
-        img: "/assets/img/b8.jpg"
-    },
-    gratitude: {
-        title: "bq_gratitude",
-        img: "/assets/img/b15.jpg"
-    },
-    admiration: {
-        title: "bq_admiration",
-        img: "/assets/img/b3.jpg"
-    },
-    comfort: {
-        title: "bq_comfort",
-        img: "/assets/img/b29.jpg"
-    },
-    celebration: {
-        title: "bq_celebration",
-        img: "/assets/img/b20.jpg"
-    }
+    love: { title: "bq_love", img: "/assets/img/b1.jpg" },
+    friendship: { title: "bq_friendship", img: "/assets/img/b8.jpg" },
+    gratitude: { title: "bq_gratitude", img: "/assets/img/b15.jpg" },
+    admiration: { title: "bq_admiration", img: "/assets/img/b3.jpg" },
+    comfort: { title: "bq_comfort", img: "/assets/img/b29.jpg" },
+    celebration: { title: "bq_celebration", img: "/assets/img/b20.jpg" }
 };
 
-/* ===== ПОКАЗ ВОПРОСА ===== */
+/* ===== ПОКАЗ ===== */
 
 function showQuestion() {
     const questionEl = document.getElementById("question");
     const answersEl = document.getElementById("answers");
     const prevBtn = document.getElementById("prev-btn");
 
-    if (!questionEl) return;
-
-    const q = questions[currentQuestion];
+    const list = advancedMode ? advancedQuestions : questions;
+    const q = list[currentQuestion];
 
     questionEl.textContent = translations[q.question];
     answersEl.innerHTML = "";
@@ -207,25 +214,18 @@ function showQuestion() {
         const btn = document.createElement("button");
         btn.textContent = translations[answer.text];
 
-        if (answer.type === selectedType) {
-            btn.classList.add("active");
-        }
+        if (answer.type === selectedType) btn.classList.add("active");
 
         btn.onclick = () => {
             selectedType = answer.type;
-
-            document.querySelectorAll("#answers button")
-                .forEach(b => b.classList.remove("active"));
-
+            document.querySelectorAll("#answers button").forEach(b => b.classList.remove("active"));
             btn.classList.add("active");
         };
 
         answersEl.appendChild(btn);
     });
 
-    if (prevBtn) {
-        prevBtn.style.display = currentQuestion === 0 ? "none" : "block";
-    }
+    if (prevBtn) prevBtn.style.display = currentQuestion === 0 ? "none" : "block";
 }
 
 /* ===== NEXT ===== */
@@ -236,24 +236,25 @@ function nextQuestion() {
         return;
     }
 
-    // если уже был ответ — убираем старый score
     if (answersChosen[currentQuestion]) {
         scores[answersChosen[currentQuestion]]--;
     }
 
     answersChosen[currentQuestion] = selectedType;
-    scores[selectedType]++;
+    scores[selectedType] += advancedMode ? 2 : 1;
 
     currentQuestion++;
 
-    if (currentQuestion < questions.length) {
+    const list = advancedMode ? advancedQuestions : questions;
+
+    if (currentQuestion < list.length) {
         showQuestion();
     } else {
         showResult();
     }
 }
 
-/* ===== PREVIOUS ===== */
+/* ===== PREV ===== */
 
 function prevQuestion() {
     if (currentQuestion > 0) {
@@ -262,19 +263,16 @@ function prevQuestion() {
     }
 }
 
-/* ===== РЕЗУЛЬТАТ ===== */
+/* ===== RESULT ===== */
 
 function getResult() {
-    let max = 0;
-    let result = "love";
-
+    let max = 0, result = "love";
     for (let key in scores) {
         if (scores[key] > max) {
             max = scores[key];
             result = key;
         }
     }
-
     return result;
 }
 
@@ -289,16 +287,44 @@ function showResult() {
 
     questionEl.textContent = translations["result_title"];
 
+    let refineHTML = "";
+
+    if (!refinedOnce) {
+        refineHTML = `
+            <button id="refine-btn" style="margin-top:20px;">
+                ${translations["refine_btn"]}
+            </button>
+        `;
+    }
+
     answersEl.innerHTML = `
-        <img src="${bouquet.img}" style="width:100%; border-radius:10px; margin-bottom:15px;">
+        <img src="${bouquet.img}" style="width:100%; border-radius:10px;">
         <h3>${translations[bouquet.title]}</h3>
+        ${refineHTML}
     `;
 
-    if (nextBtn) nextBtn.style.display = "none";
-    if (prevBtn) prevBtn.style.display = "none";
+    nextBtn.style.display = "none";
+    prevBtn.style.display = "none";
+
+    const refineBtn = document.getElementById("refine-btn");
+
+    if (refineBtn) {
+        refineBtn.onclick = () => {
+            refinedOnce = true;
+            advancedMode = true;
+            currentQuestion = 0;
+            answersChosen = [];
+
+            for (let key in scores) scores[key] = 0;
+
+            nextBtn.style.display = "block";
+
+            showQuestion();
+        };
+    }
 }
 
-/* ===== СТАРТ ===== */
+/* ===== START ===== */
 
 document.addEventListener("DOMContentLoaded", () => {
     initReveal();
@@ -307,37 +333,28 @@ document.addEventListener("DOMContentLoaded", () => {
     const nextBtn = document.getElementById("next-btn");
     const prevBtn = document.getElementById("prev-btn");
 
-    const savedLang = localStorage.getItem("lang") || "en";
+    loadLanguage(localStorage.getItem("lang") || "en").then(showQuestion);
 
-    loadLanguage(savedLang).then(() => {
-        showQuestion();
-    });
+    nextBtn.onclick = nextQuestion;
+    prevBtn.onclick = prevQuestion;
 
-    if (nextBtn) nextBtn.onclick = nextQuestion;
-    if (prevBtn) prevBtn.onclick = prevQuestion;
-
-    const buttons = document.querySelectorAll(".lang-btn");
-
-    buttons.forEach(btn => {
-        btn.addEventListener("click", () => {
+    document.querySelectorAll(".lang-btn").forEach(btn => {
+        btn.onclick = () => {
             const lang = btn.dataset.lang;
-
             localStorage.setItem("lang", lang);
 
             loadLanguage(lang).then(() => {
                 currentQuestion = 0;
                 answersChosen = [];
                 selectedType = null;
+                advancedMode = false;
+                refinedOnce = false;
 
-                // сброс scores
-                for (let key in scores) {
-                    scores[key] = 0;
-                }
+                for (let key in scores) scores[key] = 0;
 
-                if (nextBtn) nextBtn.style.display = "block";
-
+                nextBtn.style.display = "block";
                 showQuestion();
             });
-        });
+        };
     });
 });

@@ -210,5 +210,49 @@
     "bq_gratitude": "Grateful Bloom",
     "bq_admiration": "Elegant Iris",
     "bq_comfort": "Soft Comfort",
-    "bq_celebration": "Bright Celebration"
+    "bq_celebration": "Bright Celebration",
+
+    "q8": "What color feels right?",
+    "q8_a1": "Red / pink",
+    "q8_a2": "Soft pastel",
+    "q8_a3": "Elegant white",
+    "q8_a4": "Bright yellow",
+
+    "q9": "What is the occasion?",
+    "q9_a1": "Celebration",
+    "q9_a2": "Romantic moment",
+    "q9_a3": "Gratitude",
+    "q9_a4": "Support",
+
+    "q10": "How personal should it feel?",
+    "q10_a1": "Very intimate",
+    "q10_a2": "Respectful",
+    "q10_a3": "Friendly",
+    "q10_a4": "Appreciative",
+
+    "q11": "What tone do you prefer?",
+    "q11_a1": "Soft and calm",
+    "q11_a2": "Deep and emotional",
+    "q11_a3": "Bright and fun",
+    "q11_a4": "Light and easy",
+
+    "q12": "What message matters most?",
+    "q12_a1": "Thank you",
+    "q12_a2": "I admire you",
+    "q12_a3": "I love you",
+    "q12_a4": "I care about you",
+
+    "q13": "How expressive should it be?",
+    "q13_a1": "Bold and vibrant",
+    "q13_a2": "Warm and simple",
+    "q13_a3": "Romantic",
+    "q13_a4": "Gentle",
+
+    "q14": "What feeling should remain after?",
+    "q14_a1": "Love",
+    "q14_a2": "Peace",
+    "q14_a3": "Respect",
+    "q14_a4": "Joy", 
+
+    "refine_btn": "Find a more precise match"
 }

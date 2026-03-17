@@ -211,5 +211,49 @@
     "bq_gratitude": "Tänulik kimp",
     "bq_admiration": "Elegantne iiris",
     "bq_comfort": "Rahustav kimp",
-    "bq_celebration": "Pidulik kimp"
+    "bq_celebration": "Pidulik kimp",
+
+    "q8": "Milline värv tundub õige?",
+    "q8_a1": "Punane / roosa",
+    "q8_a2": "Õrn pastelne",
+    "q8_a3": "Elegantne valge",
+    "q8_a4": "Hele kollane",
+
+    "q9": "Mis on sündmus?",
+    "q9_a1": "Tähistamine",
+    "q9_a2": "Romantiline hetk",
+    "q9_a3": "Tänuavaldus",
+    "q9_a4": "Toetus",
+
+    "q10": "Kui isiklik see peaks olema?",
+    "q10_a1": "Väga intiimne",
+    "q10_a2": "Austuslik",
+    "q10_a3": "Sõbralik",
+    "q10_a4": "Tänulik",
+
+    "q11": "Millist tooni eelistad?",
+    "q11_a1": "Rahulik ja õrn",
+    "q11_a2": "Sügav ja emotsionaalne",
+    "q11_a3": "Rõõmus ja särav",
+    "q11_a4": "Kerge ja lihtne",
+
+    "q12": "Milline sõnum on kõige olulisem?",
+    "q12_a1": "Aitäh",
+    "q12_a2": "Ma imetlen sind",
+    "q12_a3": "Ma armastan sind",
+    "q12_a4": "Ma hoolin sinust",
+
+    "q13": "Kui väljendusrikas peaks see olema?",
+    "q13_a1": "Julge ja värvikas",
+    "q13_a2": "Soe ja lihtne",
+    "q13_a3": "Romantiline",
+    "q13_a4": "Õrn",
+
+    "q14": "Milline tunne peaks jääma?",
+    "q14_a1": "Armastus",
+    "q14_a2": "Rahu",
+    "q14_a3": "Austus",
+    "q14_a4": "Rõõm",
+
+    "refine_btn": "Leia täpsem vaste"
 }
