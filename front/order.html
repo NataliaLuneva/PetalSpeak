@@ -16,7 +16,7 @@
 <section class="order-wrapper">
     <div class="order-card">
 
-        <h2 data-i18n="order_title">Order Your Bouquet</h2>
+        <h2>Order Your Bouquet</h2>
 
         <div class="order-preview">
             <img id="preview">
@@ -38,9 +38,7 @@
     </div>
 </section>
 
-<script type="module">
-import { createOrder } from "/assets/js/api.js";
-
+<script>
 const bouquet = JSON.parse(localStorage.getItem("selectedBouquet"));
 
 if(bouquet){
@@ -49,16 +47,39 @@ if(bouquet){
 }
 
 document.getElementById("orderBtn").onclick = async ()=>{
-    const data = await createOrder({
+    const data = {
         customerName: document.getElementById("name").value,
         email: document.getElementById("email").value,
         bouquetType: bouquet?.type,
         bouquetTitle: bouquet?.title,
         message: document.getElementById("message").value
-    });
+    };
 
-    document.getElementById("result").textContent =
-        data.message || data.error;
+    if(!data.customerName || !data.email){
+        alert("Fill all fields");
+        return;
+    }
+
+    try{
+        const res = await fetch("/api/orders", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+
+        const result = await res.json();
+
+        document.getElementById("result").textContent =
+            result.message || result.error;
+
+        localStorage.removeItem("selectedBouquet");
+
+    }catch(e){
+        console.error(e);
+        document.getElementById("result").textContent = "Error sending order";
+    }
 };
 </script>
 

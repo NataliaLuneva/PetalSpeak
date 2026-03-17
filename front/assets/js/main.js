@@ -378,3 +378,40 @@ document.addEventListener("DOMContentLoaded", ()=>{
         };
     });
 });
+
+async function sendOrder(){
+    const bouquet = JSON.parse(localStorage.getItem("selectedBouquet"));
+
+    if(!bouquet){
+        alert("No bouquet selected");
+        return;
+    }
+
+    const data = {
+        customerName: document.getElementById("name").value,
+        email: document.getElementById("email").value,
+        bouquetType: bouquet.type,
+        bouquetTitle: bouquet.title,
+        message: document.getElementById("message").value
+    };
+
+    try{
+        const res = await fetch("/api/orders", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+
+        const result = await res.json();
+
+        alert("Order sent 💌");
+
+        localStorage.removeItem("selectedBouquet");
+
+    }catch(e){
+        console.error(e);
+        alert("Error sending order");
+    }
+}

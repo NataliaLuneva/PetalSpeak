@@ -1,26 +1,11 @@
 const express = require("express");
-const Order = require("../models/Order");
-const authMiddleware = require("../middleware/auth");
-
 const router = express.Router();
 
-// create order (works for guest and user)
+const Order = require("../models/Order");
+const transporter = require("../utils/mailer");
+
 router.post("/", async (req, res) => {
     try {
-        const authHeader = req.headers.authorization;
-        let userId = null;
-
-        if (authHeader && authHeader.startsWith("Bearer ")) {
-            const token = authHeader.split(" ")[1];
-            try {
-                const jwt = require("jsonwebtoken");
-                const decoded = jwt.verify(token, "supersecretkey");
-                userId = decoded.id;
-            } catch (e) {
-                userId = null;
-            }
-        }
-
         const {
             customerName,
             email,
@@ -34,7 +19,6 @@ router.post("/", async (req, res) => {
         }
 
         const order = new Order({
-            user: userId,
             customerName,
             email,
             bouquetType,
@@ -44,22 +28,40 @@ router.post("/", async (req, res) => {
 
         await order.save();
 
-        res.json({
-            message: "Order created",
-            order
+        // 💌 письмо клиенту
+        await transporter.sendMail({
+            from: "PetalSpeak 🌸 <ТВОЯ_ПОЧТА@gmail.com>",
+            to: email,
+            subject: "Your PetalSpeak Order 💐",
+            html: `
+                <h2>Thank you for your order!</h2>
+                <p><b>Name:</b> ${customerName}</p>
+                <p><b>Bouquet:</b> ${bouquetTitle}</p>
+                <p><b>Message:</b> ${message}</p>
+            `
         });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
 
-// my orders
-router.get("/my", authMiddleware, async (req, res) => {
-    try {
-        const orders = await Order.find({ user: req.user.id }).sort({ createdAt: -1 });
-        res.json(orders);
+        // 🔔 уведомление тебе
+        await transporter.sendMail({
+            from: "PetalSpeak 🌸 <ТВОЯ_ПОЧТА@gmail.com>",
+            to: "ТВОЯ_ПОЧТА@gmail.com",
+            subject: "🔥 New Order",
+            html: `
+                <h2>New order</h2>
+                <p><b>Name:</b> ${customerName}</p>
+                <p><b>Email:</b> ${email}</p>
+                <p><b>Bouquet:</b> ${bouquetTitle}</p>
+                <p><b>Message:</b> ${message}</p>
+            `
+        });
+
+        res.json({
+            message: "Order created & email sent 💌"
+        });
+
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error(error);
+        res.status(500).json({ error: "Server error" });
     }
 });
 

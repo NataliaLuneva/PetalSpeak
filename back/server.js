@@ -18,6 +18,8 @@ const FRONT_DIR = path.join(__dirname, "..", "front");
 // ====== DB ======
 const MONGO_URI = "mongodb://127.0.0.1:27017/petalspeak";
 
+
+
 mongoose.connect(MONGO_URI)
     .then(() => console.log("MongoDB connected"))
     .catch(err => console.error("MongoDB error:", err));
