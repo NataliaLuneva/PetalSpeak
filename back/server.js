@@ -6,14 +6,13 @@ const PORT = 3000;
 
 const FRONT_DIR = path.join(__dirname, "..", "front");
 
+app.use(express.static(FRONT_DIR)); // ← ВАЖНО
+
 app.use("/assets", express.static(path.join(FRONT_DIR, "assets")));
+app.use("/locales", express.static(path.join(FRONT_DIR, "locales")));
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(FRONT_DIR, "index.html"));
-});
-
-app.get("/test", (req, res) => {
-  res.sendFile(path.join(FRONT_DIR, "test.html"));
 });
 
 app.listen(PORT, () => {

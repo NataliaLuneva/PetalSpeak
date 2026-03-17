@@ -1,0 +1,215 @@
+{
+    "about": "Meist",
+    "test": "Tunnete test",
+    "about_title": "PetalSpeakist",
+    "about_text1": "PetalSpeak on koht, kus emotsioonid muutuvad lilledeks.",
+    "about_text2": "Meie interaktiivne tunnete test aitab tõlkida emotsioonid lillekimpudeks, mis väljendavad sinu sõnumit loomulikult ja kaunilt.",
+    "about_text3": "Iga kimp jutustab loo — armastusest, imetlusest, tänulikkusest, tähistamisest või vaiksest hoolimisest.",
+    "about_text4": "Sest mõnikord ütlevad lilled rohkem kui sõnad.",
+    "tagline": "KIMBUD, MIS VÄLJENDAVAD SINU TUNDEID",
+    "cta": "Tee tunnete test",
+    "hint": "Ei tea, mida öelda?<br/>Lilled teavad.",
+    "section_title": "Kus tunded leiavad oma lille",
+    "section_text1": "Loome kimpe emotsiooni, mitte sündmuse järgi.",
+    "section_text2": "Iga kimp on hoolikalt koostatud värsketest hooajalistest lilledest.",
+    "test_title": "Tunnete test",
+    "how": "Kuidas see töötab",
+    "li1": "Vasta mõnele südamlikule küsimusele",
+    "li2": "Me tõlgendame sinu emotsioonid",
+    "li3": "Saad kimbu, mis räägib sinu eest",
+    "collection_title": "Kimpude kollektsioon",
+    "love_romance": "Armastus ja romantika",
+    "friendship": "Sõprus",
+    "gratitude": "Tänulikkus",
+    "apology": "Vabandamine",
+    "sympathy": "Kaastunne",
+    "secret_love": "Salajane armastus",
+
+    "b1_title": "Punased roosid",
+    "b1_text": "Sügava ja kirgliku armastuse puhtaim väljendus. Intensiivne. Ajatu. Eksimatu. Nad ei küsi tähelepanu — nad tähendavad kõike.",
+
+    "b2_title": "Pojengid",
+    "b2_text": "Õnneliku liidu, romantika ja vaikse õitsengu sümbol. Täidlased õied, mis kannavad lubadust ja soojust. Punased pojengid räägivad kirest, roosad sosistavad õrnust.",
+
+    "b3_title": "Tulbid",
+    "b3_text": "Siiraste tunnete, õnne ja tärkava armastuse sümbol. Lihtne. Aus. Valgust täis. Roosad tulbid väljendavad õrna kiindumust, punased kuulutavad armastust vaikse enesekindlusega.",
+
+    "b4_title": "Orhideed",
+    "b4_text": "Haruldase ja eksootilise armastuse sümbol. Elegantne. Intensiivne. Unustamatu. Nad kehastavad kirge ja ilu kõige rafineeritumas vormis.",
+
+    "b5_title": "Gerberad",
+    "b5_text": "Rõõmu, õnne ja südamliku siiruse tähistamine. Särav. Avatud. Elu täis. Täiuslik siiraste tunnete väljendamiseks.",
+
+    "b6_title": "Lisianthus (eustoma)",
+    "b6_text": "Imetluse, õrnuse ja vaikse pühendumuse sümbol. Pehme vorm, tugev tähendus. Õis, mis räägib õrnalt, kuid jääb kauaks.",
+
+    "b7_title": "Alstroomeeria",
+    "b7_text": "Imetluse ja sõpruse sümbol, mis võib kasvada armastuseks. Graatsiline. Lojaalne. Täis lubadusi.",
+
+    "b8_title": "Iiris",
+    "b8_text": "Tarkuse, usalduse ja sügava sõpruse sümbol.",
+
+    "b9_title": "Päevalilled",
+    "b9_text": "Õnne, lojaalsuse ja soojuse sümbol.",
+
+    "b10_title": "Kollased krüsanteemid",
+    "b10_text": "Rõõmu, optimismi ja lojaalse sõpruse sümbol.",
+
+    "b11_title": "Kollane freesia",
+    "b11_text": "Usalduse ja siiruse sümbol.",
+
+    "b12_title": "Kollased gerberad",
+    "b12_text": "Rõõmu ja positiivse energia sümbol.",
+
+    "b13_title": "Kollased roosid",
+    "b13_text": "Klassikaline sõpruse ja rõõmu sümbol.",
+
+    "b14_title": "Kollased tulbid",
+    "b14_text": "Õnne ja positiivsete mõtete sümbol.",
+
+    "b15_title": "Hortensia",
+    "b15_text": "Tänulikkuse ja südamlike tunnete sümbol.",
+
+    "b16_title": "Nelgid",
+    "b16_text": "Imetluse ja tänulikkuse sümbol.",
+
+    "b17_title": "Liilia",
+    "b17_text": "Puhtuse, väärikuse ja austuse sümbol.",
+
+    "b18_title": "Alstroomeeria",
+    "b18_text": "Pühendumuse, sõpruse ja toetuse sümbol.",
+
+    "b19_title": "Orhidee",
+    "b19_text": "Elegantsi, ilu ja imetluse sümbol.",
+
+    "b20_title": "Roosid",
+    "b20_text": "Armastuse ja sügavate tunnete sümbol.",
+
+    "b21_title": "Valge freesia",
+    "b21_text": "Süütuse ja siiruse sümbol.",
+
+    "b22_title": "Krüsanteemid",
+    "b22_text": "Lojaalsuse ja aususe sümbol.",
+
+    "b23_title": "Nartsiss",
+    "b23_text": "Uue alguse ja lootuse sümbol.",
+
+    "b24_title": "Valged gerberad",
+    "b24_text": "Puhtuse ja rahu sümbol.",
+
+    "b25_title": "Valge alstroomeeria",
+    "b25_text": "Lojaalsuse ja sõpruse sümbol.",
+
+    "b26_title": "Valged pojengid",
+    "b26_text": "Siiruse ja õrnuse sümbol.",
+
+    "b27_title": "Valged roosid",
+    "b27_text": "Puhtuse ja austuse sümbol.",
+
+    "b28_title": "Valged tulbid",
+    "b28_text": "Andestuse ja rahu sümbol.",
+
+    "b29_title": "Kreem freesia",
+    "b29_text": "Elegantsi ja usalduse sümbol.",
+
+    "b30_title": "Karikakrad",
+    "b30_text": "Süütuse ja rõõmu sümbol.",
+
+    "b31_title": "Kipslill",
+    "b31_text": "Õrna armastuse sümbol.",
+
+    "b32_title": "Kameelia",
+    "b32_text": "Imetluse ja ilu sümbol.",
+
+    "b33_title": "Lavendel",
+    "b33_text": "Rahulikkuse ja tasakaalu sümbol.",
+
+    "b34_title": "Alstroomeeria",
+    "b34_text": "Sõpruse ja toetuse sümbol.",
+
+    "b35_title": "Roosad roosid",
+    "b35_text": "Tänulikkuse ja imetluse sümbol.",
+
+    "b36_title": "Anemoon",
+    "b36_text": "Ootuse ja kaitse sümbol.",
+
+    "b37_title": "Lavendel",
+    "b37_text": "Rahulike tunnete ja salapära sümbol.",
+
+    "b38_title": "Mimoos",
+    "b38_text": "Õrnuse ja soojuse sümbol.",
+
+    "b39_title": "Ranunkel",
+    "b39_text": "Võlu ja ilu sümbol.",
+
+    "b40_title": "Orhidee",
+    "b40_text": "Haruldase ilu ja elegantsi sümbol.",
+
+    "b41_title": "Lillad tulbid",
+    "b41_text": "Austuse ja imetluse sümbol.",
+
+    "b42_title": "Valge nelk",
+    "b42_text": "Puhtuse ja lojaalsuse sümbol.",
+
+    "love_text": "Armastus väljendub paljudes lilledes — kirglikes roosides, õrnades pojengides ja õites, mis räägivad ilma sõnadeta.",
+    "friendship_text": "Sõprus on helge ja rõõmus — lilled tähistavad lojaalsust ja ühiseid mälestusi.",
+    "gratitude_text": "Tänulikkus õitseb õrnades ja elegantsetes lilledes.",
+    "apology_text": "Vabanduse lilled aitavad öelda seda, mida sõnad ei suuda.",
+    "sympathy_text": "Kaastunde lilled pakuvad lohutust ja rahu.",
+    "secret_love_text": "Salajane armastus on õrn ja vaikne — lilled sosistavad peidetud tundeid.",
+    "collection_footer": "Kimp ei räägi… kuid iga õis jutustab sinu südame loo.",
+
+    "q1": "Mida sa tahad öelda?",
+    "q1_a1": "Ma armastan sind",
+    "q1_a2": "Aitäh",
+    "q1_a3": "Sa inspireerid mind",
+    "q1_a4": "Ma hindan meie sõprust",
+
+    "q2": "Milline on meeleolu?",
+    "q2_a1": "Romantiline",
+    "q2_a2": "Rõõmus",
+    "q2_a3": "Rahulik",
+    "q2_a4": "Soe",
+
+    "q3": "Kellele see on?",
+    "q3_a1": "Partnerile",
+    "q3_a2": "Olulisele inimesele",
+    "q3_a3": "Sõbrale",
+    "q3_a4": "Kellelegi, kes vajab tuge",
+
+    "q4": "Milline tunne on kõige tugevam?",
+    "q4_a1": "Põnevus",
+    "q4_a2": "Armastus",
+    "q4_a3": "Austus",
+    "q4_a4": "Hoolivus",
+
+    "q5": "Mida sa tahad, et ta tunneks?",
+    "q5_a1": "Armastatuna",
+    "q5_a2": "Õnnelikuna",
+    "q5_a3": "Hinnatuna",
+    "q5_a4": "Imetletuna",
+
+    "q6": "Milline peaks olema kimbu energia?",
+    "q6_a1": "Õrn ja rahustav",
+    "q6_a2": "Sügav ja romantiline",
+    "q6_a3": "Kerge ja sõbralik",
+    "q6_a4": "Erk ja pidulik",
+
+    "q7": "Mis on sinu eesmärk?",
+    "q7_a1": "Väljendada armastust",
+    "q7_a2": "Tänada",
+    "q7_a3": "Tähistada",
+    "q7_a4": "Toetada ja lohutada",
+
+    "choose_answer": "Vali vastus",
+    "result_title": "Sinu ideaalne lillekimp",
+
+    "back_home": "Tagasi avalehele",
+
+    "bq_love": "Romantilised roosid",
+    "bq_friendship": "Sõbralik päikesekimp",
+    "bq_gratitude": "Tänulik kimp",
+    "bq_admiration": "Elegantne iiris",
+    "bq_comfort": "Rahustav kimp",
+    "bq_celebration": "Pidulik kimp"
+}

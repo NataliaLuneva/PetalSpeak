@@ -1,0 +1,214 @@
+{
+    "about": "About Us",
+    "test": "Feelings Test",
+    "about_title": "About PetalSpeak",
+    "about_text1": "PetalSpeak is a place where emotions become flowers.",
+    "about_text2": "Our interactive feelings test helps transform emotions into bouquets that express your message naturally and beautifully.",
+    "about_text3": "Every bouquet tells a story — of love, admiration, gratitude, celebration, or quiet care.",
+    "about_text4": "Because sometimes flowers say more than words.",
+    "tagline": "BOUQUETS THAT EXPRESS YOUR FEELINGS",
+    "cta": "Take the Feelings Test",
+    "hint": "Not sure what to say?<br/>Flowers know.",
+    "section_title": "Where Feelings Find Their Flower",
+    "section_text1": "We create bouquets based on emotion, not occasion.",
+    "section_text2": "Each bouquet is carefully crafted from fresh seasonal flowers.",
+    "test_title": "Feelings Test",
+    "how": "How It Works",
+    "li1": "Answer a few heartfelt questions",
+    "li2": "We decode your emotions",
+    "li3": "You receive a bouquet that speaks for you",
+    "collection_title": "Bouquet Collection",
+    "love_romance": "Love & Romance",
+    "friendship": "Friendship",
+    "gratitude": "Gratitude",
+    "apology": "Apology",
+    "sympathy": "Sympathy",
+    "secret_love": "Secret Love",
+
+    "b1_title": "Red Roses",
+    "b1_text": "The purest expression of deep, passionate love. Intense. Timeless. Unmistakable. They do not ask for attention — they mean everything.",
+
+    "b2_title": "Peonies",
+    "b2_text": "A symbol of happy union, romance, and quiet prosperity. Full blooms that carry warmth and promise. Red peonies speak of passion, while pink ones whisper tenderness.",
+
+    "b3_title": "Tulips",
+    "b3_text": "A symbol of sincere feelings, happiness, and love just beginning to bloom. Simple. Honest. Full of light. Pink tulips express gentle affection, while red tulips declare love with quiet confidence.",
+
+    "b4_title": "Orchids",
+    "b4_text": "A symbol of rare and exotic love. Elegant. Intense. Unforgettable. They embody passion and beauty in their most refined form.",
+
+    "b5_title": "Gerberas",
+    "b5_text": "A celebration of joy, happiness, and heartfelt sincerity. Bright. Open. Full of life. Perfect for expressing genuine feelings.",
+
+    "b6_title": "Lisianthus (Eustoma)",
+    "b6_text": "A symbol of admiration, tenderness, and quiet devotion. Soft in form, strong in meaning. A bloom that speaks gently, yet stays for a long time.",
+
+    "b7_title": "Alstroemeria",
+    "b7_text": "A symbol of admiration and friendship that can grow into love. Graceful. Loyal. Full of promise.",
+
+    "b8_title": "Iris",
+    "b8_text": "A symbol of wisdom, trust, and deep friendship.",
+
+    "b9_title": "Sunflowers",
+    "b9_text": "A symbol of happiness, loyalty, and warmth.",
+
+    "b10_title": "Yellow Chrysanthemums",
+    "b10_text": "A symbol of joy, optimism, and loyal friendship.",
+
+    "b11_title": "Yellow Freesia",
+    "b11_text": "A symbol of trust and sincerity.",
+
+    "b12_title": "Yellow Gerberas",
+    "b12_text": "A symbol of joy and positive energy.",
+
+    "b13_title": "Yellow Roses",
+    "b13_text": "A classic symbol of friendship and joy.",
+
+    "b14_title": "Yellow Tulips",
+    "b14_text": "A symbol of happiness and positive thoughts.",
+
+    "b15_title": "Hydrangea",
+    "b15_text": "A symbol of gratitude and heartfelt emotion.",
+
+    "b16_title": "Carnations",
+    "b16_text": "A symbol of admiration and gratitude.",
+
+    "b17_title": "Lily",
+    "b17_text": "A symbol of purity, dignity, and respect.",
+
+    "b18_title": "Alstroemeria",
+    "b18_text": "A symbol of devotion, friendship, and support.",
+
+    "b19_title": "Orchid",
+    "b19_text": "A symbol of elegance, beauty, and admiration.",
+
+    "b20_title": "Roses",
+    "b20_text": "A symbol of love and deep emotion.",
+
+    "b21_title": "White Freesia",
+    "b21_text": "A symbol of innocence and sincerity.",
+
+    "b22_title": "Chrysanthemums",
+    "b22_text": "A symbol of loyalty and honesty.",
+
+    "b23_title": "Narcissus",
+    "b23_text": "A symbol of new beginnings and hope.",
+
+    "b24_title": "White Gerberas",
+    "b24_text": "A symbol of purity and peace.",
+
+    "b25_title": "White Alstroemeria",
+    "b25_text": "A symbol of loyalty and friendship.",
+
+    "b26_title": "White Peonies",
+    "b26_text": "A symbol of sincerity and tenderness.",
+
+    "b27_title": "White Roses",
+    "b27_text": "A symbol of purity and respect.",
+
+    "b28_title": "White Tulips",
+    "b28_text": "A symbol of forgiveness and peace.",
+
+    "b29_title": "Cream Freesia",
+    "b29_text": "A symbol of elegance and trust.",
+
+    "b30_title": "Daisies",
+    "b30_text": "A symbol of innocence and joy.",
+
+    "b31_title": "Gypsophila",
+    "b31_text": "A symbol of gentle love.",
+
+    "b32_title": "Camellia",
+    "b32_text": "A symbol of admiration and beauty.",
+
+    "b33_title": "Lavender",
+    "b33_text": "A symbol of calmness and emotional balance.",
+
+    "b34_title": "Alstroemeria",
+    "b34_text": "A symbol of friendship and support.",
+
+    "b35_title": "Pink Roses",
+    "b35_text": "A symbol of gratitude and admiration.",
+
+    "b36_title": "Anemone",
+    "b36_text": "A symbol of anticipation and protection.",
+
+    "b37_title": "Lavender",
+    "b37_text": "A symbol of calm feelings and mystery.",
+
+    "b38_title": "Mimosa",
+    "b38_text": "A symbol of tenderness and warmth.",
+
+    "b39_title": "Ranunculus",
+    "b39_text": "A symbol of charm and beauty.",
+
+    "b40_title": "Orchid",
+    "b40_text": "A symbol of rare beauty and elegance.",
+
+    "b41_title": "Purple Tulips",
+    "b41_text": "A symbol of respect and admiration.",
+
+    "b42_title": "White Carnation",
+    "b42_text": "A symbol of purity and loyalty.",
+
+    "love_text": "Love is expressed through many flowers — passionate roses, delicate peonies, and blooms that speak without words.",
+    "friendship_text": "Friendship is bright and joyful — flowers of friendship celebrate loyalty and shared memories.",
+    "gratitude_text": "Gratitude blooms in soft and elegant flowers.",
+    "apology_text": "Apology flowers help say what words sometimes cannot.",
+    "sympathy_text": "Sympathy flowers offer comfort and peace.",
+    "secret_love_text": "Secret love is soft and quiet — flowers whisper hidden feelings.",
+    "collection_footer": "A bouquet cannot speak… yet every bloom tells your heart’s story.",
+    "q1": "What do you want to say?",
+    "q1_a1": "I love you",
+    "q1_a2": "Thank you",
+    "q1_a3": "You inspire me",
+    "q1_a4": "I value our friendship",
+
+    "q2": "What is the mood?",
+    "q2_a1": "Romantic",
+    "q2_a2": "Joyful",
+    "q2_a3": "Calm",
+    "q2_a4": "Warm",
+
+    "q3": "Who is this for?",
+    "q3_a1": "Partner",
+    "q3_a2": "Someone important",
+    "q3_a3": "Friend",
+    "q3_a4": "Someone who needs support",
+
+    "q4": "What feeling is strongest?",
+    "q4_a1": "Excitement",
+    "q4_a2": "Love",
+    "q4_a3": "Respect",
+    "q4_a4": "Care",
+
+    "q5": "What do you want them to feel?",
+    "q5_a1": "Loved",
+    "q5_a2": "Happy",
+    "q5_a3": "Appreciated",
+    "q5_a4": "Admired",
+
+    "q6": "What energy should the bouquet have?",
+    "q6_a1": "Soft & calming",
+    "q6_a2": "Deep & romantic",
+    "q6_a3": "Light & friendly",
+    "q6_a4": "Bright & festive",
+
+    "q7": "What is your intention?",
+    "q7_a1": "Express love",
+    "q7_a2": "Say thank you",
+    "q7_a3": "Celebrate",
+    "q7_a4": "Support and comfort",
+
+    "choose_answer": "Choose an answer",
+    "result_title": "Your perfect bouquet",
+
+    "back_home": "Back to Home",
+
+    "bq_love": "Romantic Roses",
+    "bq_friendship": "Sunny Friendship",
+    "bq_gratitude": "Grateful Bloom",
+    "bq_admiration": "Elegant Iris",
+    "bq_comfort": "Soft Comfort",
+    "bq_celebration": "Bright Celebration"
+}
