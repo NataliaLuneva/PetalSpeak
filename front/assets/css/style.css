@@ -10,19 +10,36 @@
 
 *{ box-sizing:border-box; }
 
-html{
-  scroll-behavior:smooth;
-}
+html{ scroll-behavior:smooth; }
 
 body{
   margin:0;
-  font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  font-family: "Cormorant Infant", serif;
   color:var(--text);
   background:var(--bg);
 }
 
-/* HEADER */
+/* Основной текст */
+body, p, span, li, label, input, textarea, .hint, .collection-footer {
+    font-family: "Cormorant Infant", serif;
+}
 
+/* Все заголовки и акценты */
+h1, h2, h3, h4, h5, h6,
+.panel h2, .panel h3, .panel h4,
+.accordion-btn,
+#test-title,
+.collection-sub,
+.collection-text h4,
+.tagline {
+    font-family: "Cormorant SC", serif;
+    font-weight: 900;
+}
+
+/* Класс center теперь только для выравнивания */
+.center { text-align:center; }
+
+/* HEADER */
 .topbar{
   position:sticky;
   top:0;
@@ -37,7 +54,7 @@ body{
 
 .brand{
   letter-spacing:.2em;
-  font-size:12px;
+  font-size:18px;
   opacity:.85;
 }
 
@@ -50,7 +67,7 @@ body{
   margin-left:16px;
   text-decoration:none;
   color:var(--text);
-  font-size:12px;
+  font-size:18px;
   opacity:.8;
 }
 
@@ -59,7 +76,6 @@ body{
 }
 
 /* LANGUAGE SWITCH */
-
 .lang-switch{
   display:flex;
   gap:6px;
@@ -73,7 +89,7 @@ body{
   border:none;
   background:transparent;
   padding:4px 10px;
-  font-size:12px;
+  font-size:15px;
   cursor:pointer;
   border-radius:14px;
   color:var(--text);
@@ -90,7 +106,6 @@ body{
 }
 
 /* HERO */
-
 .hero{
   position:relative;
   min-height:520px;
@@ -128,7 +143,7 @@ body{
 }
 
 .tagline{
-  font-size:12px;
+  font-size:18px;
   letter-spacing:.08em;
   text-transform:uppercase;
   color:var(--muted);
@@ -142,7 +157,7 @@ body{
   background:var(--btn);
   color:#1d1d1d;
   text-decoration:none;
-  font-size:13px;
+  font-size:20px;
   box-shadow: 0 8px 24px rgba(0,0,0,.08);
   transition:0.3s;
 }
@@ -154,13 +169,12 @@ body{
 
 .hint{
   margin-top:12px;
-  font-size:12px;
+  font-size:20px;
   color:var(--muted);
   line-height:1.4;
 }
 
 /* SECTIONS */
-
 .section{
   padding:36px 16px;
   display:flex;
@@ -186,8 +200,6 @@ body{
 .panel h3,
 .panel h4{
   margin:0 0 10px;
-  font-family: Georgia, serif;
-  font-weight:700;
 }
 
 .panel p{
@@ -195,13 +207,7 @@ body{
   line-height:1.55;
 }
 
-.center{
-  font-family: Georgia, serif;
-  text-align:center;
-}
-
 /* INTRO */
-
 .intro-panel{
   text-align:center;
 }
@@ -212,7 +218,6 @@ body{
 }
 
 /* HOW */
-
 .how ul{
   margin:10px 0 16px 22px;
 }
@@ -224,11 +229,9 @@ body{
 }
 
 /* COLLECTION */
-
 .collection-sub{
   text-align:center;
   margin-bottom:18px;
-  font-family: Georgia, serif;
 }
 
 .collection-item{
@@ -257,19 +260,25 @@ body{
   box-shadow: 0 18px 40px rgba(0,0,0,.20);
 }
 
+.collection-text h4 {
+    font-family: "Cormorant SC", serif;
+    font-weight: 900;
+    font-size: 18px;
+    margin: 0 0 8px;
+}
+
 .collection-footer{
   width:100%;
   margin-top:40px;
   padding-top:20px;
   border-top:1px solid rgba(0,0,0,.08);
   text-align:center;
-  font-family:Georgia, serif;
+  font-family:"Cormorant Infant", serif;
   font-weight:600;
   line-height:1.7;
 }
 
 /* ACCORDION */
-
 .accordion{
   margin-bottom:20px;
 }
@@ -280,20 +289,12 @@ body{
   background:var(--panel2);
   border:none;
   padding:14px 16px;
-  font-family:Georgia, serif;
-  font-size:16px;
-  font-weight:700;
+  font-size:20px;
   cursor:pointer;
   border-radius:6px;
-  transition:.25s;
   position:relative;
+  transition:.25s;
 }
-
-.accordion-btn:hover{
-  background:var(--panel);
-}
-
-/* стрелочка */
 
 .accordion-btn::after{
   content:"▼";
@@ -301,8 +302,6 @@ body{
   right:18px;
   transition:transform .3s ease;
 }
-
-/* вращение стрелки */
 
 .accordion-btn.active::after{
   transform:rotate(180deg);
@@ -319,7 +318,6 @@ body{
 }
 
 /* REVEAL */
-
 .reveal{
   opacity:0;
   transform:translateY(18px);
@@ -332,67 +330,26 @@ body{
 }
 
 /* RESPONSIVE */
-
 @media (max-width:900px){
-
-  .logo-img{
-    width:300px;
-  }
-
-  .collection-item{
-    grid-template-columns:200px 1fr;
-  }
-
-  .collection-img{
-    width:200px;
-    height:200px;
-  }
-
+  .logo-img{ width:300px; }
+  .collection-item{ grid-template-columns:200px 1fr; }
+  .collection-img{ width:200px; height:200px; }
 }
 
 @media (max-width:600px){
-
-  .hero{
-    min-height:420px;
-  }
-
-  .logo-img{
-    width:230px;
-  }
-
-  .collection-item{
-    grid-template-columns:1fr;
-  }
-
-  .collection-img{
-    width:100%;
-    height:auto;
-    max-height:320px;
-  }
-
+  .hero{ min-height:420px; }
+  .logo-img{ width:230px; }
+  .collection-item{ grid-template-columns:1fr; }
+  .collection-img{ width:100%; height:auto; max-height:320px; }
 }
 
 /* ABOUT TEXT CENTER */
+#about .panel{ text-align:center; }
+#about .panel p{ max-width:640px; margin:12px auto; }
 
-#about .panel{
-  text-align:center;
-}
+.back-btn { margin-left: 20px; text-decoration: none; font-size: 14px; color: black; cursor: pointer; }
 
-#about .panel p{
-  max-width:640px;
-  margin:12px auto;
-}
-
-.back-btn {
-  margin-left: 20px;
-  text-decoration: none;
-  font-size: 14px;
-  color: black;
-  cursor: pointer;
-}
-
-/* ===== TEST UI (в стиле сайта) ===== */
-
+/* TEST UI */
 .test-wrapper {
   min-height: 80vh;
   display: flex;
@@ -410,21 +367,8 @@ body{
   text-align: center;
 }
 
-/* заголовок */
-
-#test-title {
-  font-family: Georgia, serif;
-  margin-bottom: 10px;
-}
-
-/* вопрос */
-
-#question {
-  font-size: 18px;
-  margin: 20px 0 24px;
-}
-
-/* ответы */
+#test-title { font-family: "Cormorant SC", serif; font-weight:900; margin-bottom: 10px; }
+#question { font-size: 18px; margin: 20px 0 24px; }
 
 #answers button {
   width: 100%;
@@ -438,92 +382,20 @@ body{
   font-size: 14px;
 }
 
-#answers button:hover {
-  background: #e3bfc1;
-  transform: translateY(-1px);
-}
+#answers button:hover { background: #e3bfc1; transform: translateY(-1px); }
+#answers button.active { background: var(--btn); color: #1d1d1d; box-shadow: 0 6px 16px rgba(0,0,0,.1); }
 
-/* выбранный ответ */
+.nav-buttons { display: flex; justify-content: space-between; margin-top: 28px; }
+#prev-btn { background: transparent; border: none; color: var(--muted); font-size: 13px; cursor: pointer; }
+#next-btn { background: var(--btn); border: none; padding: 10px 18px; border-radius: 6px; font-size: 13px; cursor: pointer; transition: .25s; }
+#next-btn:hover { background: var(--btnHover); transform: translateY(-1px); }
 
-#answers button.active {
-  background: var(--btn);
-  color: #1d1d1d;
-  box-shadow: 0 6px 16px rgba(0,0,0,.1);
-}
-
-/* кнопки навигации */
-
-.nav-buttons {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 28px;
-}
-
-/* назад */
-
-#prev-btn {
-  background: transparent;
-  border: none;
-  color: var(--muted);
-  font-size: 13px;
-  cursor: pointer;
-}
-
-/* вперед */
-
-#next-btn {
-  background: var(--btn);
-  border: none;
-  padding: 10px 18px;
-  border-radius: 6px;
-  font-size: 13px;
-  cursor: pointer;
-  transition: .25s;
-}
-
-#next-btn:hover {
-  background: var(--btnHover);
-  transform: translateY(-1px);
-}
-
-.order-wrapper{
-    display:flex;
-    justify-content:center;
-    padding:60px 20px;
-}
-
-.order-card{
-    max-width:500px;
-    width:100%;
-    background:#fff;
-    padding:30px;
-    border-radius:20px;
-    box-shadow:0 10px 30px rgba(0,0,0,0.1);
-}
-
-.order-preview{
-    text-align:center;
-    margin-bottom:20px;
-}
-
-.order-preview img{
-    width:200px;
-    border-radius:15px;
-}
-
+/* ORDER FORM */
+.order-wrapper{ display:flex; justify-content:center; padding:60px 20px; }
+.order-card{ max-width:500px; width:100%; background:#fff; padding:30px; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,0.1); }
+.order-preview{ text-align:center; margin-bottom:20px; }
+.order-preview img{ width:200px; border-radius:15px; }
 .order-form input,
-.order-form textarea{
-    width:100%;
-    padding:12px;
-    margin-bottom:12px;
-    border-radius:10px;
-    border:1px solid #ddd;
-}
-
-.order-form textarea{
-    min-height:80px;
-}
-
-.order-form button{
-    width:100%;
-}
+.order-form textarea{ width:100%; padding:12px; margin-bottom:12px; border-radius:10px; border:1px solid #ddd; }
+.order-form textarea{ min-height:80px; }
+.order-form button{ width:100%; }
