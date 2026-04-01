@@ -1,5 +1,5 @@
 :root{
-  --bg: #f6e9ea;
+  --bg: #f5f5f5;
   --panel: #e9c7c9;
   --panel2:#edd2d3;
   --text:#2b2b2b;
@@ -287,6 +287,7 @@ h3 {
   font-weight:600;
   line-height:1.7;
 }
+
 
 /* ACCORDION */
 .accordion{
