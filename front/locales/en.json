@@ -25,6 +25,7 @@
     "sympathy": "Sympathy",
     "secret_love": "Secret Love",
     "asortment_title": "Asortment",
+    "asortment_description": "Each bouquet is more than just flowers. It is a feeling that has finally taken shape.",
 
     "b1_title": "Red Roses",
     "b1_text": "The purest expression of deep, passionate love. Intense. Timeless. Unmistakable. They do not ask for attention — they mean everything.",
@@ -151,6 +152,36 @@
 
     "b42_title": "White Carnation",
     "b42_text": "White carnation speaks of sincere and modest love. It symbolizes purity and secret affection.",
+
+    "b43_title": "Rose Bouquet",
+    "b43_text": "Soft, full blooms that feel almost like a quiet confession. A bouquet that speaks gently, yet stays with you long after.",
+
+    "b44_title": "Soft Gratitude Bouquet",
+    "b44_text": "A delicate harmony of gratitude, warmth, and quiet affection. A bouquet that feels like appreciation, gently unfolding in every petal.",
+
+    "b45_title": "Blush Harmony Bouquet",
+    "b45_text": "Soft pink and white roses woven into a quiet, tender balance. A bouquet that feels like a gentle emotion, held close and unspoken.",
+
+    "b46_title": "Blush Peony Roses Bouquet",
+    "b46_text": "White and pink blooms in soft, effortless harmony. A bouquet that whispers tenderness and lingers like a quiet feeling.",
+
+    "b47_title": "Pure Tulips Bouquet",
+    "b47_text": "White tulips in their quiet, understated elegance. A bouquet that speaks of sincerity, calm, and unspoken feelings.",
+
+    "b48_title": "Velvet Bloom Bouquet",
+    "b48_text": "A soft composition with depth and quiet elegance. A bouquet that feels rich, intimate, and gently captivating",
+
+    "b49_title": "Garden Whisper Bouquet",
+    "b49_text": "Light and airy, with a natural, effortless flow. A bouquet that feels like a soft moment unfolding.",
+
+    "b50_title": "Soft Classic Bouquet",
+    "b50_text": "Balanced and refined in every detail. A bouquet that speaks of calm, grace, and quiet confidence.",
+
+    "b51_title": "Cloud Bloom Bouquet",
+    "b51_text": "Weightless and delicate, almost like air. A bouquet that feels soft, fleeting, and quietly magical.",
+
+    "b52_title": "Blush Opulence Bouquet",
+    "b52_text": "Full and expressive, yet tender at heart. A bouquet that feels deep, emotional, and impossible to ignore.",
 
     "love_text": "Love is expressed through many flowers — passionate roses, delicate peonies, and blooms that speak without words.",
     "friendship_text": "Friendship is bright and joyful — flowers of friendship celebrate loyalty and shared memories.",

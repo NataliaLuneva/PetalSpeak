@@ -25,6 +25,7 @@
     "sympathy": "Kaastunne",
     "secret_love": "Salajane armastus",
     "asortment_title": "Asortiment",
+    "asortment_description": "Iga kimp on enamat kui lihtsalt lilled. See on tunne, mis on lõpuks kuju võtnud.",
 
     "b1_title": "Punased roosid",
     "b1_text": "Sügava ja kirgliku armastuse puhtaim väljendus. Intensiivne. Ajatu. Eksimatu. Nad ei küsi tähelepanu — nad tähendavad kõike.",
@@ -151,6 +152,36 @@
 
     "b42_title": "Valge nelk",
     "b42_text": "Valge nelk räägib siirast ja tagasihoidlikust armastusest. See on puhtuse ja salapärase tunde sümbol.",
+
+    "b43_title": "Vaikse Tunnistuse Roos",
+    "b43_text": "Pehmed, täidlased õied, nagu vaikne tunnistus. Kimp, mis räägib õrnalt, kuid jääb sinuga kauaks.",
+
+    "b44_title": "Õrn Tänutunne",
+    "b44_text": "Õrnate tunnetega täidetud tänu, soojus ja vaikselt hooliv. Kimp, mis tundub nagu tänulikkus, õrnalt iga kroonlehe kaudu lahtirulludes.",
+
+    "b45_title": "Roosiline Harmoonia",
+    "b45_text": "Pehmed roosad ja valged toonid, kootud vaiksesse ja hellasse tasakaalu. Kimp, mis on nagu vaikne tunne, hoitud ja rääkimata.",
+
+    "b46_title": "Pojengi Sosin",
+    "b46_text": "Valged ja roosad õied pehmes ja loomulikus harmoonias. Kimp, mis sosistab hellust ja jääb nagu vaikne tunne.",
+
+    "b47_title": "Puhas Elegants",
+    "b47_text": "Valged tulbid oma vaikses ja tagasihoidlikus elegantsis. Kimp, mis räägib siirusest, rahust ja rääkimata tunnetest.",
+
+    "b48_title": "Sametne Hõõg",
+    "b48_text": "Pehme koostis sügavuse ja vaikselt elegantse tundega. Kimp, mis tundub rikkalik, intiimne ja õrnalt lummav.",
+
+    "b49_title": "Aia Sosin",
+    "b49_text": "Õhuke ja kerge, loomuliku ja pingevaba vooluga. Kimp, mis tundub nagu pehme hetk, mis avaneb sinu ees.",
+
+    "b50_title": "Pehme Klassika",
+    "b50_text": "Tasakaalustatud ja peen igas detailis. Kimp, mis räägib rahust, graatsiast ja vaiksest enesekindlusest",
+
+    "b51_title": "Pilvepehme Õrnus",
+    "b51_text": "Kerge ja delikaatne, peaaegu nagu õhk. Kimp, mis tundub pehme, mööduv ja vaikselt võluv.",
+
+    "b52_title": "Roosa Ülevus",
+    "b52_text": "Täidlane ja väljendusrikas, kuid südames hell. Kimp, mis tundub sügav, emotsionaalne ja võimatu ignoreerida. ",
 
     "love_text": "Armastus väljendub paljudes lilledes — kirglikes roosides, õrnades pojengides ja õites, mis räägivad ilma sõnadeta.",
     "friendship_text": "Sõprus on helge ja rõõmus — lilled tähistavad lojaalsust ja ühiseid mälestusi.",
