@@ -183,6 +183,8 @@
     "b52_title": "Roosa Ülevus",
     "b52_text": "Täidlane ja väljendusrikas, kuid südames hell. Kimp, mis tundub sügav, emotsionaalne ja võimatu ignoreerida. ",
 
+    "buy_btn": "Osta",
+
     "love_text": "Armastus väljendub paljudes lilledes — kirglikes roosides, õrnades pojengides ja õites, mis räägivad ilma sõnadeta.",
     "friendship_text": "Sõprus on helge ja rõõmus — lilled tähistavad lojaalsust ja ühiseid mälestusi.",
     "gratitude_text": "Tänulikkus õitseb õrnades ja elegantsetes lilledes.",
@@ -289,5 +291,33 @@
 
     "refine_btn": "Leia täpsem vaste",
 
-    "order_btn": "Telli kimp"
+    "order_btn": "Telli kimp",
+
+    "buy_btn": "Osta",
+    "order_btn": "Telli see kimp",
+    "order_title": "Tellimuse vormistamine",
+    "order_subtitle": "Täida vorm ja me valmistame sinu kimbu hoolikalt.",
+    "name_label": "Sinu nimi",
+    "email_label": "E-post",
+    "message_label": "Sõnum",
+    "name_placeholder": "Sinu nimi",
+    "email_placeholder": "E-post",
+    "message_placeholder": "Sõnum saajale",
+    "place_order_btn": "Esita tellimus",
+    "no_bouquet_selected": "Kimp ei ole valitud",
+    "fill_required_fields": "Palun täida kohustuslikud väljad",
+    "order_error": "Tellimuse saatmisel tekkis viga",
+
+    "price_label": "Hind",
+    "payment_title": "Makseandmed",
+    "card_name_label": "Kaardiomaniku nimi",
+    "card_number_label": "Kaardi number",
+    "expiry_label": "Kehtivusaeg",
+    "cvv_label": "CVV",
+    "pay_now_btn": "Maksa",
+    "card_name_placeholder": "Nimi kaardil",
+    "card_name_error": "Sisesta kaardiomaniku nimi",
+    "card_number_error": "Kaardi number peab sisaldama 16 numbrit",
+    "expiry_error": "Kehtivusaeg peab olema formaadis MM/YY",
+    "cvv_error": "CVV peab sisaldama 3 numbrit"
 }

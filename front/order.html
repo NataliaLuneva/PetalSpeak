@@ -2,89 +2,231 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order | PetalSpeak</title>
     <link rel="stylesheet" href="/assets/css/style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-
 <body>
+    <header class="topbar">
+        <div class="brand">PETALSPEAK</div>
 
-<header class="topbar">
-    <div class="brand">PETALSPEAK</div>
-    <a href="/" class="back-btn">← Back</a>
-</header>
+        <nav class="nav">
+            <a href="/" class="back-btn" data-i18n="back_home">Back</a>
 
-<section class="order-wrapper">
-    <div class="order-card">
+            <div class="lang-switch">
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="et">ET</button>
+                <button class="lang-btn" data-lang="ru">RU</button>
+            </div>
+        </nav>
+    </header>
 
-        <h2>Order Your Bouquet</h2>
+    <main>
+        <section class="section">
+            <div class="panel order-panel">
+                <h2 class="center" data-i18n="order_title">Order Your Bouquet</h2>
+                <p class="order-subtitle center" data-i18n="order_subtitle">
+                    Fill in the form and we will prepare your bouquet with care.
+                </p>
 
-        <div class="order-preview">
-            <img id="preview">
-            <h3 id="title"></h3>
-        </div>
+                <div class="order-layout">
+                    <div class="order-preview-card">
+                        <img id="preview" class="order-preview-img" src="" alt="Bouquet preview">
+                        <h3 id="title" class="order-preview-title"></h3>
+                        <p id="price" class="order-price"></p>
+                    </div>
 
-        <div class="order-form">
-            <input id="name" placeholder="Your name">
-            <input id="email" placeholder="Email">
-            <textarea id="message" placeholder="Message for recipient"></textarea>
+                    <div class="order-form">
+                        <label class="order-label" for="name" data-i18n="name_label">Your name</label>
+                        <input id="name" class="order-input" type="text" placeholder="Your name">
 
-            <button id="orderBtn" class="btn">
-                Place Order
-            </button>
+                        <label class="order-label" for="email" data-i18n="email_label">Email</label>
+                        <input id="email" class="order-input" type="email" placeholder="Email">
 
-            <p id="result"></p>
-        </div>
+                        <label class="order-label" for="message" data-i18n="message_label">Message</label>
+                        <textarea id="message" class="order-textarea" placeholder="Message for recipient"></textarea>
 
-    </div>
-</section>
+                        <h3 class="payment-title" data-i18n="payment_title">Payment details</h3>
 
-<script>
-const bouquet = JSON.parse(localStorage.getItem("selectedBouquet"));
+                        <label class="order-label" for="cardName" data-i18n="card_name_label">Cardholder name</label>
+                        <input id="cardName" class="order-input" type="text" placeholder="Name on card">
 
-if(bouquet){
-    document.getElementById("preview").src = bouquet.img;
-    document.getElementById("title").textContent = bouquet.title;
-}
+                        <label class="order-label" for="cardNumber" data-i18n="card_number_label">Card number</label>
+                        <input id="cardNumber" class="order-input" type="text" maxlength="19" placeholder="1234 5678 9012 3456">
 
-document.getElementById("orderBtn").onclick = async ()=>{
-    const data = {
-        customerName: document.getElementById("name").value,
-        email: document.getElementById("email").value,
-        bouquetType: bouquet?.type,
-        bouquetTitle: bouquet?.title,
-        message: document.getElementById("message").value
-    };
+                        <div class="card-row">
+                            <div>
+                                <label class="order-label" for="expiry" data-i18n="expiry_label">Expiry date</label>
+                                <input id="expiry" class="order-input" type="text" maxlength="5" placeholder="MM/YY">
+                            </div>
 
-    if(!data.customerName || !data.email){
-        alert("Fill all fields");
-        return;
-    }
+                            <div>
+                                <label class="order-label" for="cvv" data-i18n="cvv_label">CVV</label>
+                                <input id="cvv" class="order-input" type="text" maxlength="3" placeholder="123">
+                            </div>
+                        </div>
 
-    try{
-        const res = await fetch("/api/orders", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data)
+                        <button id="orderBtn" class="btn order-submit" data-i18n="pay_now_btn">
+                            Pay now
+                        </button>
+
+                        <p id="result" class="order-result"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        let translations = {};
+
+        async function loadLanguage(lang) {
+            const response = await fetch(`/locales/${lang}.json`);
+            translations = await response.json();
+            applyTranslations();
+            setActiveButton(lang);
+            loadOrderPreview();
+        }
+
+        function applyTranslations() {
+            document.querySelectorAll("[data-i18n]").forEach(el => {
+                const key = el.getAttribute("data-i18n");
+                if (translations[key]) el.innerHTML = translations[key];
+            });
+
+            document.getElementById("name").placeholder = translations["name_placeholder"] || "Your name";
+            document.getElementById("email").placeholder = translations["email_placeholder"] || "Email";
+            document.getElementById("message").placeholder = translations["message_placeholder"] || "Message for recipient";
+            document.getElementById("cardName").placeholder = translations["card_name_placeholder"] || "Name on card";
+            document.getElementById("cardNumber").placeholder = "1234 5678 9012 3456";
+            document.getElementById("expiry").placeholder = "MM/YY";
+            document.getElementById("cvv").placeholder = "123";
+        }
+
+        function setActiveButton(lang) {
+            document.querySelectorAll(".lang-btn").forEach(btn => btn.classList.remove("active"));
+            const activeBtn = document.querySelector(`[data-lang="${lang}"]`);
+            if (activeBtn) activeBtn.classList.add("active");
+        }
+
+        function loadOrderPreview() {
+            const bouquet = JSON.parse(localStorage.getItem("selectedBouquet"));
+            if (!bouquet) return;
+
+            document.getElementById("preview").src = bouquet.img;
+            document.getElementById("title").textContent = translations[bouquet.title] || bouquet.title;
+            document.getElementById("price").textContent =
+                `${translations["price_label"] || "Price"}: €${bouquet.price || 0}`;
+        }
+
+        function validateCard() {
+            const cardName = document.getElementById("cardName").value.trim();
+            const cardNumber = document.getElementById("cardNumber").value.replace(/\s/g, "");
+            const expiry = document.getElementById("expiry").value.trim();
+            const cvv = document.getElementById("cvv").value.trim();
+
+            if (!cardName) return "card_name_error";
+            if (!/^\d{16}$/.test(cardNumber)) return "card_number_error";
+            if (!/^\d{2}\/\d{2}$/.test(expiry)) return "expiry_error";
+            if (!/^\d{3}$/.test(cvv)) return "cvv_error";
+
+            return null;
+        }
+
+        async function sendOrder() {
+            const bouquet = JSON.parse(localStorage.getItem("selectedBouquet"));
+            const resultEl = document.getElementById("result");
+
+            if (!bouquet) {
+                resultEl.textContent = translations["no_bouquet_selected"] || "No bouquet selected";
+                return;
+            }
+
+            const customerName = document.getElementById("name").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const message = document.getElementById("message").value.trim();
+
+            if (!customerName || !email) {
+                resultEl.textContent = translations["fill_required_fields"] || "Please fill in all required fields";
+                return;
+            }
+
+            const cardErrorKey = validateCard();
+            if (cardErrorKey) {
+                resultEl.textContent = translations[cardErrorKey] || "Invalid card data";
+                return;
+            }
+
+            const data = {
+                customerName,
+                email,
+                bouquetType: bouquet.type,
+                bouquetTitle: translations[bouquet.title] || bouquet.title,
+                bouquetImage: bouquet.img,
+                price: bouquet.price,
+                message,
+                paymentStatus: "paid",
+                paymentMethod: "demo_card"
+            };
+
+            try {
+                const res = await fetch("/api/orders", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await res.json();
+                resultEl.textContent = result.message || result.error || "Payment successful";
+
+                if (res.ok) {
+                    localStorage.removeItem("selectedBouquet");
+                    document.getElementById("name").value = "";
+                    document.getElementById("email").value = "";
+                    document.getElementById("message").value = "";
+                    document.getElementById("cardName").value = "";
+                    document.getElementById("cardNumber").value = "";
+                    document.getElementById("expiry").value = "";
+                    document.getElementById("cvv").value = "";
+                }
+            } catch (e) {
+                console.error(e);
+                resultEl.textContent = translations["order_error"] || "Error sending order";
+            }
+        }
+
+        document.getElementById("cardNumber").addEventListener("input", e => {
+            let value = e.target.value.replace(/\D/g, "").slice(0, 16);
+            value = value.replace(/(.{4})/g, "$1 ").trim();
+            e.target.value = value;
         });
 
-        const result = await res.json();
+        document.getElementById("expiry").addEventListener("input", e => {
+            let value = e.target.value.replace(/\D/g, "").slice(0, 4);
+            if (value.length >= 3) value = value.slice(0, 2) + "/" + value.slice(2);
+            e.target.value = value;
+        });
 
-        document.getElementById("result").textContent =
-            result.message || result.error;
+        document.getElementById("cvv").addEventListener("input", e => {
+            e.target.value = e.target.value.replace(/\D/g, "").slice(0, 3);
+        });
 
-        localStorage.removeItem("selectedBouquet");
+        document.addEventListener("DOMContentLoaded", async () => {
+            const savedLang = localStorage.getItem("lang") || "en";
+            await loadLanguage(savedLang);
 
-    }catch(e){
-        console.error(e);
-        document.getElementById("result").textContent = "Error sending order";
-    }
-};
-</script>
+            document.getElementById("orderBtn").addEventListener("click", sendOrder);
 
+            document.querySelectorAll(".lang-btn").forEach(btn => {
+                btn.addEventListener("click", async () => {
+                    const lang = btn.dataset.lang;
+                    localStorage.setItem("lang", lang);
+                    await loadLanguage(lang);
+                });
+            });
+        });
+    </script>
 </body>
 </html>
