@@ -348,5 +348,60 @@
     "expiry_error": "Kehtivusaeg peab olema formaadis MM/YY",
     "cvv_error": "CVV peab sisaldama 3 numbrit",
     "processing_btn": "Töötlemine...",
-    "email_invalid_error": "Palun sisesta korrektne e-post"
+    "email_invalid_error": "Palun sisesta korrektne e-post",
+    "login_title": "Logi sisse",
+    "register_title": "Registreerimine",
+
+    "name_placeholder": "Sinu nimi",
+    "password_placeholder": "Parool",
+    "confirm_password_placeholder": "Korda parooli",
+
+    "login_btn": "Logi sisse",
+    "register_btn": "Registreeru",
+
+    "no_account": "Pole kontot?",
+    "register_link": "Registreeru",
+    "have_account": "Kas konto on juba olemas?",
+    "login_link": "Logi sisse",
+
+    "fill_required": "Täida kõik kohustuslikud väljad",
+    "password_short": "Parool peab olema vähemalt 6 tähemärki",
+    "password_mismatch": "Paroolid ei ühti",
+
+    "register_loading": "Registreerimine...",
+    "login_loading": "Sisselogimine...",
+
+    "register_success": "Registreerimine õnnestus",
+    "login_success": "Sisselogimine õnnestus",
+    "login_error": "Sisesta e-post ja parool",
+
+    "request_error": "Päringu viga",
+
+    "profile_title": "Minu profiil",
+    "upload_photo": "Laadi foto üles",
+    "logout_btn": "Logi välja",
+    "profile_settings": "Profiili seaded",
+    "save_profile_btn": "Salvesta profiil",
+    "change_password_title": "Muuda parooli",
+    "current_password_placeholder": "Praegune parool",
+    "new_password_placeholder": "Uus parool",
+    "update_password_btn": "Uuenda parooli",
+    "my_orders_title": "Minu tellimused",
+    "test_history_title": "Testide ajalugu",
+    "loading_orders": "Tellimuste laadimine...",
+    "loading_tests": "Testide laadimine...",
+    "profile_updated": "Profiil on uuendatud",
+    "password_updated": "Parool on uuendatud",
+    "avatar_updated": "Foto on uuendatud",
+    "profile_update_error": "Profiili uuendamise viga",
+    "password_update_error": "Parooli uuendamise viga",
+    "avatar_upload_error": "Foto üleslaadimise viga",
+    "orders_load_error": "Tellimuste laadimise viga",
+    "tests_load_error": "Testide laadimise viga",
+    "no_orders_yet": "Tellimusi veel pole.",
+    "no_test_history": "Testide ajalugu puudub.",
+    "bouquet_default": "Kimp",
+    "type_label": "Tüüp",
+    "date_label": "Kuupäev",
+    "bouquet_result": "Kimbu tulemus"
 }

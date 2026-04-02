@@ -8,31 +8,103 @@
 
     <link rel="stylesheet" href="/assets/css/style.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        .header-auth {
+            display: flex;
+            align-items: center;
+        }
+
+        .login-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            margin-left: 8px;
+            border-radius: 50%;
+            transition: 0.2s ease;
+            text-decoration: none;
+        }
+
+        .login-icon:hover {
+            background: rgba(0, 0, 0, 0.08);
+        }
+
+        .login-icon img {
+            width: 22px;
+            height: 22px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .header-profile-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: #4b3f3f;
+            margin-left: 8px;
+            max-width: 180px;
+        }
+
+        .header-profile-link:hover {
+            opacity: 0.85;
+        }
+
+        #headerAvatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #dfe6f1;
+            display: block;
+        }
+
+        #headerUserName {
+            font-size: 12px;
+            line-height: 1.1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 120px;
+        }
+    </style>
 </head>
 
 <body>
     <header class="topbar">
         <div class="brand">PETALSPEAK</div>
+
         <nav class="nav">
             <a href="#about" data-i18n="about">About Us</a>
             <a href="/test.html" data-i18n="test">Feelings Test</a>
+
             <div class="lang-switch">
                 <button class="lang-btn active" data-lang="en">EN</button>
                 <button class="lang-btn" data-lang="et">ET</button>
                 <button class="lang-btn" data-lang="ru">RU</button>
-                <a href="/login.html" class="login-icon" title="Вход">
-                    <img src="/assets/img/user.png" alt="Вход">
-                </a>
+
+                <div id="guestBlock" class="header-auth">
+                    <a href="/login.html" class="login-icon" title="Login">
+                        <img src="/assets/img/user.png" alt="Login">
+                    </a>
+                </div>
+
+                <div id="authBlock" class="header-auth" style="display: none;">
+                    <a href="/profile.html" class="header-profile-link" title="Profile">
+                        <img id="headerAvatar" src="/assets/img/user.png" alt="Avatar">
+                        <span id="headerUserName">Profile</span>
+                    </a>
+                </div>
             </div>
-
         </nav>
-
     </header>
 
     <main>
-    <!-- HERO -->
+        <!-- HERO -->
         <section class="hero reveal">
             <div class="hero-overlay"></div>
             <div class="hero-card">
@@ -51,7 +123,7 @@
             </div>
         </section>
 
-    <!-- ABOUT -->
+        <!-- ABOUT -->
         <section id="about" class="section reveal">
             <div class="panel">
                 <h2 class="center" data-i18n="about_title">
@@ -62,10 +134,9 @@
                 <p data-i18n="about_text3"></p>
                 <p data-i18n="about_text4"></p>
             </div>
-
         </section>
 
-    <!-- INTRO -->
+        <!-- INTRO -->
         <section class="section reveal">
             <div class="panel intro-panel">
                 <h2 data-i18n="section_title">
@@ -85,7 +156,7 @@
             </div>
         </section>
 
-    <!-- HOW IT WORKS -->
+        <!-- HOW IT WORKS -->
         <section class="section reveal">
             <h2 class="center" data-i18n="test_title">
                 Feelings Test
@@ -101,14 +172,14 @@
             </div>
         </section>
 
-    <!-- COLLECTION -->
+        <!-- COLLECTION -->
         <section class="section reveal">
             <h2 class="center" data-i18n="collection_title">
                 Bouquet Collection
             </h2>
             <div class="panel collection">
 
-            <!-- 1 LOVE -->
+                <!-- 1 LOVE -->
                 <div class="accordion">
                     <button class="accordion-btn" data-i18n="love_romance">
                         Love & Romance
@@ -173,7 +244,7 @@
                     </div>
                 </div>
 
-            <!-- 2 FRIENDSHIP -->
+                <!-- 2 FRIENDSHIP -->
                 <div class="accordion">
                     <button class="accordion-btn" data-i18n="friendship">
                         Friendship
@@ -238,8 +309,7 @@
                     </div>
                 </div>
 
-            <!-- 3 GRATITUDE -->
-
+                <!-- 3 GRATITUDE -->
                 <div class="accordion">
                     <button class="accordion-btn" data-i18n="gratitude">
                         Gratitude
@@ -304,7 +374,7 @@
                     </div>
                 </div>
 
-            <!-- 4 APOLOGY -->
+                <!-- 4 APOLOGY -->
                 <div class="accordion">
                     <button class="accordion-btn" data-i18n="apology">
                         Apology
@@ -369,7 +439,7 @@
                     </div>
                 </div>
 
-            <!-- 5 SYMPATHY -->
+                <!-- 5 SYMPATHY -->
                 <div class="accordion">
                     <button class="accordion-btn" data-i18n="sympathy">
                         Sympathy
@@ -434,7 +504,7 @@
                     </div>
                 </div>
 
-            <!-- 6 SECRET LOVE -->
+                <!-- 6 SECRET LOVE -->
                 <div class="accordion">
                     <button class="accordion-btn" data-i18n="secret_love">
                         Secret Love
@@ -494,10 +564,11 @@
                                 <h4 data-i18n="b42_title"></h4>
                                 <p data-i18n="b42_text"></p>
                             </div>
-                        </article>  
+                        </article>
                         <p class="collection-footer" data-i18n="secret_love_text"></p>
                     </div>
                 </div>
+
                 <p class="collection-footer" data-i18n="collection_footer"></p>
             </div>
         </section>
@@ -602,6 +673,8 @@
             </div>
         </section>
     </main>
+
     <script src="/assets/js/main.js"></script>
+    <script src="/assets/js/header-auth.js"></script>
 </body>
 </html>

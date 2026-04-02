@@ -16,6 +16,8 @@ app.use(express.json());
 
 app.use(express.static(FRONT_DIR));
 app.use("/assets", express.static(path.join(FRONT_DIR, "assets")));
+app.use("/locales", express.static(path.join(FRONT_DIR, "locales")));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/tests", testRoutes);

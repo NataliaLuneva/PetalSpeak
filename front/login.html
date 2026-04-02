@@ -1,42 +1,63 @@
-<!DOCTYPE html>
-<html lang="ru">
+<!doctype html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Вход / Регистрация</title>
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PetalSpeak</title>
+
+    <link rel="stylesheet" href="/assets/css/style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #ececec;
+        .login-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            margin-left: 8px;
+            border-radius: 50%;
+            transition: 0.2s ease;
+            text-decoration: none;
+        }
+
+        .login-icon:hover {
+            background: rgba(0, 0, 0, 0.08);
+        }
+
+        .login-icon img {
+            width: 22px;
+            height: 22px;
+            object-fit: contain;
+            display: block;
         }
 
         .auth-page {
-            min-height: 100vh;
+            min-height: calc(100vh - 60px);
             display: flex;
-            justify-content: center;
             align-items: center;
-            padding: 30px 15px;
-            box-sizing: border-box;
+            justify-content: center;
+            padding: 40px 20px;
         }
 
         .auth-card {
             width: 100%;
             max-width: 620px;
-            background: #f5f5f5;
-            border-radius: 28px;
-            box-shadow: 0 14px 35px rgba(0, 0, 0, 0.08);
-            padding: 48px 46px 40px;
+            background: #f1e3e6;
+            border-radius: 26px;
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+            padding: 42px;
             box-sizing: border-box;
         }
 
         .auth-title {
             text-align: center;
-            font-size: 34px;
-            font-weight: 700;
-            color: #000;
-            margin: 20px 0 34px;
+            font-size: 42px;
+            margin: 0 0 30px;
+            color: #3f3333;
+            font-weight: 600;
         }
 
         .auth-form {
@@ -47,207 +68,201 @@
 
         .auth-input {
             width: 100%;
-            height: 54px;
-            border-radius: 14px;
-            border: 1.5px solid #d3d3d3;
-            background: #dfe7f4;
-            padding: 0 16px;
-            font-size: 18px;
-            color: #000;
             box-sizing: border-box;
+            padding: 18px 18px;
+            border-radius: 16px;
+            border: 1px solid #d3c1c5;
+            background: #dfe6f1;
+            font-size: 18px;
             outline: none;
-            transition: 0.2s ease;
-        }
-
-        .auth-input::placeholder {
-            color: #5f5f5f;
+            color: #3f3333;
+            font-family: Arial, sans-serif;
         }
 
         .auth-input:focus {
-            border-color: #111;
-            background: #edf2fb;
+            border-color: #a7c0ad;
+            background: #eef4f1;
         }
 
         .auth-btn {
-            width: 100%;
-            height: 54px;
+            margin-top: 6px;
             border: none;
-            border-radius: 14px;
-            background: #000;
-            color: #fff;
+            border-radius: 16px;
+            background: #a7c0ad;
+            color: #2f3a34;
+            padding: 16px;
             font-size: 18px;
-            font-weight: 500;
             cursor: pointer;
             transition: 0.2s ease;
-            margin-top: 4px;
         }
 
         .auth-btn:hover {
-            opacity: 0.92;
+            background: #97b4a0;
+        }
+
+        .auth-btn:active {
+            transform: scale(0.98);
         }
 
         .auth-btn:disabled {
-            opacity: 0.7;
+            background: #c7d9cd;
+            color: #5f6f67;
             cursor: not-allowed;
         }
 
         .auth-switch {
             text-align: center;
-            font-size: 18px;
-            color: #666;
-            margin-top: 10px;
+            margin-top: 12px;
+            font-size: 17px;
+            color: #6b5b5b;
         }
 
         .auth-switch button {
-            background: none;
             border: none;
-            color: #666;
-            font-size: 18px;
+            background: none;
+            color: #6b5b5b;
+            font-size: 17px;
             cursor: pointer;
             padding: 0;
+            font-family: inherit;
         }
 
         .auth-switch button:hover {
-            color: #000;
+            text-decoration: underline;
         }
 
         .auth-message {
             text-align: center;
-            font-size: 16px;
+            margin-top: 14px;
             min-height: 24px;
-            margin-top: 8px;
+            font-size: 16px;
+            font-family: Arial, sans-serif;
         }
 
         .hidden {
             display: none;
         }
 
-        .auth-back {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: #000;
-            text-decoration: none;
-            font-size: 16px;
-            margin-bottom: 8px;
-        }
-
-        .auth-back:hover {
-            opacity: 0.7;
-        }
-
         @media (max-width: 700px) {
             .auth-card {
-                padding: 30px 22px 28px;
-                border-radius: 22px;
+                padding: 28px 20px;
+                border-radius: 20px;
             }
 
             .auth-title {
-                font-size: 28px;
-                margin-top: 10px;
+                font-size: 32px;
             }
 
             .auth-input,
             .auth-btn {
-                height: 50px;
-                font-size: 16px;
-            }
-
-            .auth-switch,
-            .auth-switch button {
                 font-size: 16px;
             }
         }
     </style>
 </head>
-<body>
-    <div class="auth-page">
-        <div class="auth-card">
-            <a href="/index.html" class="auth-back">← На главную</a>
 
-            <div id="loginBlock" class="hidden">
-                <h1 class="auth-title">Вход</h1>
+<body>
+    <header class="topbar">
+        <div class="brand">PETALSPEAK</div>
+        <nav class="nav">
+            <a href="/index.html#about" data-i18n="about">About Us</a>
+            <a href="/test.html" data-i18n="test">Feelings Test</a>
+            <div class="lang-switch">
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="et">ET</button>
+                <button class="lang-btn" data-lang="ru">RU</button>
+                <a href="/login.html" class="login-icon" title="Login">
+                    <img src="/assets/img/user.png" alt="Login">
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="auth-page">
+        <div class="auth-card">
+            <section id="loginBlock" class="hidden">
+                <h1 class="auth-title" data-i18n="login_title">Login</h1>
 
                 <form id="loginForm" class="auth-form">
                     <input
                         id="loginEmail"
-                        name="email"
                         type="email"
                         class="auth-input"
+                        data-i18n-placeholder="email_placeholder"
                         placeholder="Email"
                         required
                     >
 
                     <input
                         id="loginPassword"
-                        name="password"
                         type="password"
                         class="auth-input"
-                        placeholder="Пароль"
+                        data-i18n-placeholder="password_placeholder"
+                        placeholder="Password"
                         required
                     >
 
-                    <button type="submit" class="auth-btn">Войти</button>
+                    <button type="submit" class="auth-btn" data-i18n="login_btn">Login</button>
                 </form>
 
                 <div class="auth-switch">
-                    Нет аккаунта?
-                    <button type="button" id="showRegister">Зарегистрироваться</button>
+                    <span data-i18n="no_account">No account?</span>
+                    <button type="button" id="showRegister" data-i18n="register_link">Register</button>
                 </div>
-            </div>
+            </section>
 
-            <div id="registerBlock">
-                <h1 class="auth-title">Регистрация</h1>
+            <section id="registerBlock">
+                <h1 class="auth-title" data-i18n="register_title">Registration</h1>
 
                 <form id="registerForm" class="auth-form">
                     <input
                         id="registerName"
-                        name="name"
                         type="text"
                         class="auth-input"
-                        placeholder="Имя"
+                        data-i18n-placeholder="name_placeholder"
+                        placeholder="Your name"
                         required
                     >
 
                     <input
                         id="registerEmail"
-                        name="email"
                         type="email"
                         class="auth-input"
+                        data-i18n-placeholder="email_placeholder"
                         placeholder="Email"
                         required
                     >
 
                     <input
                         id="registerPassword"
-                        name="password"
                         type="password"
                         class="auth-input"
-                        placeholder="Пароль"
+                        data-i18n-placeholder="password_placeholder"
+                        placeholder="Password"
                         required
                     >
 
                     <input
                         id="registerConfirmPassword"
-                        name="confirmPassword"
                         type="password"
                         class="auth-input"
-                        placeholder="Повтори пароль"
+                        data-i18n-placeholder="confirm_password_placeholder"
+                        placeholder="Repeat password"
                         required
                     >
 
-                    <button type="submit" class="auth-btn">Зарегистрироваться</button>
+                    <button type="submit" class="auth-btn" data-i18n="register_btn">Register</button>
                 </form>
 
                 <div class="auth-switch">
-                    Уже есть аккаунт?
-                    <button type="button" id="showLogin">Войти</button>
+                    <span data-i18n="have_account">Already have an account?</span>
+                    <button type="button" id="showLogin" data-i18n="login_link">Login</button>
                 </div>
-            </div>
+            </section>
 
             <div id="authMessage" class="auth-message"></div>
         </div>
-    </div>
+    </main>
 
     <script src="/assets/js/auth.js"></script>
 </body>

@@ -347,5 +347,61 @@
     "expiry_error": "Expiry date must be in MM/YY format",
     "cvv_error": "CVV must contain 3 digits",
     "processing_btn": "Processing...",
-    "email_invalid_error": "Please enter a valid email address"
+    "email_invalid_error": "Please enter a valid email address",
+
+    "login_title": "Login",
+    "register_title": "Registration",
+
+    "name_placeholder": "Your name",
+    "password_placeholder": "Password",
+    "confirm_password_placeholder": "Repeat password",
+
+    "login_btn": "Login",
+    "register_btn": "Register",
+
+    "no_account": "No account?",
+    "register_link": "Register",
+    "have_account": "Already have an account?",
+    "login_link": "Login",
+
+    "fill_required": "Please fill in all required fields",
+    "password_short": "Password must be at least 6 characters",
+    "password_mismatch": "Passwords do not match",
+
+    "register_loading": "Registering...",
+    "login_loading": "Logging in...",
+
+    "register_success": "Registration successful",
+    "login_success": "Login successful",
+    "login_error": "Enter email and password",
+
+    "request_error": "Request error",
+
+    "profile_title": "My Profile",
+    "upload_photo": "Upload photo",
+    "logout_btn": "Log out",
+    "profile_settings": "Profile settings",
+    "save_profile_btn": "Save profile",
+    "change_password_title": "Change password",
+    "current_password_placeholder": "Current password",
+    "new_password_placeholder": "New password",
+    "update_password_btn": "Update password",
+    "my_orders_title": "My orders",
+    "test_history_title": "Test history",
+    "loading_orders": "Loading orders...",
+    "loading_tests": "Loading tests...",
+    "profile_updated": "Profile updated",
+    "password_updated": "Password updated",
+    "avatar_updated": "Photo updated",
+    "profile_update_error": "Profile update error",
+    "password_update_error": "Password update error",
+    "avatar_upload_error": "Avatar upload error",
+    "orders_load_error": "Orders load error",
+    "tests_load_error": "Tests load error",
+    "no_orders_yet": "No orders yet.",
+    "no_test_history": "No test history yet.",
+    "bouquet_default": "Bouquet",
+    "type_label": "Type",
+    "date_label": "Date",
+    "bouquet_result": "Bouquet result"
 }
