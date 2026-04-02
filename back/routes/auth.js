@@ -1,93 +1,55 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
-const authMiddleware = require("../middleware/auth");
+const pool = require("../config/mysql");
 
 const router = express.Router();
-const JWT_SECRET = "supersecretkey";
 
-// register
+// регистрация
 router.post("/register", async (req, res) => {
-    try {
-        const { email, password } = req.body;
+    const { name, email, password } = req.body;
 
-        if (!email || !password) {
-            return res.status(400).json({ error: "Email and password are required" });
-        }
+    const [exists] = await pool.query("SELECT * FROM users WHERE email=?", [email]);
+    if (exists.length) return res.status(400).json({ message: "Email уже используется" });
 
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return res.status(400).json({ error: "User already exists" });
-        }
+    const hash = await bcrypt.hash(password, 10);
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+    await pool.query(
+        "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
+        [name, email, hash]
+    );
 
-        const user = new User({
-            email,
-            password: hashedPassword
-        });
-
-        await user.save();
-
-        res.json({ message: "User registered successfully" });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+    res.json({ message: "OK" });
 });
 
-// login
+// логин
 router.post("/login", async (req, res) => {
-    try {
-        const { email, password } = req.body;
+    const { email, password } = req.body;
 
-        const user = await User.findOne({ email });
-        if (!user) {
-            return res.status(400).json({ error: "User not found" });
-        }
+    const [users] = await pool.query("SELECT * FROM users WHERE email=?", [email]);
+    if (!users.length) return res.status(400).json({ message: "Пользователь не найден" });
 
-        const isValidPassword = await bcrypt.compare(password, user.password);
-        if (!isValidPassword) {
-            return res.status(400).json({ error: "Wrong password" });
-        }
+    const user = users[0];
 
-        const token = jwt.sign(
-            {
-                id: user._id,
-                email: user.email,
-                role: user.role
-            },
-            JWT_SECRET,
-            { expiresIn: "7d" }
-        );
+    const valid = await bcrypt.compare(password, user.password);
+    if (!valid) return res.status(400).json({ message: "Неверный пароль" });
 
-        res.json({
-            message: "Login successful",
-            token,
-            user: {
-                id: user._id,
-                email: user.email,
-                role: user.role
-            }
-        });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+    const token = jwt.sign({ id: user.id }, "secret123");
+
+    res.json({ token });
 });
 
-// me
-router.get("/me", authMiddleware, async (req, res) => {
-    try {
-        const user = await User.findById(req.user.id).select("-password");
+// текущий пользователь
+router.get("/me", async (req, res) => {
+    const header = req.headers.authorization;
+    if (!header) return res.status(401).json({});
 
-        if (!user) {
-            return res.status(404).json({ error: "User not found" });
-        }
+    const token = header.split(" ")[1];
+    const decoded = jwt.verify(token, "secret123");
 
-        res.json(user);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+    const [users] = await pool.query("SELECT id,name,email FROM users WHERE id=?", [decoded.id]);
+
+    res.json(users[0]);
 });
 
 module.exports = router;

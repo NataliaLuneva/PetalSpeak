@@ -1,42 +1,29 @@
 const express = require("express");
-const TestResult = require("../models/TestResult");
-const authMiddleware = require("../middleware/auth");
+const pool = require("../config/mysql");
+const auth = require("../middleware/auth");
 
 const router = express.Router();
 
-// save test result for authorized user
-router.post("/", authMiddleware, async (req, res) => {
-    try {
-        const { resultType, bouquetTitle, refined, answers } = req.body;
+// сохранить тест
+router.post("/", auth, async (req, res) => {
+    const { result } = req.body;
 
-        if (!resultType || !bouquetTitle) {
-            return res.status(400).json({ error: "Result data is required" });
-        }
+    await pool.query(
+        "INSERT INTO test_results (user_id, result) VALUES (?,?)",
+        [req.user.id, result]
+    );
 
-        const testResult = new TestResult({
-            user: req.user.id,
-            resultType,
-            bouquetTitle,
-            refined: !!refined,
-            answers: answers || []
-        });
-
-        await testResult.save();
-
-        res.json({ message: "Test result saved", testResult });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+    res.json({ message: "saved" });
 });
 
-// get my test history
-router.get("/my", authMiddleware, async (req, res) => {
-    try {
-        const tests = await TestResult.find({ user: req.user.id }).sort({ createdAt: -1 });
-        res.json(tests);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+// история тестов
+router.get("/my", auth, async (req, res) => {
+    const [rows] = await pool.query(
+        "SELECT * FROM test_results WHERE user_id=? ORDER BY created_at DESC",
+        [req.user.id]
+    );
+
+    res.json(rows);
 });
 
 module.exports = router;
