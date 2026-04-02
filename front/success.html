@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Success | PetalSpeak</title>
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+    <header class="topbar">
+        <div class="brand">PETALSPEAK</div>
+    </header>
+
+    <main>
+        <section class="section">
+            <div class="panel order-panel" style="text-align:center;">
+                <h2 id="success-title">Thank you for your order! 💐</h2>
+                <p id="success-text">Your bouquet order has been placed successfully.</p>
+                <p id="success-bouquet" style="margin-top:20px; font-size:20px;"></p>
+                <a href="/" class="btn" id="success-home-btn" style="margin-top:25px; display:inline-block;">
+                    Back to Home
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const lang = localStorage.getItem("lang") || "en";
+        const bouquet = JSON.parse(localStorage.getItem("lastOrderedBouquet"));
+
+        const text = {
+            en: {
+                title: "Thank you for your order! 💐",
+                desc: "Your bouquet order has been placed successfully.",
+                home: "Back to Home",
+                bouquetPrefix: "You ordered:"
+            },
+            ru: {
+                title: "Спасибо за покупку! 💐",
+                desc: "Ваш заказ успешно оформлен.",
+                home: "На главную",
+                bouquetPrefix: "Вы заказали:"
+            },
+            et: {
+                title: "Aitäh tellimuse eest! 💐",
+                desc: "Sinu tellimus on edukalt vormistatud.",
+                home: "Tagasi avalehele",
+                bouquetPrefix: "Sa tellisid:"
+            }
+        };
+
+        const t = text[lang] || text.en;
+
+        document.getElementById("success-title").textContent = t.title;
+        document.getElementById("success-text").textContent = t.desc;
+        document.getElementById("success-home-btn").textContent = t.home;
+
+        if (bouquet) {
+            document.getElementById("success-bouquet").textContent =
+                `${t.bouquetPrefix} ${bouquet.titleText || bouquet.title}`;
+        }
+    </script>
+</body>
+</html>

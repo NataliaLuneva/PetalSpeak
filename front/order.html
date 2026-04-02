@@ -119,6 +119,10 @@
                 `${translations["price_label"] || "Price"}: €${bouquet.price || 0}`;
         }
 
+        function isValidEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
         function validateCard() {
             const cardName = document.getElementById("cardName").value.trim();
             const cardNumber = document.getElementById("cardNumber").value.replace(/\s/g, "");
@@ -136,6 +140,7 @@
         async function sendOrder() {
             const bouquet = JSON.parse(localStorage.getItem("selectedBouquet"));
             const resultEl = document.getElementById("result");
+            const orderBtn = document.getElementById("orderBtn");
 
             if (!bouquet) {
                 resultEl.textContent = translations["no_bouquet_selected"] || "No bouquet selected";
@@ -151,11 +156,21 @@
                 return;
             }
 
+            if (!isValidEmail(email)) {
+                resultEl.textContent = translations["email_invalid_error"] || "Please enter a valid email address";
+                return;
+            }
+
             const cardErrorKey = validateCard();
             if (cardErrorKey) {
                 resultEl.textContent = translations[cardErrorKey] || "Invalid card data";
                 return;
             }
+
+            const originalBtnText = orderBtn.innerHTML;
+            orderBtn.disabled = true;
+            orderBtn.classList.add("loading");
+            orderBtn.innerHTML = `<span class="spinner"></span>${translations["processing_btn"] || "Processing..."}`;
 
             const data = {
                 customerName,
@@ -179,41 +194,55 @@
                 });
 
                 const result = await res.json();
-                resultEl.textContent = result.message || result.error || "Payment successful";
 
-                if (res.ok) {
-                    localStorage.removeItem("selectedBouquet");
-                    document.getElementById("name").value = "";
-                    document.getElementById("email").value = "";
-                    document.getElementById("message").value = "";
-                    document.getElementById("cardName").value = "";
-                    document.getElementById("cardNumber").value = "";
-                    document.getElementById("expiry").value = "";
-                    document.getElementById("cvv").value = "";
+                if (!res.ok) {
+                    resultEl.textContent = result.error || "Order failed";
+                    orderBtn.disabled = false;
+                    orderBtn.classList.remove("loading");
+                    orderBtn.innerHTML = originalBtnText;
+                    return;
                 }
+
+                localStorage.setItem("lastOrderedBouquet", JSON.stringify({
+                    title: bouquet.title,
+                    titleText: translations[bouquet.title] || bouquet.title,
+                    img: bouquet.img,
+                    price: bouquet.price
+                }));
+
+                localStorage.removeItem("selectedBouquet");
+                window.location.href = "/success.html";
+
             } catch (e) {
                 console.error(e);
                 resultEl.textContent = translations["order_error"] || "Error sending order";
+                orderBtn.disabled = false;
+                orderBtn.classList.remove("loading");
+                orderBtn.innerHTML = originalBtnText;
             }
         }
 
-        document.getElementById("cardNumber").addEventListener("input", e => {
-            let value = e.target.value.replace(/\D/g, "").slice(0, 16);
-            value = value.replace(/(.{4})/g, "$1 ").trim();
-            e.target.value = value;
-        });
-
-        document.getElementById("expiry").addEventListener("input", e => {
-            let value = e.target.value.replace(/\D/g, "").slice(0, 4);
-            if (value.length >= 3) value = value.slice(0, 2) + "/" + value.slice(2);
-            e.target.value = value;
-        });
-
-        document.getElementById("cvv").addEventListener("input", e => {
-            e.target.value = e.target.value.replace(/\D/g, "").slice(0, 3);
-        });
-
         document.addEventListener("DOMContentLoaded", async () => {
+            const cardNumber = document.getElementById("cardNumber");
+            const expiry = document.getElementById("expiry");
+            const cvv = document.getElementById("cvv");
+
+            cardNumber.addEventListener("input", e => {
+                let value = e.target.value.replace(/\D/g, "").slice(0, 16);
+                value = value.replace(/(.{4})/g, "$1 ").trim();
+                e.target.value = value;
+            });
+
+            expiry.addEventListener("input", e => {
+                let value = e.target.value.replace(/\D/g, "").slice(0, 4);
+                if (value.length >= 3) value = value.slice(0, 2) + "/" + value.slice(2);
+                e.target.value = value;
+            });
+
+            cvv.addEventListener("input", e => {
+                e.target.value = e.target.value.replace(/\D/g, "").slice(0, 3);
+            });
+
             const savedLang = localStorage.getItem("lang") || "en";
             await loadLanguage(savedLang);
 

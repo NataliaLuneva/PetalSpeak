@@ -18,8 +18,6 @@ router.post("/", async (req, res) => {
             message
         } = req.body;
 
-        console.log("bouquetImage from frontend:", bouquetImage);
-
         if (!customerName || !email || !bouquetType || !bouquetTitle) {
             return res.status(400).json({ error: "Missing required fields" });
         }
@@ -46,10 +44,6 @@ router.post("/", async (req, res) => {
             const imagePath = imageFilename
                 ? path.join(__dirname, "..", "..", "front", "assets", "img", imageFilename)
                 : null;
-
-            console.log("imageFilename:", imageFilename);
-            console.log("imagePath:", imagePath);
-            console.log("image exists:", imagePath ? fs.existsSync(imagePath) : false);
 
             const hasImage = imagePath && fs.existsSync(imagePath);
 
@@ -102,8 +96,8 @@ router.post("/", async (req, res) => {
 
         } catch (mailError) {
             console.error("MAIL ERROR:", mailError);
-            return res.json({
-                message: "Order saved, but email was not sent"
+            return res.status(400).json({
+                error: "Email address is invalid or unavailable"
             });
         }
 

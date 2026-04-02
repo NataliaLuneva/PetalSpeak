@@ -400,55 +400,6 @@ function showResult() {
     }
 }
 
-/* ===== ORDER ===== */
-
-async function sendOrder() {
-    const bouquet = JSON.parse(localStorage.getItem("selectedBouquet"));
-
-    if (!bouquet) {
-        alert("No bouquet selected");
-        return;
-    }
-
-    const data = {
-        customerName: document.getElementById("name")?.value || "",
-        email: document.getElementById("email")?.value || "",
-        bouquetType: bouquet.type,
-        bouquetTitle: bouquet.title,
-        message: document.getElementById("message")?.value || "",
-        price: bouquet.price
-    };
-
-    if (!data.customerName || !data.email) {
-        alert("Fill all fields");
-        return;
-    }
-
-    try {
-        const res = await fetch("/api/orders", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data)
-        });
-
-        const result = await res.json();
-
-        const resultEl = document.getElementById("result");
-        if (resultEl) {
-            resultEl.textContent = result.message || result.error || "Order sent";
-        } else {
-            alert(result.message || result.error || "Order sent");
-        }
-
-        localStorage.removeItem("selectedBouquet");
-    } catch (e) {
-        console.error(e);
-        alert("Error sending order");
-    }
-}
-
 /* ===== INIT ===== */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -459,7 +410,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const nextBtn = document.getElementById("next-btn");
     const prevBtn = document.getElementById("prev-btn");
     const isTestPage = !!document.getElementById("question");
-    const orderBtn = document.getElementById("orderBtn");
 
     loadLanguage(localStorage.getItem("lang") || "en").then(() => {
         if (isTestPage) {
@@ -473,10 +423,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (prevBtn) {
         prevBtn.onclick = prevQuestion;
-    }
-
-    if (orderBtn) {
-        orderBtn.onclick = sendOrder;
     }
 
     document.querySelectorAll(".lang-btn").forEach((btn) => {
