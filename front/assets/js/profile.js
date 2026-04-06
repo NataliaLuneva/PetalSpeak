@@ -253,6 +253,15 @@ async function loadOrders() {
 async function loadTests() {
     const list = document.getElementById("testsList");
 
+    const bouquets = {
+        love: { title: "bq_love", img: "/assets/img/b1.jpg" },
+        friendship: { title: "bq_friendship", img: "/assets/img/b8.jpg" },
+        gratitude: { title: "bq_gratitude", img: "/assets/img/b15.jpg" },
+        admiration: { title: "bq_admiration", img: "/assets/img/b3.jpg" },
+        comfort: { title: "bq_comfort", img: "/assets/img/b29.jpg" },
+        celebration: { title: "bq_celebration", img: "/assets/img/b20.jpg" }
+    };
+
     try {
         const res = await fetch(`${API_BASE}/tests/my`, {
             headers: authHeaders()
@@ -261,20 +270,33 @@ async function loadTests() {
         const data = await res.json();
 
         if (!res.ok) {
-            throw new Error(data.message || t("tests_load_error"));
+            throw new Error(data.message || "Ошибка загрузки тестов");
         }
 
         if (!Array.isArray(data) || !data.length) {
-            list.innerHTML = `<p class="empty">${t("no_test_history")}</p>`;
+            list.innerHTML = `<p class="empty">Нет истории тестов</p>`;
             return;
         }
 
-        list.innerHTML = data.map(test => `
-            <div class="item">
-                <div class="item-title">${test.result || t("bouquet_result")}</div>
-                <div class="item-meta">${t("date_label")}: ${formatDate(test.created_at)}</div>
-            </div>
-        `).join("");
+        list.innerHTML = data.map(test => {
+            const bouquet = bouquets[test.result] || {};
+
+            return `
+                <div class="item">
+                    ${
+                        bouquet.img
+                            ? `<img src="${bouquet.img}" style="width:100%; max-width:200px; border-radius:12px; margin-bottom:10px;">`
+                            : ""
+                    }
+                    <div class="item-title">
+                        ${translations[bouquet.title] || bouquet.title}
+                    </div>
+                    <div class="item-meta">
+                        ${translations["date_label"] || "Date"}: ${formatDate(test.created_at)}
+                    </div>
+                </div>
+            `;
+        }).join("");
     } catch (error) {
         list.innerHTML = `<p class="empty">${error.message}</p>`;
     }

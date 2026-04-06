@@ -3,8 +3,6 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script type="module" src="/assets/js/main.js"></script>
-    
     <title>Feelings Test</title>
     <link rel="stylesheet" href="/assets/css/style.css" />
 </head>
@@ -31,13 +29,26 @@
             </div>
         </div>
     </section>
-    <script src="/assets/js/main.js"></script>
 
-    <script src="/assets/js/main.js"></script>
-
+    <script type="module" src="/assets/js/main.js"></script>
     <script type="module">
         import { saveTest } from "/assets/js/test-api.js";
-        window.saveTest = saveTest;
+
+        // перехватываем показ результата
+        const originalShowResult = window.showResult;
+
+        window.showResult = function () {
+            // сначала вызываем старую функцию
+            originalShowResult();
+
+            // потом сохраняем результат
+            try {
+                const result = window.getResult();
+                saveTest({ result });
+            } catch (e) {
+                console.error("Save test error:", e);
+            }
+        };
     </script>
 </body>
 </html>
