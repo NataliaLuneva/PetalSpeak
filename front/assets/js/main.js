@@ -338,6 +338,11 @@ function showResult() {
 
     const result = getResult();
     const bouquet = bouquets[result];
+    if (localStorage.getItem("token")) {
+        import("/assets/js/test-api.js")
+            .then(({ saveTest }) => saveTest({ result }))
+            .catch((err) => console.error("Save test error:", err));
+    }
 
     questionEl.textContent = translations["result_title"] || "Your Result";
 
