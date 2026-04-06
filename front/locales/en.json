@@ -1,17 +1,12 @@
 {
     "about": "About Us",
     "test": "Feelings Test",
-    "about_title": "About PetalSpeak",
-    "about_text1": "PetalSpeak is a place where emotions become flowers.",
-    "about_text2": "Our interactive feelings test helps transform emotions into bouquets that express your message naturally and beautifully.",
-    "about_text3": "Every bouquet tells a story — of love, admiration, gratitude, celebration, or quiet care.",
-    "about_text4": "Because sometimes flowers say more than words.",
     "tagline": "BOUQUETS THAT EXPRESS YOUR FEELINGS",
     "cta": "Take the Feelings Test",
     "hint": "Not sure what to say?<br/>Flowers know.",
     "section_title": "Where Feelings Find Their Flower",
-    "section_text1": "We create bouquets based on emotion, not occasion.",
-    "section_text2": "Each bouquet is carefully crafted from fresh seasonal flowers.",
+    "section_text1": "We design bouquets based on emotion, not occasion. Through our interactive test, we translate your answers into flowers that truly reflect what you feel.",
+    "section_text2": "Each arrangement is thoughtfully crafted using fresh seasonal blooms and modern floral design. Because the right bouquet doesn’t just look beautiful — it means something.",
     "test_title": "Feelings Test",
     "how": "How It Works",
     "li1": "Answer a few heartfelt questions",
@@ -403,5 +398,20 @@
     "bouquet_default": "Bouquet",
     "type_label": "Type",
     "date_label": "Date",
-    "bouquet_result": "Bouquet result"
+    "bouquet_result": "Bouquet result",
+
+    
+    "footer_contact": "Contact us",
+    "footer_phone1": "+372 5578 6543 - info phone",
+    "footer_phone2": "+372 5093 7632 - support service",
+    "footer_email": "petalspeak@info.ee - e-mail",
+
+    "footer_shops": "Shops",
+    "footer_shop1": "Tartu mnt 34, Tallinn, 103345",
+    "footer_shop2": "Rüütli 12, Tartu, 304567",
+    "footer_shop3": "Aia 56, Pärnu, 708965",
+    "footer_shop4": "Järveküla tee 50, Kohtla-Järve, 303456",
+
+    "footer_partners": "Partners"
+
 }

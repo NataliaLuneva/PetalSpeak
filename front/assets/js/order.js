@@ -1,253 +1,187 @@
-let translations = {};
-let isSubmitting = false;
+const API_BASE = "/api";
 
-async function loadLanguage(lang) {
-    try {
-        const response = await fetch(`/locales/${lang}.json`);
-        translations = await response.json();
-
-        applyTranslations();
-        setActiveButton(lang);
-        await loadOrderPreview();
-        await autofillUserData();
-    } catch (error) {
-        console.error("Language load error:", error);
-    }
+function getToken() {
+    return localStorage.getItem("token");
 }
 
-function applyTranslations() {
-    document.querySelectorAll("[data-i18n]").forEach((el) => {
-        const key = el.getAttribute("data-i18n");
-        if (translations[key]) {
-            el.innerHTML = translations[key];
-        }
-    });
+function getAuthHeaders() {
+    const headers = {
+        "Content-Type": "application/json"
+    };
 
-    const nameInput = document.getElementById("name");
-    const emailInput = document.getElementById("email");
-    const messageInput = document.getElementById("message");
-    const orderBtn = document.getElementById("orderBtn");
-
-    if (nameInput) {
-        nameInput.placeholder = translations["name_placeholder"] || "Your name";
+    const token = getToken();
+    if (token) {
+        headers.Authorization = `Bearer ${token}`;
     }
 
-    if (emailInput) {
-        emailInput.placeholder = translations["email_placeholder"] || "Email";
-    }
-
-    if (messageInput) {
-        messageInput.placeholder =
-            translations["message_placeholder"] || "Message for recipient";
-    }
-
-    if (orderBtn && !isSubmitting) {
-        orderBtn.textContent = translations["pay_now"] || "Pay now";
-    }
+    return headers;
 }
 
-function setActiveButton(lang) {
-    document.querySelectorAll(".lang-btn").forEach((btn) => {
-        btn.classList.remove("active");
-    });
-
-    const activeBtn = document.querySelector(`[data-lang="${lang}"]`);
-    if (activeBtn) {
-        activeBtn.classList.add("active");
-    }
-}
-
-async function getCurrentUser() {
-    const token = localStorage.getItem("token");
+async function loadCurrentUser() {
+    const token = getToken();
     if (!token) return null;
 
     try {
-        const response = await fetch("/api/auth/me", {
+        const res = await fetch(`${API_BASE}/auth/me`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         });
 
-        if (!response.ok) return null;
+        if (!res.ok) return null;
 
-        return await response.json();
+        return await res.json();
     } catch (error) {
-        console.error("User fetch error:", error);
+        console.error("Load current user error:", error);
         return null;
     }
 }
 
-async function autofillUserData() {
-    const user = await getCurrentUser();
-    if (!user) return;
-
-    const nameInput = document.getElementById("name");
-    const emailInput = document.getElementById("email");
-
-    if (nameInput && user.name && !nameInput.value.trim()) {
-        nameInput.value = user.name;
-    }
-
-    if (emailInput && user.email && !emailInput.value.trim()) {
-        emailInput.value = user.email;
-    }
-}
-
-async function loadOrderPreview() {
-    const bouquet = JSON.parse(localStorage.getItem("selectedBouquet"));
-    if (!bouquet) return;
-
-    const preview = document.getElementById("preview");
-    const title = document.getElementById("title");
-
-    if (preview) {
-        preview.src = bouquet.img;
-        preview.alt = translations[bouquet.title] || bouquet.title || "Bouquet";
-    }
-
-    if (title) {
-        title.textContent = translations[bouquet.title] || bouquet.title;
-    }
-}
-
-function setSubmittingState(submitting) {
-    isSubmitting = submitting;
-
-    const orderBtn = document.getElementById("orderBtn");
-    if (!orderBtn) return;
-
-    orderBtn.disabled = submitting;
-    orderBtn.style.pointerEvents = submitting ? "none" : "auto";
-    orderBtn.textContent = submitting
-        ? (translations["sending_order"] || "Sending...")
-        : (translations["pay_now"] || "Pay now");
-}
-
-function showResult(message, isError = false) {
-    const resultEl = document.getElementById("result");
-    if (!resultEl) return;
-
-    resultEl.textContent = message;
-    resultEl.style.color = isError ? "crimson" : "green";
-}
-
-async function sendOrder() {
-    if (isSubmitting) return;
-
-    const bouquet = JSON.parse(localStorage.getItem("selectedBouquet"));
-
-    if (!bouquet) {
-        showResult(
-            translations["no_bouquet_selected"] || "No bouquet selected",
-            true
-        );
-        return;
-    }
-
-    const token = localStorage.getItem("token");
-    const nameInput = document.getElementById("name");
-    const emailInput = document.getElementById("email");
-    const messageInput = document.getElementById("message");
-
-    let customerName = nameInput ? nameInput.value.trim() : "";
-    let email = emailInput ? emailInput.value.trim() : "";
-    const message = messageInput ? messageInput.value.trim() : "";
-
-    const user = await getCurrentUser();
-
-    if (user) {
-        customerName = user.name || customerName;
-        email = user.email || email;
-
-        if (nameInput && user.name) {
-            nameInput.value = user.name;
-        }
-
-        if (emailInput && user.email) {
-            emailInput.value = user.email;
-        }
-    }
-
-    if (!customerName || !email) {
-        showResult(
-            translations["fill_required_fields"] ||
-                "Please fill in all required fields",
-            true
-        );
-        return;
-    }
-
-    const data = {
-        customerName,
-        email,
-        bouquetType: bouquet.type || "",
-        bouquetTitle: translations[bouquet.title] || bouquet.title || "",
-        bouquetImage: bouquet.img || "",
-        price: bouquet.price || null,
-        message
-    };
+function getSelectedBouquet() {
+    const raw = localStorage.getItem("selectedBouquet");
+    if (!raw) return null;
 
     try {
-        setSubmittingState(true);
-        showResult("");
+        return JSON.parse(raw);
+    } catch (error) {
+        console.error("Selected bouquet parse error:", error);
+        return null;
+    }
+}
 
-        const response = await fetch("/api/orders", {
+function fillBouquetInfo() {
+    const bouquet = getSelectedBouquet();
+    if (!bouquet) return;
+
+    const titleEl = document.getElementById("bouquetTitle");
+    const typeEl = document.getElementById("bouquetType");
+    const priceEl = document.getElementById("bouquetPrice");
+    const imageEl = document.getElementById("bouquetImagePreview");
+
+    if (titleEl) {
+        titleEl.textContent = bouquet.title || "";
+    }
+
+    if (typeEl) {
+        typeEl.textContent = bouquet.type || "";
+    }
+
+    if (priceEl) {
+        priceEl.textContent = bouquet.price ? `€${bouquet.price}` : "";
+    }
+
+    if (imageEl && bouquet.img) {
+        imageEl.src = bouquet.img;
+    }
+}
+
+async function autofillUserData() {
+    const user = await loadCurrentUser();
+    if (!user) return;
+
+    const nameInput = document.getElementById("customerName");
+    const emailInput = document.getElementById("email");
+
+    if (nameInput && !nameInput.value.trim()) {
+        nameInput.value = user.name || "";
+    }
+
+    if (emailInput && !emailInput.value.trim()) {
+        emailInput.value = user.email || "";
+    }
+}
+
+function showMessage(text, isError = false) {
+    const el = document.getElementById("orderMessage");
+    if (!el) return;
+
+    el.textContent = text;
+    el.style.color = isError ? "crimson" : "#567a67";
+}
+
+function setLoading(isLoading) {
+    const submitBtn = document.getElementById("orderSubmitBtn");
+    if (!submitBtn) return;
+
+    if (isLoading) {
+        submitBtn.disabled = true;
+        submitBtn.dataset.originalText = submitBtn.textContent;
+        submitBtn.textContent = "Processing...";
+    } else {
+        submitBtn.disabled = false;
+        submitBtn.textContent = submitBtn.dataset.originalText || "Order";
+    }
+}
+
+async function submitOrder(event) {
+    event.preventDefault();
+
+    const bouquet = getSelectedBouquet();
+
+    if (!bouquet) {
+        showMessage("Bouquet not found", true);
+        return;
+    }
+
+    const customerName = document.getElementById("customerName")?.value.trim() || "";
+    const email = document.getElementById("email")?.value.trim() || "";
+    const message = document.getElementById("message")?.value.trim() || "";
+
+    if (!customerName || !email) {
+        showMessage("Please fill in name and email", true);
+        return;
+    }
+
+    setLoading(true);
+    showMessage("");
+
+    try {
+        const res = await fetch(`${API_BASE}/orders`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                ...(token ? { Authorization: `Bearer ${token}` } : {})
-            },
-            body: JSON.stringify(data)
+            headers: getAuthHeaders(),
+            body: JSON.stringify({
+                customerName,
+                email,
+                bouquetType: bouquet.type || "",
+                bouquetTitle: bouquet.title || "",
+                bouquetImage: bouquet.img || "",
+                price: bouquet.price || null,
+                message
+            })
         });
 
-        const result = await response.json();
+        const data = await res.json();
 
-        if (!response.ok) {
-            showResult(
-                result.message ||
-                    result.error ||
-                    translations["order_error"] ||
-                    "Error sending order",
-                true
-            );
-            return;
+        if (!res.ok) {
+            throw new Error(data.message || "Order error");
         }
 
-        localStorage.removeItem("selectedBouquet");
-        showResult(
-            result.message ||
-                translations["order_success"] ||
-                "Order sent successfully"
-        );
+        showMessage(data.message || "Order placed successfully");
+        localStorage.setItem("lastOrder", JSON.stringify({
+            customerName,
+            email,
+            bouquetTitle: bouquet.title || "",
+            bouquetType: bouquet.type || "",
+            bouquetImage: bouquet.img || "",
+            price: bouquet.price || "",
+            message
+        }));
 
-        setTimeout(() => {
-            window.location.href = "/success.html";
-        }, 700);
+        window.location.href = "/success.html";
     } catch (error) {
-        console.error("Order send error:", error);
-        showResult(
-            translations["order_error"] || "Error sending order",
-            true
-        );
+        console.error("Submit order error:", error);
+        showMessage(error.message || "Order error", true);
     } finally {
-        setSubmittingState(false);
+        setLoading(false);
     }
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
-    const savedLang = localStorage.getItem("lang") || "en";
-    await loadLanguage(savedLang);
+    fillBouquetInfo();
+    await autofillUserData();
 
-    const orderBtn = document.getElementById("orderBtn");
-    if (orderBtn) {
-        orderBtn.addEventListener("click", sendOrder);
+    const form = document.getElementById("orderForm");
+    if (form) {
+        form.addEventListener("submit", submitOrder);
     }
-
-    document.querySelectorAll(".lang-btn").forEach((btn) => {
-        btn.addEventListener("click", async () => {
-            const lang = btn.dataset.lang;
-            localStorage.setItem("lang", lang);
-            await loadLanguage(lang);
-        });
-    });
 });

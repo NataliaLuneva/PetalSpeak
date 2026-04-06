@@ -66,7 +66,7 @@
                             </div>
                         </div>
 
-                        <button id="orderBtn" class="btn order-submit" data-i18n="pay_now_btn">
+                        <button id="orderBtn" class="btn order-submit" data-i18n="pay_now_btn" type="button">
                             Pay now
                         </button>
 
@@ -107,6 +107,45 @@
             document.querySelectorAll(".lang-btn").forEach(btn => btn.classList.remove("active"));
             const activeBtn = document.querySelector(`[data-lang="${lang}"]`);
             if (activeBtn) activeBtn.classList.add("active");
+        }
+
+        function getToken() {
+            return localStorage.getItem("token");
+        }
+
+        async function loadCurrentUser() {
+            const token = getToken();
+            if (!token) return null;
+
+            try {
+                const res = await fetch("/api/auth/me", {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+
+                if (!res.ok) return null;
+                return await res.json();
+            } catch (e) {
+                console.error("Load current user error:", e);
+                return null;
+            }
+        }
+
+        async function autofillUserData() {
+            const user = await loadCurrentUser();
+            if (!user) return;
+
+            const nameInput = document.getElementById("name");
+            const emailInput = document.getElementById("email");
+
+            if (nameInput && !nameInput.value.trim()) {
+                nameInput.value = user.name || "";
+            }
+
+            if (emailInput && !emailInput.value.trim()) {
+                emailInput.value = user.email || "";
+            }
         }
 
         function loadOrderPreview() {
@@ -185,18 +224,25 @@
             };
 
             try {
+                const headers = {
+                    "Content-Type": "application/json"
+                };
+
+                const token = getToken();
+                if (token) {
+                    headers.Authorization = `Bearer ${token}`;
+                }
+
                 const res = await fetch("/api/orders", {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
+                    headers,
                     body: JSON.stringify(data)
                 });
 
                 const result = await res.json();
 
                 if (!res.ok) {
-                    resultEl.textContent = result.error || "Order failed";
+                    resultEl.textContent = result.message || result.error || "Order failed";
                     orderBtn.disabled = false;
                     orderBtn.classList.remove("loading");
                     orderBtn.innerHTML = originalBtnText;
@@ -212,7 +258,6 @@
 
                 localStorage.removeItem("selectedBouquet");
                 window.location.href = "/success.html";
-
             } catch (e) {
                 console.error(e);
                 resultEl.textContent = translations["order_error"] || "Error sending order";
@@ -245,6 +290,7 @@
 
             const savedLang = localStorage.getItem("lang") || "en";
             await loadLanguage(savedLang);
+            await autofillUserData();
 
             document.getElementById("orderBtn").addEventListener("click", sendOrder);
 

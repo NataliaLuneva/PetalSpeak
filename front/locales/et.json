@@ -1,17 +1,12 @@
 {
     "about": "Meist",
     "test": "Tunnete test",
-    "about_title": "PetalSpeakist",
-    "about_text1": "PetalSpeak on koht, kus emotsioonid muutuvad lilledeks.",
-    "about_text2": "Meie interaktiivne tunnete test aitab tõlkida emotsioonid lillekimpudeks, mis väljendavad sinu sõnumit loomulikult ja kaunilt.",
-    "about_text3": "Iga kimp jutustab loo — armastusest, imetlusest, tänulikkusest, tähistamisest või vaiksest hoolimisest.",
-    "about_text4": "Sest mõnikord ütlevad lilled rohkem kui sõnad.",
     "tagline": "KIMBUD, MIS VÄLJENDAVAD SINU TUNDEID",
     "cta": "Tee tunnete test",
     "hint": "Ei tea, mida öelda?<br/>Lilled teavad.",
-    "section_title": "Kus tunded leiavad oma lille",
-    "section_text1": "Loome kimpe emotsiooni, mitte sündmuse järgi.",
-    "section_text2": "Iga kimp on hoolikalt koostatud värsketest hooajalistest lilledest.",
+    "section_title": "Kus tunded leiavad oma õie",
+    "section_text1": "Loome kimpe emotsioonide, mitte sündmuste põhjal. Meie interaktiivne test aitab muuta sinu vastused lilledeks, mis peegeldavad tõeliselt seda, mida sa tunned.",
+    "section_text2": "Iga seade on hoolikalt loodud värsketest hooajalistest lilledest ja kaasaegsest floristilisest disainist. Sest õige kimp ei ole ainult ilus — sellel on tähendus.",
     "test_title": "Tunnete test",
     "how": "Kuidas see töötab",
     "li1": "Vasta mõnele südamlikule küsimusele",
@@ -403,5 +398,18 @@
     "bouquet_default": "Kimp",
     "type_label": "Tüüp",
     "date_label": "Kuupäev",
-    "bouquet_result": "Kimbu tulemus"
+    "bouquet_result": "Kimbu tulemus",
+
+    "footer_contact": "Kontakt",
+    "footer_phone1": "+372 5578 6543 - infotelefon",
+    "footer_phone2": "+372 5093 7632 - klienditugi",
+    "footer_email": "petalspeak@info.ee - e-post",
+
+    "footer_shops": "Poed",
+    "footer_shop1": "Tartu mnt 34, Tallinn, 103345",
+    "footer_shop2": "Rüütli 12, Tartu, 304567",
+    "footer_shop3": "Aia 56, Pärnu, 708965",
+    "footer_shop4": "Järveküla tee 50, Kohtla-Järve, 303456",
+
+    "footer_partners": "Partnerid"
 }
