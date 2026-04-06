@@ -1,4 +1,5 @@
 const API_BASE = "/api";
+const BASE_URL = window.location.origin;
 
 let translations = {};
 let currentLang = localStorage.getItem("lang") || "en";
@@ -75,6 +76,18 @@ function formatDate(dateString) {
     return date.toLocaleString();
 }
 
+function getAvatarUrl(avatarPath) {
+    if (!avatarPath) {
+        return "/assets/img/user.png";
+    }
+
+    if (avatarPath.startsWith("http://") || avatarPath.startsWith("https://")) {
+        return avatarPath;
+    }
+
+    return `${BASE_URL}${avatarPath}`;
+}
+
 async function loadUser() {
     const token = getToken();
     if (!token) {
@@ -82,27 +95,32 @@ async function loadUser() {
         return;
     }
 
-    const res = await fetch(`${API_BASE}/auth/me`, {
-        headers: authHeaders()
-    });
+    try {
+        const res = await fetch(`${API_BASE}/auth/me`, {
+            headers: authHeaders()
+        });
 
-    if (!res.ok) {
+        if (!res.ok) {
+            localStorage.removeItem("token");
+            window.location.href = "/login.html";
+            return;
+        }
+
+        const user = await res.json();
+
+        document.getElementById("profileName").textContent = user.name || "User";
+        document.getElementById("profileEmail").textContent = user.email || "";
+        document.getElementById("profileNameInput").value = user.name || "";
+        document.getElementById("profileEmailInput").value = user.email || "";
+        document.getElementById("headerUserName").textContent = user.name || user.email || "Profile";
+
+        const avatarUrl = getAvatarUrl(user.avatar);
+        document.getElementById("avatarPreview").src = avatarUrl;
+        document.getElementById("headerAvatar").src = avatarUrl;
+    } catch (error) {
+        console.error("Load user error:", error);
         localStorage.removeItem("token");
         window.location.href = "/login.html";
-        return;
-    }
-
-    const user = await res.json();
-
-    document.getElementById("profileName").textContent = user.name || "User";
-    document.getElementById("profileEmail").textContent = user.email || "";
-    document.getElementById("profileNameInput").value = user.name || "";
-    document.getElementById("profileEmailInput").value = user.email || "";
-    document.getElementById("headerUserName").textContent = user.name || user.email || "Profile";
-
-    if (user.avatar) {
-        document.getElementById("avatarPreview").src = user.avatar;
-        document.getElementById("headerAvatar").src = user.avatar;
     }
 }
 
@@ -171,6 +189,8 @@ async function uploadAvatar(event) {
     formData.append("avatar", file);
 
     try {
+        showMessage("avatarMessage", "Uploading...");
+
         const res = await fetch(`${API_BASE}/auth/avatar`, {
             method: "POST",
             headers: authHeaders(),
@@ -184,8 +204,9 @@ async function uploadAvatar(event) {
         }
 
         if (data.avatar) {
-            document.getElementById("avatarPreview").src = data.avatar;
-            document.getElementById("headerAvatar").src = data.avatar;
+            const avatarUrl = getAvatarUrl(data.avatar);
+            document.getElementById("avatarPreview").src = avatarUrl;
+            document.getElementById("headerAvatar").src = avatarUrl;
         }
 
         showMessage("avatarMessage", data.message || t("avatar_updated"));

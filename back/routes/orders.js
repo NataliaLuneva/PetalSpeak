@@ -1,12 +1,15 @@
 const express = require("express");
 const path = require("path");
+const jwt = require("jsonwebtoken");
+
 const pool = require("../config/mysql");
 const auth = require("../middleware/auth");
 const transporter = require("../utils/mailer");
 
 const router = express.Router();
+const JWT_SECRET = "secret123";
 
-router.post("/", auth, async (req, res) => {
+router.post("/", async (req, res) => {
     try {
         const {
             customerName,
@@ -24,7 +27,18 @@ router.post("/", auth, async (req, res) => {
             });
         }
 
-        const userId = req.user ? req.user.id : null;
+        let userId = null;
+        const authHeader = req.headers.authorization;
+
+        if (authHeader && authHeader.startsWith("Bearer ")) {
+            try {
+                const token = authHeader.split(" ")[1];
+                const decoded = jwt.verify(token, JWT_SECRET);
+                userId = decoded.id;
+            } catch (error) {
+                console.log("Заказ без привязки к пользователю:", error.message);
+            }
+        }
 
         await pool.query(
             `INSERT INTO orders
@@ -42,9 +56,7 @@ router.post("/", auth, async (req, res) => {
             ]
         );
 
-        console.log("Заказ сохранен в БД");
-
-        let attachments = [];
+        const attachments = [];
 
         if (bouquetImage) {
             const imagePath = path.join(
@@ -95,8 +107,6 @@ router.post("/", auth, async (req, res) => {
             attachments
         });
 
-        console.log("Письмо успешно отправлено");
-
         res.json({
             message: "Заказ успешно оформлен"
         });
@@ -110,10 +120,6 @@ router.post("/", auth, async (req, res) => {
 
 router.get("/my", auth, async (req, res) => {
     try {
-        if (!req.user) {
-            return res.status(401).json({ message: "Не авторизован" });
-        }
-
         const [orders] = await pool.query(
             "SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC",
             [req.user.id]
@@ -122,7 +128,9 @@ router.get("/my", auth, async (req, res) => {
         res.json(orders);
     } catch (error) {
         console.error("Ошибка получения заказов:", error);
-        res.status(500).json({ message: "Ошибка получения заказов" });
+        res.status(500).json({
+            message: "Ошибка получения заказов"
+        });
     }
 });
 

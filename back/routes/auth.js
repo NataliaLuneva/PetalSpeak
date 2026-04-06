@@ -137,12 +137,6 @@ router.post("/login", async (req, res) => {
 // ===== current user =====
 router.get("/me", auth, async (req, res) => {
     try {
-        if (!req.user) {
-            return res.status(401).json({
-                message: "Не авторизован"
-            });
-        }
-
         const [rows] = await pool.query(
             "SELECT id, name, email, avatar, created_at FROM users WHERE id = ?",
             [req.user.id]
@@ -166,12 +160,6 @@ router.get("/me", auth, async (req, res) => {
 // ===== update profile =====
 router.put("/profile", auth, async (req, res) => {
     try {
-        if (!req.user) {
-            return res.status(401).json({
-                message: "Не авторизован"
-            });
-        }
-
         const { name, email } = req.body;
 
         if (!name || !email) {
@@ -216,12 +204,6 @@ router.put("/profile", auth, async (req, res) => {
 // ===== change password =====
 router.put("/password", auth, async (req, res) => {
     try {
-        if (!req.user) {
-            return res.status(401).json({
-                message: "Не авторизован"
-            });
-        }
-
         const { currentPassword, newPassword, confirmPassword } = req.body;
 
         if (!currentPassword || !newPassword || !confirmPassword) {
@@ -253,8 +235,7 @@ router.put("/password", auth, async (req, res) => {
             });
         }
 
-        const user = rows[0];
-        const isValid = await bcrypt.compare(currentPassword, user.password);
+        const isValid = await bcrypt.compare(currentPassword, rows[0].password);
 
         if (!isValid) {
             return res.status(400).json({
@@ -281,40 +262,39 @@ router.put("/password", auth, async (req, res) => {
 });
 
 // ===== upload avatar =====
-router.post("/avatar", auth, upload.single("avatar"), async (req, res) => {
-    try {
-        console.log("REQ.USER:", req.user);
-        console.log("REQ.FILE:", req.file);
-        
-        if (!req.user) {
-            return res.status(401).json({
-                message: "Не авторизован"
+router.post("/avatar", auth, (req, res) => {
+    upload.single("avatar")(req, res, async (err) => {
+        try {
+            if (err) {
+                return res.status(400).json({
+                    message: err.message || "Ошибка загрузки файла"
+                });
+            }
+
+            if (!req.file) {
+                return res.status(400).json({
+                    message: "Файл не выбран"
+                });
+            }
+
+            const avatarPath = `/uploads/avatars/${req.file.filename}`;
+
+            await pool.query(
+                "UPDATE users SET avatar = ? WHERE id = ?",
+                [avatarPath, req.user.id]
+            );
+
+            res.json({
+                message: "Фото обновлено",
+                avatar: avatarPath
+            });
+        } catch (error) {
+            console.error("Upload avatar error:", error);
+            res.status(500).json({
+                message: "Ошибка загрузки фото"
             });
         }
-
-        if (!req.file) {
-            return res.status(400).json({
-                message: "Файл не выбран"
-            });
-        }
-
-        const avatarPath = `/uploads/avatars/${req.file.filename}`;
-
-        await pool.query(
-            "UPDATE users SET avatar = ? WHERE id = ?",
-            [avatarPath, req.user.id]
-        );
-
-        res.json({
-            message: "Фото обновлено",
-            avatar: avatarPath
-        });
-    } catch (error) {
-        console.error("Upload avatar error:", error);
-        res.status(500).json({
-            message: "Ошибка загрузки фото"
-        });
-    }
+    });
 });
 
 module.exports = router;
