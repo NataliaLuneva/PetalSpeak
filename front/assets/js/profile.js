@@ -3,6 +3,7 @@ const BASE_URL = window.location.origin;
 
 let translations = {};
 let currentLang = localStorage.getItem("lang") || "en";
+let currentUser = null;
 
 function t(key) {
     return translations[key] || key;
@@ -107,16 +108,28 @@ async function loadUser() {
         }
 
         const user = await res.json();
+        currentUser = user;
 
         document.getElementById("profileName").textContent = user.name || "User";
         document.getElementById("profileEmail").textContent = user.email || "";
         document.getElementById("profileNameInput").value = user.name || "";
         document.getElementById("profileEmailInput").value = user.email || "";
         document.getElementById("headerUserName").textContent = user.name || user.email || "Profile";
+        document.getElementById("profileRole").textContent = `${t("role_label")}: ${user.role || "user"}`;
 
         const avatarUrl = getAvatarUrl(user.avatar);
         document.getElementById("avatarPreview").src = avatarUrl;
         document.getElementById("headerAvatar").src = avatarUrl;
+
+        if (user.role === "superadmin") {
+            document.getElementById("adminUsersCard").style.display = "block";
+            document.getElementById("adminOrdersCard").style.display = "block";
+            document.getElementById("adminStatsCard").style.display = "block";
+
+            await loadAdminUsers();
+            await loadAdminOrders();
+            await loadAdminStats();
+        }
     } catch (error) {
         console.error("Load user error:", error);
         localStorage.removeItem("token");
@@ -302,6 +315,189 @@ async function loadTests() {
     }
 }
 
+async function loadAdminUsers() {
+    const list = document.getElementById("adminUsersList");
+
+    try {
+        const res = await fetch(`${API_BASE}/admin/users`, {
+            headers: authHeaders()
+        });
+
+        const users = await res.json();
+
+        if (!res.ok) {
+            throw new Error(users.message || "Ошибка загрузки пользователей");
+        }
+
+        list.innerHTML = users.map(user => `
+        <div class="item">
+            <div><b>${user.name || t("no_name_label")}</b> (${user.email})</div>
+            <div>${t("role_label")}: ${user.role}</div>
+            <div>${t("blocked_label")}: ${user.is_blocked ? t("yes_label") : t("no_label")}</div>
+            <div>${t("deleted_label")}: ${user.is_deleted ? t("yes_label") : t("no_label")}</div>
+            <div>${t("date_label")}: ${formatDate(user.created_at)}</div>
+
+            <div style="margin-top:8px; display:flex; gap:8px; flex-wrap:wrap;">
+                ${
+                    user.role === "user" && !user.is_deleted
+                        ? `<button class="profile-btn" onclick="makeAdmin(${user.id})">${t("make_admin_btn")}</button>`
+                        : ""
+                }
+
+                ${
+                    user.role === "admin" && !user.is_deleted
+                        ? `<button class="profile-btn" onclick="removeAdmin(${user.id})">${t("remove_admin_btn")}</button>`
+                        : ""
+                }
+
+                ${
+                    !user.is_deleted
+                        ? (
+                            user.is_blocked
+                                ? `<button class="profile-btn secondary" onclick="unblockUser(${user.id})">${t("unblock_btn")}</button>`
+                                : `<button class="profile-btn secondary" onclick="blockUser(${user.id})">${t("block_btn")}</button>`
+                        )
+                        : ""
+                }
+
+                ${
+                    !user.is_deleted
+                        ? `<button class="profile-btn secondary" onclick="deleteUser(${user.id})">${t("delete_btn")}</button>`
+                        : ""
+                }
+            </div>
+        </div>
+    `).join("");
+    } catch (error) {
+        list.innerHTML = `<p class="empty">${error.message}</p>`;
+    }
+}
+
+async function makeAdmin(id) {
+    try {
+        await fetch(`${API_BASE}/admin/users/${id}/make-admin`, {
+            method: "PUT",
+            headers: authHeaders()
+        });
+        await loadAdminUsers();
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function removeAdmin(id) {
+    try {
+        await fetch(`${API_BASE}/admin/users/${id}/remove-admin`, {
+            method: "PUT",
+            headers: authHeaders()
+        });
+        await loadAdminUsers();
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function blockUser(id) {
+    try {
+        await fetch(`${API_BASE}/admin/users/${id}/block`, {
+            method: "PUT",
+            headers: authHeaders()
+        });
+        await loadAdminUsers();
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function unblockUser(id) {
+    try {
+        await fetch(`${API_BASE}/admin/users/${id}/unblock`, {
+            method: "PUT",
+            headers: authHeaders()
+        });
+        await loadAdminUsers();
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function deleteUser(id) {
+    try {
+        await fetch(`${API_BASE}/admin/users/${id}/delete`, {
+            method: "PUT",
+            headers: authHeaders()
+        });
+        await loadAdminUsers();
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function loadAdminOrders() {
+    const list = document.getElementById("adminOrdersList");
+
+    try {
+        const res = await fetch(`${API_BASE}/admin/orders`, {
+            headers: authHeaders()
+        });
+
+        const orders = await res.json();
+
+        if (!res.ok) {
+            throw new Error(orders.message || "Ошибка загрузки заказов");
+        }
+
+        if (!orders.length) {
+            list.innerHTML = `<p class="empty">No orders</p>`;
+            return;
+        }
+
+        list.innerHTML = orders.map(order => `
+            <div class="item">
+                <div><b>${order.bouquet_title || "-"}</b></div>
+                <div>${t("user_label")}: ${order.user_name || t("guest_label")}</div>
+                <div>${t("email_label")}: ${order.email || "-"}</div>
+                <div>${t("type_label")}: ${order.bouquet_type || "-"}</div>
+                <div>${t("price_label")}: €${order.price || "-"}</div>
+                <div>${t("message_label")}: ${order.message || "-"}</div>
+                <div>${t("date_label")}: ${formatDate(order.created_at)}</div>
+            </div>
+        `).join("");
+    } catch (error) {
+        list.innerHTML = `<p class="empty">${t("no_orders_admin")}</p>`;;
+    }
+}
+
+async function loadAdminStats() {
+    const list = document.getElementById("adminStatsList");
+
+    try {
+        const res = await fetch(`${API_BASE}/admin/stats`, {
+            headers: authHeaders()
+        });
+
+        const stats = await res.json();
+
+        if (!res.ok) {
+            throw new Error(stats.message || "Ошибка загрузки статистики");
+        }
+
+        list.innerHTML = `
+            <div class="item">${t("total_orders_label")}: ${stats.totalOrders}</div>
+            <div class="item">${t("total_revenue_label")}: €${stats.totalRevenue}</div>
+            <div class="item">${t("month_revenue_label")}: €${stats.monthRevenue}</div>
+            <h3 style="margin-top:16px;">${t("top_sales_title")}</h3>
+            ${stats.topSales.map(item => `
+                <div class="item">
+                    ${item.bouquet_title} — ${item.total_sales}
+                </div>
+            `).join("")}
+        `;
+    } catch (error) {
+        list.innerHTML = `<p class="empty">${error.message}</p>`;
+    }
+}
+
 function logout() {
     localStorage.removeItem("token");
     window.location.href = "/index.html";
@@ -320,6 +516,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             await loadLanguage(btn.dataset.lang);
             await loadOrders();
             await loadTests();
+
+            if (currentUser?.role === "superadmin") {
+                await loadAdminUsers();
+                await loadAdminOrders();
+                await loadAdminStats();
+            }
         });
     });
 

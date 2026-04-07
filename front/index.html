@@ -495,97 +495,13 @@
             </h2>
             <div class="panel intro-panel">
                 <p class="collection-footer" data-i18n="assortment_description"></p>
-                <div class="bucket_asortment">
-                    <article class="collection-item">
-                        <img class="collection-img" src="/assets/img/b43.jpg" alt="">
-                        <div class="collection-text">
-                            <h4 data-i18n="b43_title"></h4>
-                            <p data-i18n="b43_text"></p>
-                            <button class="btn buy-btn" data-i18n="buy_btn" data-type="assortment" data-title="b43_title" data-img="/assets/img/b43.jpg" data-price="39">Buy</button>
-                        </div>
-                    </article>
-
-                    <article class="collection-item">
-                        <img class="collection-img" src="/assets/img/b44.jpg" alt="">
-                        <div class="collection-text">
-                            <h4 data-i18n="b44_title"></h4>
-                            <p data-i18n="b44_text"></p>
-                            <button class="btn buy-btn" data-i18n="buy_btn" data-type="assortment" data-title="b44_title" data-img="/assets/img/b44.jpg" data-price="42">Buy</button>
-                        </div>
-                    </article>
-
-                    <article class="collection-item">
-                        <img class="collection-img" src="/assets/img/b45.jpg" alt="">
-                        <div class="collection-text">
-                            <h4 data-i18n="b45_title"></h4>
-                            <p data-i18n="b45_text"></p>
-                            <button class="btn buy-btn" data-i18n="buy_btn" data-type="assortment" data-title="b45_title" data-img="/assets/img/b45.jpg" data-price="36">Buy</button>
-                        </div>
-                    </article>
-
-                    <article class="collection-item">
-                        <img class="collection-img" src="/assets/img/b46.jpg" alt="">
-                        <div class="collection-text">
-                            <h4 data-i18n="b46_title"></h4>
-                            <p data-i18n="b46_text"></p>
-                            <button class="btn buy-btn" data-i18n="buy_btn" data-type="assortment" data-title="b46_title" data-img="/assets/img/b46.jpg" data-price="44">Buy</button>
-                        </div>
-                    </article>
-
-                    <article class="collection-item">
-                        <img class="collection-img" src="/assets/img/b47.jpg" alt="">
-                        <div class="collection-text">
-                            <h4 data-i18n="b47_title"></h4>
-                            <p data-i18n="b47_text"></p>
-                            <button class="btn buy-btn" data-i18n="buy_btn" data-type="assortment" data-title="b47_title" data-img="/assets/img/b47.jpg" data-price="41">Buy</button>
-                        </div>
-                    </article>
-
-                    <article class="collection-item">
-                        <img class="collection-img" src="/assets/img/b48.jpg" alt="">
-                        <div class="collection-text">
-                            <h4 data-i18n="b48_title"></h4>
-                            <p data-i18n="b48_text"></p>
-                            <button class="btn buy-btn" data-i18n="buy_btn" data-type="assortment" data-title="b48_title" data-img="/assets/img/b48.jpg" data-price="37">Buy</button>
-                        </div>
-                    </article>
-
-                    <article class="collection-item">
-                        <img class="collection-img" src="/assets/img/b49.jpg" alt="">
-                        <div class="collection-text">
-                            <h4 data-i18n="b49_title"></h4>
-                            <p data-i18n="b49_text"></p>
-                            <button class="btn buy-btn" data-i18n="buy_btn" data-type="assortment" data-title="b49_title" data-img="/assets/img/b49.jpg" data-price="43">Buy</button>
-                        </div>
-                    </article>
-
-                    <article class="collection-item">
-                        <img class="collection-img" src="/assets/img/b50.jpg" alt="">
-                        <div class="collection-text">
-                            <h4 data-i18n="b50_title"></h4>
-                            <p data-i18n="b50_text"></p>
-                            <button class="btn buy-btn" data-i18n="buy_btn" data-type="assortment" data-title="b50_title" data-img="/assets/img/b50.jpg" data-price="46">Buy</button>
-                        </div>
-                    </article>
-
-                    <article class="collection-item">
-                        <img class="collection-img" src="/assets/img/b51.jpg" alt="">
-                        <div class="collection-text">
-                            <h4 data-i18n="b51_title"></h4>
-                            <p data-i18n="b51_text"></p>
-                            <button class="btn buy-btn" data-i18n="buy_btn" data-type="assortment" data-title="b51_title" data-img="/assets/img/b51.jpg" data-price="40">Buy</button>
-                        </div>
-                    </article>
-
-                    <article class="collection-item">
-                        <img class="collection-img" src="/assets/img/b52.jpg" alt="">
-                        <div class="collection-text">
-                            <h4 data-i18n="b52_title"></h4>
-                            <p data-i18n="b52_text"></p>
-                            <button class="btn buy-btn" data-i18n="buy_btn" data-type="assortment" data-title="b52_title" data-img="/assets/img/b52.jpg" data-price="48">Buy</button>
-                        </div>
-                    </article>
+                <div style="margin-bottom:16px;">
+                    <button id="addProductBtn" class="btn" style="display:none; " data-i18n="add_product_btn">
+                        Add product
+                    </button>
                 </div>
+
+                <div id="productsList" class="bucket_asortment"></div>
             </div>
         </section>
     </main>
@@ -628,5 +544,24 @@
 
     <script src="/assets/js/main.js"></script>
     <script src="/assets/js/header-auth.js"></script>
+
+    <div id="productModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:999; align-items:center; justify-content:center;">
+        <div style="background:#fff; color:#000; padding:20px; border-radius:16px; width:400px;">
+
+            <h3 id="productModalTitle">Product</h3>
+
+            <input id="productTitleKey" placeholder="title key" style="width:100%; margin-bottom:10px;">
+            <input id="productTextKey" placeholder="text key" style="width:100%; margin-bottom:10px;">
+            <input id="productImage" placeholder="image path" style="width:100%; margin-bottom:10px;">
+            <input id="productPrice" type="number" placeholder="price" style="width:100%; margin-bottom:10px;">
+            <input id="productCategory" placeholder="category" style="width:100%; margin-bottom:10px;">
+
+            <div style="display:flex; gap:10px;">
+                <button id="saveProductBtn">Save</button>
+                <button id="cancelProductBtn">Cancel</button>
+            </div>
+
+        </div>
+    </div>
 </body>
 </html>

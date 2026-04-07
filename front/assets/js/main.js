@@ -1,4 +1,6 @@
 let translations = {};
+let currentUser = null;
+let editingProductId = null;
 
 /* ===== LANGUAGE ===== */
 
@@ -9,6 +11,7 @@ async function loadLanguage(lang) {
 
         applyTranslations();
         setActiveButton(lang);
+        await loadProducts();
     } catch (e) {
         console.error("Ошибка загрузки языка:", e);
     }
@@ -31,6 +34,64 @@ function setActiveButton(lang) {
 
     const activeBtn = document.querySelector(`[data-lang="${lang}"]`);
     if (activeBtn) activeBtn.classList.add("active");
+}
+
+function t(key) {
+    return translations[key] || key;
+}
+
+function getToken() {
+    return localStorage.getItem("token");
+}
+
+function authHeaders() {
+    const token = getToken();
+    return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
+function jsonHeaders() {
+    return {
+        "Content-Type": "application/json",
+        ...authHeaders()
+    };
+}
+
+/* ===== USER ===== */
+
+async function loadCurrentUser() {
+    const token = getToken();
+    if (!token) {
+        currentUser = null;
+        toggleAdminUi();
+        return;
+    }
+
+    try {
+        const res = await fetch("/api/auth/me", {
+            headers: authHeaders()
+        });
+
+        if (!res.ok) {
+            currentUser = null;
+            toggleAdminUi();
+            return;
+        }
+
+        currentUser = await res.json();
+        toggleAdminUi();
+    } catch (error) {
+        console.error("Load current user error:", error);
+        currentUser = null;
+        toggleAdminUi();
+    }
+}
+
+function toggleAdminUi() {
+    const addBtn = document.getElementById("addProductBtn");
+    if (!addBtn) return;
+
+    const isAdmin = currentUser && (currentUser.role === "admin" || currentUser.role === "superadmin");
+    addBtn.style.display = isAdmin ? "inline-flex" : "none";
 }
 
 /* ===== UI ===== */
@@ -66,6 +127,75 @@ function initAccordion() {
     });
 }
 
+/* ===== PRODUCTS ===== */
+
+async function loadProducts() {
+    const list = document.getElementById("productsList");
+    if (!list) return;
+
+    try {
+        const res = await fetch("/api/products");
+        const products = await res.json();
+
+        if (!res.ok) {
+            throw new Error(products.message || "Ошибка загрузки товаров");
+        }
+
+        const isAdmin = currentUser && (currentUser.role === "admin" || currentUser.role === "superadmin");
+
+        list.innerHTML = products.map(product => `
+            <article class="collection-item">
+                <img class="collection-img" src="${product.image}" alt="">
+                <div class="collection-text">
+                    <h4>${t(product.title_key)}</h4>
+                    <p>${t(product.text_key)}</p>
+
+                    <button
+                        class="btn buy-btn"
+                        data-type="${product.category}"
+                        data-title="${product.title_key}"
+                        data-img="${product.image}"
+                        data-price="${product.price}"
+                    >
+                        ${t("buy_btn")}
+                    </button>
+
+                    ${
+                        isAdmin ? `
+                            <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
+                                <button
+                                    class="profile-btn edit-product-btn"
+                                    data-id="${product.id}"
+                                    data-title-key="${product.title_key}"
+                                    data-text-key="${product.text_key}"
+                                    data-image="${product.image}"
+                                    data-price="${product.price}"
+                                    data-category="${product.category}"
+                                >
+                                    ${t("edit_product_btn")}
+                                </button>
+
+                                <button
+                                    class="profile-btn secondary delete-product-btn"
+                                    data-id="${product.id}"
+                                >
+                                    ${t("delete_product_btn")}
+                                </button>
+                            </div>
+                        ` : ""
+                    }
+                </div>
+            </article>
+        `).join("");
+
+        initBuyButtons();
+        initProductActionButtons();
+    } catch (error) {
+        console.error("Load products error:", error);
+        list.innerHTML = `<p>Ошибка загрузки товаров</p>`;
+    }
+}
+
 function initBuyButtons() {
     document.querySelectorAll(".buy-btn").forEach((btn) => {
         btn.addEventListener("click", () => {
@@ -80,6 +210,105 @@ function initBuyButtons() {
             window.location.href = "/order.html";
         });
     });
+}
+
+function initProductActionButtons() {
+    document.querySelectorAll(".edit-product-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+            openEditProduct(
+                btn.dataset.id,
+                btn.dataset.titleKey,
+                btn.dataset.textKey,
+                btn.dataset.image,
+                btn.dataset.price,
+                btn.dataset.category
+            );
+        });
+    });
+
+    document.querySelectorAll(".delete-product-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+            deleteProduct(btn.dataset.id);
+        });
+    });
+}
+
+function openAddProduct() {
+    editingProductId = null;
+    document.getElementById("productModalTitle").textContent = t("product_modal_title_add");
+    document.getElementById("productTitleKey").value = "";
+    document.getElementById("productTextKey").value = "";
+    document.getElementById("productImage").value = "";
+    document.getElementById("productPrice").value = "";
+    document.getElementById("productCategory").value = "assortment";
+    document.getElementById("productModal").style.display = "flex";
+}
+
+function openEditProduct(id, titleKey, textKey, image, price, category) {
+    editingProductId = id;
+    document.getElementById("productModalTitle").textContent = t("product_modal_title_edit");
+    document.getElementById("productTitleKey").value = titleKey || "";
+    document.getElementById("productTextKey").value = textKey || "";
+    document.getElementById("productImage").value = image || "";
+    document.getElementById("productPrice").value = price || "";
+    document.getElementById("productCategory").value = category || "assortment";
+    document.getElementById("productModal").style.display = "flex";
+}
+
+function closeProductModal() {
+    document.getElementById("productModal").style.display = "none";
+}
+
+async function saveProduct() {
+    const payload = {
+        title_key: document.getElementById("productTitleKey").value.trim(),
+        text_key: document.getElementById("productTextKey").value.trim(),
+        image: document.getElementById("productImage").value.trim(),
+        price: document.getElementById("productPrice").value.trim(),
+        category: document.getElementById("productCategory").value.trim() || "assortment",
+        is_active: 1
+    };
+
+    try {
+        const url = editingProductId ? `/api/products/${editingProductId}` : "/api/products";
+        const method = editingProductId ? "PUT" : "POST";
+
+        const res = await fetch(url, {
+            method,
+            headers: jsonHeaders(),
+            body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            throw new Error(data.message || t("product_save_error"));
+        }
+
+        closeProductModal();
+        await loadProducts();
+    } catch (error) {
+        alert(error.message);
+    }
+}
+
+async function deleteProduct(id) {
+    try {
+        const res = await fetch(`/api/products/${id}`, {
+            method: "DELETE",
+            headers: authHeaders()
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            throw new Error(data.message || t("product_delete_error"));
+        }
+
+        await loadProducts();
+    } catch (error) {
+        alert(error.message);
+    }
 }
 
 /* ===== QUESTIONS ===== */
@@ -338,6 +567,7 @@ function showResult() {
 
     const result = getResult();
     const bouquet = bouquets[result];
+
     if (localStorage.getItem("token")) {
         import("/assets/js/test-api.js")
             .then(({ saveTest }) => saveTest({ result }))
@@ -407,20 +637,21 @@ function showResult() {
 
 /* ===== INIT ===== */
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
     initReveal();
     initAccordion();
-    initBuyButtons();
+
+    await loadCurrentUser();
 
     const nextBtn = document.getElementById("next-btn");
     const prevBtn = document.getElementById("prev-btn");
     const isTestPage = !!document.getElementById("question");
 
-    loadLanguage(localStorage.getItem("lang") || "en").then(() => {
-        if (isTestPage) {
-            showQuestion();
-        }
-    });
+    await loadLanguage(localStorage.getItem("lang") || "en");
+
+    if (isTestPage) {
+        showQuestion();
+    }
 
     if (nextBtn) {
         nextBtn.onclick = nextQuestion;
@@ -431,15 +662,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     document.querySelectorAll(".lang-btn").forEach((btn) => {
-        btn.onclick = () => {
+        btn.onclick = async () => {
             const lang = btn.dataset.lang;
             localStorage.setItem("lang", lang);
+            await loadLanguage(lang);
 
-            loadLanguage(lang).then(() => {
-                if (isTestPage) {
-                    showQuestion();
-                }
-            });
+            if (isTestPage) {
+                showQuestion();
+            }
         };
     });
+
+    document.getElementById("addProductBtn")?.addEventListener("click", openAddProduct);
+    document.getElementById("cancelProductBtn")?.addEventListener("click", closeProductModal);
+    document.getElementById("saveProductBtn")?.addEventListener("click", saveProduct);
 });

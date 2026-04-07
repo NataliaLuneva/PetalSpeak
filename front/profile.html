@@ -42,6 +42,7 @@
                     <img id="avatarPreview" class="avatar" src="/assets/img/user.png" alt="Avatar">
                     <h2 id="profileName">User</h2>
                     <p id="profileEmail" class="muted">email@example.com</p>
+                    <p id="profileRole" class="muted">Role: user</p>
 
                     <label class="upload-label" for="avatarInput">
                         <span data-i18n="upload_photo">Upload photo</span>
@@ -104,6 +105,21 @@
                     <div id="testsList" class="list">
                         <p class="empty" data-i18n="loading_tests">Loading tests...</p>
                     </div>
+                </div>
+
+                <div id="adminStatsCard" class="profile-card" style="display:none;">
+                    <h2 class="section-title" data-i18n="statistics_title">Statistics</h2>
+                    <div id="adminStatsList" class="list"></div>
+                </div>
+
+                <div id="adminOrdersCard" class="profile-card" style="display:none;">
+                    <h2 class="section-title" data-i18n="all_orders_title">All orders</h2>
+                    <div id="adminOrdersList" class="list"></div>
+                </div>
+
+                <div id="adminUsersCard" class="profile-card" style="display:none;">
+                    <h2 class="section-title" data-i18n="users_title">Users</h2>
+                    <div id="adminUsersList" class="list"></div>
                 </div>
             </section>
         </div>

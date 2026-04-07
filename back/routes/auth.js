@@ -100,6 +100,18 @@ router.post("/login", async (req, res) => {
 
         const user = rows[0];
 
+        if (user.is_deleted) {
+            return res.status(403).json({
+                message: "Аккаунт удалён"
+            });
+        }
+
+        if (user.is_blocked) {
+            return res.status(403).json({
+                message: "Аккаунт заблокирован"
+            });
+        }
+
         const isValid = await bcrypt.compare(password, user.password);
         if (!isValid) {
             return res.status(400).json({
@@ -110,7 +122,8 @@ router.post("/login", async (req, res) => {
         const token = jwt.sign(
             {
                 id: user.id,
-                email: user.email
+                email: user.email,
+                role: user.role || "user"
             },
             JWT_SECRET,
             { expiresIn: "7d" }
@@ -123,7 +136,8 @@ router.post("/login", async (req, res) => {
                 id: user.id,
                 name: user.name,
                 email: user.email,
-                avatar: user.avatar
+                avatar: user.avatar,
+                role: user.role || "user"
             }
         });
     } catch (error) {
@@ -138,7 +152,7 @@ router.post("/login", async (req, res) => {
 router.get("/me", auth, async (req, res) => {
     try {
         const [rows] = await pool.query(
-            "SELECT id, name, email, avatar, created_at FROM users WHERE id = ?",
+            "SELECT id, name, email, avatar, created_at, role, is_blocked, is_deleted FROM users WHERE id = ?",
             [req.user.id]
         );
 
@@ -185,7 +199,7 @@ router.put("/profile", auth, async (req, res) => {
         );
 
         const [rows] = await pool.query(
-            "SELECT id, name, email, avatar FROM users WHERE id = ?",
+            "SELECT id, name, email, avatar, role FROM users WHERE id = ?",
             [req.user.id]
         );
 

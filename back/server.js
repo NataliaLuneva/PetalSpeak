@@ -5,6 +5,8 @@ const cors = require("cors");
 const authRoutes = require("./routes/auth");
 const testRoutes = require("./routes/tests");
 const orderRoutes = require("./routes/orders");
+const adminRoutes = require("./routes/admin");
+const productRoutes = require("./routes/products");
 
 const app = express();
 const PORT = 3000;
@@ -22,6 +24,8 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/api/auth", authRoutes);
 app.use("/api/tests", testRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/products", productRoutes);
 
 app.get("/", (req, res) => {
     res.sendFile(path.join(FRONT_DIR, "index.html"));
