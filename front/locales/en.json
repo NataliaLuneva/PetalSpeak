@@ -456,6 +456,11 @@
     "admin_to": "To:",
     "admin_show": "Show",
     "address_label": "Delivery address",
-    "address_placeholder": "Delivery address"
-
+    "address_placeholder": "Delivery address",
+    "passwordWeak": "Password must be at least 8 characters long and contain an uppercase letter, a lowercase letter, a number, and a special character.",
+    "accountTemporarilyBlocked": "The account has been temporarily locked for 3 hours due to failed login attempts.",
+    "accountBlockedAfterAttempts": "The account has been locked for 3 hours after 3 failed login attempts.",
+    "wrongPasswordAttemptsLeft": "Incorrect password. Attempts remaining: {count}",
+    "newPasswordWeak": "The new password must be at least 8 characters long and contain an uppercase letter, a lowercase letter, a number, and a special character.",
+    "sessionExpired": "Session expired. Please sign in again."
 }

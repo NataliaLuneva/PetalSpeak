@@ -456,5 +456,11 @@
     "admin_show": "Näita",
     "filter_period_title": "Filtreeri kuupäeva järgi",
     "address_label": "Tarneaadress",
-    "address_placeholder": "Sisesta tarneaadress"
+    "address_placeholder": "Sisesta tarneaadress",
+    "passwordWeak": "Parool peab olema vähemalt 8 tähemärki pikk ning sisaldama suurtähte, väiketähte, numbrit ja erimärki.",
+    "accountTemporarilyBlocked": "Konto on ebaõnnestunud sisselogimiskatsete tõttu ajutiselt 3 tunniks blokeeritud.",
+    "accountBlockedAfterAttempts": "Konto blokeeriti 3 tunniks pärast kolme ebaõnnestunud sisselogimiskatset.",
+    "wrongPasswordAttemptsLeft": "Vale parool. Allesjäänud katsed: {count}",
+    "newPasswordWeak": "Uus parool peab olema vähemalt 8 tähemärki pikk ning sisaldama suurtähte, väiketähte, numbrit ja erimärki.",
+    "sessionExpired": "Seanss on aegunud. Palun logi uuesti sisse."
 }

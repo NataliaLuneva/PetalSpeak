@@ -23,7 +23,7 @@ module.exports = (req, res, next) => {
     } catch (error) {
         console.error("Auth middleware error:", error);
         return res.status(401).json({
-            message: "Недействительный токен"
+            message: "Сессия истекла. Войдите снова"
         });
     }
 };

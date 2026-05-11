@@ -11,6 +11,16 @@ const auth = require("../middleware/auth");
 const router = express.Router();
 const JWT_SECRET = "secret123";
 
+function isStrongPassword(password) {
+    return (
+        password.length >= 8 &&
+        /[A-Z]/.test(password) &&
+        /[a-z]/.test(password) &&
+        /[0-9]/.test(password) &&
+        /[^A-Za-z0-9]/.test(password)
+    );
+}
+
 // ===== uploads folder =====
 const uploadDir = path.join(__dirname, "..", "uploads", "avatars");
 if (!fs.existsSync(uploadDir)) {
@@ -50,6 +60,15 @@ router.post("/register", async (req, res) => {
         if (!name || !email || !password) {
             return res.status(400).json({
                 message: "Заполни все обязательные поля"
+            });
+        }
+
+        if (!isStrongPassword(password)) {
+            return res.status(400).json({
+                message: "Пароль должен быть минимум 8 символов и содержать заглавную букву, строчную букву, цифру и спецсимвол"
+            });
+            return res.status(400).json({
+                messageKey: "passwordWeak"
             });
         }
 
@@ -112,12 +131,57 @@ router.post("/login", async (req, res) => {
             });
         }
 
-        const isValid = await bcrypt.compare(password, user.password);
-        if (!isValid) {
-            return res.status(400).json({
-                message: "Неверный пароль"
+        if (user.blocked_until && new Date(user.blocked_until) > new Date()) {
+            return res.status(403).json({
+                message: "Аккаунт временно заблокирован на 3 часа из-за неверных попыток входа"
+            });
+            return res.status(403).json({
+                messageKey: "accountTemporarilyBlocked"
             });
         }
+
+        const isValid = await bcrypt.compare(password, user.password);
+
+        if (!isValid) {
+            const attempts = (user.failed_attempts || 0) + 1;
+
+            if (attempts >= 3) {
+                await pool.query(
+                    "UPDATE users SET failed_attempts = 0, blocked_until = DATE_ADD(NOW(), INTERVAL 3 HOUR) WHERE id = ?",
+                    [user.id]
+                );
+
+                return res.status(403).json({
+                    message: "Аккаунт заблокирован на 3 часа после 3 неверных попыток входа"
+                });
+
+                return res.status(403).json({
+                    messageKey: "accountBlockedAfterAttempts"
+                });
+            }
+
+            await pool.query(
+                "UPDATE users SET failed_attempts = ? WHERE id = ?",
+                [attempts, user.id]
+            );
+
+            return res.status(400).json({
+                message: `Неверный пароль. Осталось попыток: ${3 - attempts}`
+            });
+
+            return res.status(400).json({
+                messageKey: "wrongPasswordAttemptsLeft",
+                params: {
+                    count: 3 - attempts
+                }
+            });
+        }
+
+        // Если пароль правильный — сбрасываем счётчик и снимаем временную блокировку
+        await pool.query(
+            "UPDATE users SET failed_attempts = 0, blocked_until = NULL WHERE id = ?",
+            [user.id]
+        );
 
         const token = jwt.sign(
             {
@@ -126,7 +190,7 @@ router.post("/login", async (req, res) => {
                 role: user.role || "user"
             },
             JWT_SECRET,
-            { expiresIn: "7d" }
+            { expiresIn: "15m" }
         );
 
         res.json({
@@ -144,6 +208,10 @@ router.post("/login", async (req, res) => {
         console.error("Login error:", error);
         res.status(500).json({
             message: "Ошибка входа"
+        });
+
+        return res.status(401).json({
+            messageKey: "sessionExpired"
         });
     }
 });
@@ -226,9 +294,13 @@ router.put("/password", auth, async (req, res) => {
             });
         }
 
-        if (newPassword.length < 6) {
+        if (!isStrongPassword(newPassword)) {
             return res.status(400).json({
-                message: "Новый пароль должен быть минимум 6 символов"
+                message: "Новый пароль должен быть минимум 8 символов и содержать заглавную букву, строчную букву, цифру и спецсимвол"
+            });
+
+            return res.status(400).json({
+                messageKey: "newPasswordWeak"
             });
         }
 
