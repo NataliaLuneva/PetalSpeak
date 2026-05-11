@@ -136,7 +136,7 @@ async function loadProducts() {
         const products = await res.json();
 
         if (!res.ok) {
-            throw new Error(products.message || "Ошибка загрузки товаров");
+            throw new Error(products.messageKey ? t(products.messageKey) : products.message || "Ошибка загрузки товаров");
         }
 
         const isAdmin =
@@ -332,7 +332,8 @@ async function saveProduct() {
         const data = await res.json();
 
         if (!res.ok) {
-            throw new Error(data.message || "Ошибка сохранения");
+            const messageKey = data.messageKey || "error_save";
+            throw new Error(t(messageKey) || data.message || "Ошибка сохранения");
         }
 
         closeProductModal();
@@ -352,7 +353,8 @@ async function deleteProduct(id) {
         const data = await res.json();
 
         if (!res.ok) {
-            throw new Error(data.message || t("product_delete_error"));
+            const messageKey = data.messageKey || "error_delete";
+            throw new Error(t(messageKey) || data.message || t("product_delete_error"));
         }
 
         await loadProducts();

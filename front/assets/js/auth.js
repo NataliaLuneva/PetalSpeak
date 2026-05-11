@@ -86,7 +86,21 @@ async function apiRequest(url, options = {}) {
     const data = await response.json().catch(() => ({}));
 
     if (!response.ok) {
-        throw new Error(data.message || t("request_error") || "Ошибка запроса");
+        const messageKey = data.messageKey || "request_error";
+        let message = t(messageKey) || data.message || "Ошибка запроса";
+        if (data.count !== undefined) {
+            message = message.replace("{count}", data.count);
+        }
+        throw new Error(message);
+    }
+
+    // Translate success message if present
+    if (data.messageKey) {
+        let message = t(data.messageKey);
+        if (data.count !== undefined) {
+            message = message.replace("{count}", data.count);
+        }
+        data.message = message;
     }
 
     return data;
@@ -124,7 +138,7 @@ async function register(event) {
     try {
         setLoading(submitBtn, t("register_loading"));
 
-        await apiRequest(`${AUTH_API}/register`, {
+        const data = await apiRequest(`${AUTH_API}/register`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -132,7 +146,7 @@ async function register(event) {
             body: JSON.stringify({ name, email, password })
         });
 
-        showMessage(t("register_success"));
+        showMessage(data.message || t("register_success"));
 
         setTimeout(() => {
             switchToLogin();
@@ -181,6 +195,7 @@ async function login(event) {
         }
 
         saveToken(data.token);
+        // showMessage(data.message || t("login_success"));
         showMessage(t("login_success"));
 
         setTimeout(() => {

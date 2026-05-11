@@ -29,7 +29,9 @@ if (!fs.existsSync(uploadDir)) {
 
 // ===== multer config =====
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, uploadDir),
+    destination: (req, file, cb) => {
+        cb(null, uploadDir);
+    },
     filename: (req, file, cb) => {
         const ext = path.extname(file.originalname);
         cb(null, `user_${req.user.id}_${Date.now()}${ext}`);
@@ -38,12 +40,14 @@ const storage = multer.diskStorage({
 
 const upload = multer({
     storage,
-    limits: { fileSize: 5 * 1024 * 1024 },
+    limits: {
+        fileSize: 5 * 1024 * 1024
+    },
     fileFilter: (req, file, cb) => {
         if (file.mimetype.startsWith("image/")) {
             cb(null, true);
         } else {
-            cb(new Error("Можно загружать только изображения"));
+            cb(new Error("error_only_images"));
         }
     }
 });
@@ -55,13 +59,12 @@ router.post("/register", async (req, res) => {
 
         if (!name || !email || !password) {
             return res.status(400).json({
-                message: "Заполни все обязательные поля"
+                messageKey: "error_fields_missing"
             });
         }
 
         if (!isStrongPassword(password)) {
             return res.status(400).json({
-                message: "Пароль должен быть минимум 8 символов и содержать заглавную букву, строчную букву, цифру и спецсимвол",
                 messageKey: "passwordWeak"
             });
         }
@@ -73,7 +76,7 @@ router.post("/register", async (req, res) => {
 
         if (existing.length) {
             return res.status(400).json({
-                message: "Пользователь с таким email уже существует"
+                messageKey: "error_user_exists"
             });
         }
 
@@ -84,13 +87,13 @@ router.post("/register", async (req, res) => {
             [name, email, hashedPassword]
         );
 
-        return res.json({
-            message: "Регистрация прошла успешно"
+        res.json({
+            messageKey: "registration_success"
         });
     } catch (error) {
         console.error("Register error:", error);
-        return res.status(500).json({
-            message: "Ошибка регистрации"
+        res.status(500).json({
+            messageKey: "error_registration"
         });
     }
 });
@@ -107,7 +110,7 @@ router.post("/login", async (req, res) => {
 
         if (!rows.length) {
             return res.status(400).json({
-                message: "Пользователь не найден"
+                messageKey: "error_user_not_found"
             });
         }
 
@@ -115,19 +118,19 @@ router.post("/login", async (req, res) => {
 
         if (user.is_deleted) {
             return res.status(403).json({
-                message: "Аккаунт удалён"
+                messageKey: "account_deleted"
             });
         }
 
         if (user.is_blocked) {
             return res.status(403).json({
-                message: "Аккаунт заблокирован"
+                messageKey: "account_blocked"
             });
         }
 
+        // временная блокировка
         if (user.blocked_until && new Date(user.blocked_until) > new Date()) {
             return res.status(403).json({
-                message: "Аккаунт временно заблокирован",
                 messageKey: "accountTemporarilyBlocked"
             });
         }
@@ -137,6 +140,7 @@ router.post("/login", async (req, res) => {
         if (!isValid) {
             const attempts = (user.failed_attempts || 0) + 1;
 
+            // если 3 попытки → блокировка
             if (attempts >= 3) {
                 await pool.query(
                     "UPDATE users SET failed_attempts = 0, blocked_until = DATE_ADD(NOW(), INTERVAL 3 HOUR) WHERE id = ?",
@@ -144,23 +148,23 @@ router.post("/login", async (req, res) => {
                 );
 
                 return res.status(403).json({
-                    message: "Аккаунт заблокирован на 3 часа",
                     messageKey: "accountBlockedAfterAttempts"
                 });
             }
 
+            // увеличиваем попытки
             await pool.query(
                 "UPDATE users SET failed_attempts = ? WHERE id = ?",
                 [attempts, user.id]
             );
 
             return res.status(400).json({
-                message: `Неверный пароль. Осталось попыток: ${3 - attempts}`,
                 messageKey: "wrongPasswordAttemptsLeft",
-                params: { count: 3 - attempts }
+                count: 3 - attempts
             });
         }
 
+        // успех → сброс
         await pool.query(
             "UPDATE users SET failed_attempts = 0, blocked_until = NULL WHERE id = ?",
             [user.id]
@@ -177,7 +181,7 @@ router.post("/login", async (req, res) => {
         );
 
         return res.json({
-            message: "Вход выполнен",
+            messageKey: "login_success",
             token,
             user: {
                 id: user.id,
@@ -187,10 +191,11 @@ router.post("/login", async (req, res) => {
                 role: user.role || "user"
             }
         });
+
     } catch (error) {
         console.error("Login error:", error);
         return res.status(500).json({
-            message: "Ошибка входа"
+            messageKey: "error_login"
         });
     }
 });
@@ -209,10 +214,10 @@ router.get("/me", auth, async (req, res) => {
             });
         }
 
-        return res.json(rows[0]);
+        res.json(rows[0]);
     } catch (error) {
         console.error("Get me error:", error);
-        return res.status(500).json({
+        res.status(500).json({
             message: "Ошибка получения пользователя"
         });
     }
@@ -250,13 +255,13 @@ router.put("/profile", auth, async (req, res) => {
             [req.user.id]
         );
 
-        return res.json({
+        res.json({
             message: "Профиль обновлен",
             user: rows[0]
         });
     } catch (error) {
         console.error("Update profile error:", error);
-        return res.status(500).json({
+        res.status(500).json({
             message: "Ошибка обновления профиля"
         });
     }
@@ -275,7 +280,10 @@ router.put("/password", auth, async (req, res) => {
 
         if (!isStrongPassword(newPassword)) {
             return res.status(400).json({
-                message: "Слабый пароль",
+                message: "Новый пароль должен быть минимум 8 символов и содержать заглавную букву, строчную букву, цифру и спецсимвол"
+            });
+
+            return res.status(400).json({
                 messageKey: "newPasswordWeak"
             });
         }
@@ -312,12 +320,12 @@ router.put("/password", auth, async (req, res) => {
             [hashedPassword, req.user.id]
         );
 
-        return res.json({
+        res.json({
             message: "Пароль успешно изменен"
         });
     } catch (error) {
         console.error("Change password error:", error);
-        return res.status(500).json({
+        res.status(500).json({
             message: "Ошибка смены пароля"
         });
     }
@@ -346,13 +354,13 @@ router.post("/avatar", auth, (req, res) => {
                 [avatarPath, req.user.id]
             );
 
-            return res.json({
+            res.json({
                 message: "Фото обновлено",
                 avatar: avatarPath
             });
         } catch (error) {
             console.error("Upload avatar error:", error);
-            return res.status(500).json({
+            res.status(500).json({
                 message: "Ошибка загрузки фото"
             });
         }

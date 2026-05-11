@@ -137,7 +137,9 @@ router.get("/", async (req, res) => {
         res.json(rows);
     } catch (error) {
         console.error("Get products error:", error);
-        res.status(500).json({ message: "Ошибка получения товаров" });
+        res.status(500).json({
+            messageKey: "error_load"
+        });
     }
 });
 
@@ -167,14 +169,14 @@ router.post(
 
             if (!sourceTitle || !sourceText || priceValue === "" || priceValue === undefined || priceValue === null) {
                 return res.status(400).json({
-                    message: "Не все поля переданы"
+                    messageKey: "error_fields_missing"
                 });
             }
 
             const parsedPrice = Number(priceValue);
             if (Number.isNaN(parsedPrice)) {
                 return res.status(400).json({
-                    message: "Неверная цена"
+                    messageKey: "error_invalid_price"
                 });
             }
 
@@ -227,12 +229,13 @@ router.post(
             ]);
 
             res.json({
-                message: "Товар добавлен",
-                id: result.insertId
+                messageKey: "success"
             });
         } catch (error) {
             console.error("Create product error:", error);
-            res.status(500).json({ message: "Ошибка добавления" });
+            res.status(500).json({
+                messageKey: "error_save"
+            });
         }
     }
 );
@@ -264,14 +267,14 @@ router.put(
 
             if (!sourceTitle || !sourceText || priceValue === "" || priceValue === undefined || priceValue === null) {
                 return res.status(400).json({
-                    message: "Не все поля переданы"
+                    messageKey: "error_fields_missing"
                 });
             }
 
             const parsedPrice = Number(priceValue);
             if (Number.isNaN(parsedPrice)) {
                 return res.status(400).json({
-                    message: "Неверная цена"
+                    messageKey: "error_invalid_price"
                 });
             }
 
@@ -326,11 +329,13 @@ router.put(
             ]);
 
             res.json({
-                message: "Товар обновлён"
+                messageKey: "success"
             });
         } catch (error) {
             console.error("Update product error:", error);
-            res.status(500).json({ message: "Ошибка обновления" });
+            res.status(500).json({
+                messageKey: "error_save"
+            });
         }
     }
 );
@@ -347,11 +352,13 @@ router.delete(
             await pool.query("DELETE FROM products WHERE id = ?", [req.params.id]);
 
             res.json({
-                message: "Товар удалён"
+                messageKey: "success"
             });
         } catch (error) {
             console.error("Delete product error:", error);
-            res.status(500).json({ message: "Ошибка удаления" });
+            res.status(500).json({
+                messageKey: "error_delete"
+            });
         }
     }
 );
