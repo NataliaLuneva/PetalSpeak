@@ -27,21 +27,83 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // перевод
-async function translateText(text, targetLang) {
+async function translateText(text, sourceLang, targetLang) {
     if (!text) return "";
 
     try {
-        const url =
-            `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=ru|${targetLang}`;
+        const googleUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
+        const googleResponse = await fetch(googleUrl);
 
+        if (googleResponse.ok) {
+            const googleData = await googleResponse.json();
+            const translated = googleData?.[0]?.[0]?.[0];
+            if (translated) {
+                console.log(`Google ${sourceLang} -> ${targetLang}: "${text}" -> "${translated}"`);
+                return translated;
+            }
+        }
+
+        const libreResponse = await fetch("https://libretranslate.com/translate", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                q: text,
+                source: sourceLang,
+                target: targetLang
+            })
+        });
+
+        if (libreResponse.ok) {
+            const libreData = await libreResponse.json();
+            if (libreData.translatedText) {
+                console.log(`LibreTranslate ${sourceLang} -> ${targetLang}: "${text}" -> "${libreData.translatedText}"`);
+                return libreData.translatedText;
+            }
+        }
+
+        const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${sourceLang}|${targetLang}`;
         const response = await fetch(url);
         const data = await response.json();
 
+        console.log(`MyMemory ${sourceLang} -> ${targetLang}: "${text}" -> "${data?.responseData?.translatedText}"`);
         return data?.responseData?.translatedText || text;
     } catch (error) {
         console.error("Translate error:", error);
         return text;
     }
+}
+
+async function buildTranslations(text, sourceLang) {
+    if (!text) {
+        return {
+            title_ru: "",
+            title_en: "",
+            title_et: ""
+        };
+    }
+
+    const lang = sourceLang || "ru";
+    let title_ru = "";
+    let title_en = "";
+    let title_et = "";
+
+    if (lang === "en") {
+        title_en = text;
+        title_ru = await translateText(text, "en", "ru");
+        title_et = await translateText(text, "en", "et");
+    } else if (lang === "et") {
+        title_et = text;
+        title_ru = await translateText(text, "et", "ru");
+        title_en = await translateText(text, "et", "en");
+    } else {
+        title_ru = text;
+        title_en = await translateText(text, "ru", "en");
+        title_et = await translateText(text, "ru", "et");
+    }
+
+    return { title_ru, title_en, title_et };
 }
 
 //
@@ -90,24 +152,43 @@ router.post(
     async (req, res) => {
         try {
             const {
-                title_ru,
-                text_ru,
+                title_source,
+                text_source,
+                src_lang,
                 price,
                 category,
                 feeling_type
             } = req.body || {};
 
-            if (!title_ru || !text_ru || !price) {
+            const sourceTitle = (title_source || req.body.title_ru || "").trim();
+            const sourceText = (text_source || req.body.text_ru || "").trim();
+            const sourceLang = (src_lang || "ru").trim() || "ru";
+            const priceValue = typeof price === "string" ? price.trim() : price;
+
+            if (!sourceTitle || !sourceText || priceValue === "" || priceValue === undefined || priceValue === null) {
                 return res.status(400).json({
                     message: "Не все поля переданы"
                 });
             }
 
-            const title_en = await translateText(title_ru, "en");
-            const title_et = await translateText(title_ru, "et");
+            const parsedPrice = Number(priceValue);
+            if (Number.isNaN(parsedPrice)) {
+                return res.status(400).json({
+                    message: "Неверная цена"
+                });
+            }
 
-            const text_en = await translateText(text_ru, "en");
-            const text_et = await translateText(text_ru, "et");
+            const {
+                title_ru,
+                title_en,
+                title_et
+            } = await buildTranslations(sourceTitle, sourceLang);
+
+            const {
+                title_ru: text_ru,
+                title_en: text_en,
+                title_et: text_et
+            } = await buildTranslations(sourceText, sourceLang);
 
             const imagePath = req.file
                 ? `/uploads/products/${req.file.filename}`
@@ -131,8 +212,8 @@ router.post(
                 )
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             `, [
-                title_ru,
-                text_ru,
+                sourceTitle,
+                sourceText,
                 title_ru,
                 title_en,
                 title_et,
@@ -140,7 +221,7 @@ router.post(
                 text_en,
                 text_et,
                 imagePath,
-                price,
+                parsedPrice,
                 category || "assortment",
                 feeling_type || null
             ]);
@@ -167,25 +248,44 @@ router.put(
     async (req, res) => {
         try {
             const {
-                title_ru,
-                text_ru,
+                title_source,
+                text_source,
+                src_lang,
                 price,
                 category,
                 feeling_type,
                 old_image
             } = req.body || {};
 
-            if (!title_ru || !text_ru || !price) {
+            const sourceTitle = (title_source || req.body.title_ru || "").trim();
+            const sourceText = (text_source || req.body.text_ru || "").trim();
+            const sourceLang = (src_lang || "ru").trim() || "ru";
+            const priceValue = typeof price === "string" ? price.trim() : price;
+
+            if (!sourceTitle || !sourceText || priceValue === "" || priceValue === undefined || priceValue === null) {
                 return res.status(400).json({
                     message: "Не все поля переданы"
                 });
             }
 
-            const title_en = await translateText(title_ru, "en");
-            const title_et = await translateText(title_ru, "et");
+            const parsedPrice = Number(priceValue);
+            if (Number.isNaN(parsedPrice)) {
+                return res.status(400).json({
+                    message: "Неверная цена"
+                });
+            }
 
-            const text_en = await translateText(text_ru, "en");
-            const text_et = await translateText(text_ru, "et");
+            const {
+                title_ru,
+                title_en,
+                title_et
+            } = await buildTranslations(sourceTitle, sourceLang);
+
+            const {
+                title_ru: text_ru,
+                title_en: text_en,
+                title_et: text_et
+            } = await buildTranslations(sourceText, sourceLang);
 
             let imagePath = old_image || null;
 
@@ -210,8 +310,8 @@ router.put(
                     feeling_type = ?
                 WHERE id = ?
             `, [
-                title_ru,
-                text_ru,
+                sourceTitle,
+                sourceText,
                 title_ru,
                 title_en,
                 title_et,
@@ -219,7 +319,7 @@ router.put(
                 text_en,
                 text_et,
                 imagePath,
-                price,
+                parsedPrice,
                 category || "assortment",
                 feeling_type || null,
                 req.params.id

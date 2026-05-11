@@ -545,22 +545,22 @@
     <script src="/assets/js/main.js"></script>
     <script src="/assets/js/header-auth.js"></script>
 
-    <div id="productModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:999; align-items:center; justify-content:center;">
-        <div style="background:#fff; color:#000; padding:20px; border-radius:16px; width:400px;">
+    <div id="productModal" class="modal-overlay" style="display:none;">
+        <div class="modal-card">
+            <h3 id="productModalTitle" class="modal-title">Product</h3>
 
-            <h3 id="productModalTitle">Product</h3>
-
-            <input id="productTitleKey" placeholder="title key" style="width:100%; margin-bottom:10px;">
-            <input id="productTextKey" placeholder="text key" style="width:100%; margin-bottom:10px;">
-            <input id="productImage" type="file" accept="image/*" style="width:100%; margin-bottom:10px;">
-            <input id="productPrice" type="number" placeholder="price" style="width:100%; margin-bottom:10px;">
-            <input id="productCategory" placeholder="category" style="width:100%; margin-bottom:10px;">
-
-            <div style="display:flex; gap:10px;">
-                <button id="saveProductBtn">Save</button>
-                <button id="cancelProductBtn">Cancel</button>
+            <div class="order-form">
+                <input id="productTitleKey" class="order-input" placeholder="title key" />
+                <input id="productTextKey" class="order-input" placeholder="text key" />
+                <input id="productImage" class="order-input" type="file" accept="image/*" />
+                <input id="productPrice" class="order-input" type="number" placeholder="price" />
+                <input id="productCategory" class="order-input" placeholder="category" />
             </div>
 
+            <div class="modal-actions">
+                <button id="saveProductBtn" class="btn">Save</button>
+                <button id="cancelProductBtn" class="btn secondary" type="button">Cancel</button>
+            </div>
         </div>
     </div>
 </body>

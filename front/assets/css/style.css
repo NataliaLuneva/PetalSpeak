@@ -172,11 +172,17 @@ h3 {
   font-size:20px;
   box-shadow: 0 8px 24px rgba(0,0,0,.08);
   transition:0.3s;
+  border:none;
+  outline:none;
 }
 
 .btn:hover{
   background:var(--btnHover);
   transform:translateY(-2px);
+}
+
+.btn:focus{
+  outline:none;
 }
 
 .hint{
@@ -426,6 +432,63 @@ h3 {
 .order-form textarea{ min-height:80px; }
 .order-form button{ width:100%; }
 
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 999;
+    padding: 20px;
+}
+
+.modal-card {
+    width: min(460px, 100%);
+    background-color: #fff8f9;
+    color: #3f3a3a;
+    padding: 30px;
+    border-radius: 24px;
+    box-shadow: 0 22px 60px rgba(0, 0, 0, 0.18);
+}
+
+.modal-title {
+    margin: 0 0 20px;
+    font-family: "Cormorant SC", serif;
+    font-size: 32px;
+    letter-spacing: 0.24em;
+    color: #3f3a3a;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    margin-top: 16px;
+}
+
+.modal-actions .btn {
+    min-width: 120px;
+    flex: 1;
+    background: #b3d5b2;
+    color: #1d1d1d;
+}
+
+.modal-actions .btn:hover {
+    background: #a0c7a0;
+}
+
+.modal-actions .btn.secondary {
+    background: #ffccd2;
+    color: #3f3a3a;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.modal-actions .btn.secondary:hover {
+    background: #f5a7b0;
+}
+
 .order-panel {
     max-width: 1100px;
     margin: 0 auto;
@@ -541,7 +604,7 @@ textarea:-webkit-autofill {
 
 .buy-btn {
     margin: 12px auto 0;
-    display: block;
+    /* display: block; */
     width: fit-content;
     /* width: 300px; */
     padding: 10px 18px;
@@ -835,38 +898,47 @@ textarea:-webkit-autofill {
 
 .profile-input {
     width: 100%;
-    box-sizing: border-box;
-    padding: 15px 16px;
+    padding: 14px 16px;
     border-radius: 14px;
-    border: 1px solid #d3c1c5;
-    background: #dfe6f1;
-    font-size: 16px;
+    border: 1px solid #e8d1d1c5;
+    background-color: rgba(255,255,255,0.55);
+    font: inherit;
+    box-sizing: border-box;
     outline: none;
 }
 
 .profile-input:focus {
-    border-color: #a7c0ad;
-    background: #eef4f1;
+    outline: none !important;
+    border-color: #e4bcbc;
+    box-shadow: 0 0 8px rgba(228, 180, 180, 0.9), 0 0 0 3px rgba(228, 180, 180, 0.5);
 }
 
 .profile-btn {
     border: none;
-    border-radius: 16px;
-    background: #a7c0ad;
-    color: #2f3a34;
-    padding: 14px 18px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: 0.2s ease;
-}
+    outline: none;
+    border-radius: 14px;
+        background: #a7c0ad;
+        color: #2f3a34;
+        padding: 16px 22px;
+        font-size: 18px;
+        cursor: pointer;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, .08);
+        transition: 0.3s ease;
+    }
 
-.profile-btn:hover {
-    background: #97b4a0;
+    .profile-btn:hover {
+        background: #97b4a0;
+    outline: none;
 }
 
 .profile-btn.secondary {
     background: #e4d7da;
     color: #4b3f3f;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .08);
+}
+
+.profile-btn.secondary:hover {
+    background: #d7c5c8;
 }
 
 .message {
@@ -1340,9 +1412,9 @@ textarea:-webkit-autofill {
     }
 
     .profile-btn {
-        padding: 12px 14px;
-        font-size: 14px;
-        border-radius: 10px;
+        padding: 14px 18px;
+        font-size: 15px;
+        border-radius: 12px;
     }
 
     .message {

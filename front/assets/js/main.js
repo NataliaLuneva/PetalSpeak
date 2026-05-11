@@ -177,8 +177,9 @@ async function loadProducts() {
                                     <button
                                         class="profile-btn edit-product-btn"
                                         data-id="${product.id}"
-                                        data-title-ru="${product.title_ru || product.title_key || ""}"
-                                        data-text-ru="${product.text_ru || product.text_key || ""}"
+                                        data-title-lang="${product[`title_${currentLang}`] || product.title_ru || product.title_key || ""}"
+                                        data-text-lang="${product[`text_${currentLang}`] || product.text_ru || product.text_key || ""}"
+                                        data-source-lang="${product[`title_${currentLang}`] ? currentLang : (product.title_ru ? "ru" : currentLang)}"
                                         data-image="${product.image || ""}"
                                         data-price="${product.price}"
                                         data-category="${product.category}"
@@ -229,8 +230,9 @@ function initProductActionButtons() {
         btn.addEventListener("click", () => {
             openEditProduct(
                 btn.dataset.id,
-                btn.dataset.titleRu,
-                btn.dataset.textRu,
+                btn.dataset.titleLang,
+                btn.dataset.textLang,
+                btn.dataset.sourceLang,
                 btn.dataset.image,
                 btn.dataset.price,
                 btn.dataset.category
@@ -254,18 +256,20 @@ function openAddProduct() {
     document.getElementById("productImage").dataset.oldImage = "";
     document.getElementById("productPrice").value = "";
     document.getElementById("productCategory").value = "assortment";
+    document.getElementById("productModal").dataset.sourceLang = currentLang || "ru";
     document.getElementById("productModal").style.display = "flex";
 }
 
-function openEditProduct(id, titleRu, textRu, image, price, category) {
+function openEditProduct(id, titleText, textText, sourceLang, image, price, category) {
     editingProductId = id;
     document.getElementById("productModalTitle").textContent = t("product_modal_title_edit");
-    document.getElementById("productTitleKey").value = titleRu || "";
-    document.getElementById("productTextKey").value = textRu || "";
+    document.getElementById("productTitleKey").value = titleText || "";
+    document.getElementById("productTextKey").value = textText || "";
     document.getElementById("productImage").value = "";
     document.getElementById("productImage").dataset.oldImage = image || "";
     document.getElementById("productPrice").value = price || "";
     document.getElementById("productCategory").value = category || "assortment";
+    document.getElementById("productModal").dataset.sourceLang = sourceLang || currentLang || "ru";
     document.getElementById("productModal").style.display = "flex";
 }
 
@@ -277,13 +281,17 @@ async function saveProduct() {
     const formData = new FormData();
 
     formData.append(
-        "title_ru",
+        "title_source",
         document.getElementById("productTitleKey").value.trim()
     );
 
     formData.append(
-        "text_ru",
+        "text_source",
         document.getElementById("productTextKey").value.trim()
+    );
+    formData.append(
+        "src_lang",
+        document.getElementById("productModal").dataset.sourceLang || currentLang || "ru"
     );
     formData.append(
         "price",
