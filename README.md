@@ -1,4 +1,4 @@
-# Lõputöö PetalSpeak-
+# Lõputöö PetalSpeak
 
 # 🌸 Petal Speak
 
