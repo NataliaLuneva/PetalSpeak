@@ -7,6 +7,18 @@
     <body>
         <h1>Admin Panel</h1>
 
+        <div class="date-filter">
+            <label for="dateFrom" data-i18n="admin.from">От:</label>
+            <input type="date" id="dateFrom">
+
+            <label for="dateTo" data-i18n="admin.to">До:</label>
+            <input type="date" id="dateTo">
+
+            <button id="applyDateFilter" type="button" data-i18n="admin.show">
+                Показать
+            </button>
+        </div>
+
         <h2>Users</h2>
         <div id="users"></div>
 
@@ -42,7 +54,9 @@
             }
 
             async function loadOrders() {
-                const orders = await getAdminOrders();
+                const from = document.getElementById("dateFrom")?.value;
+                const to = document.getElementById("dateTo")?.value;
+                const orders = await getAdminOrders(from, to);
                 document.getElementById("orders").innerHTML = orders.map(order => `
                     <div style="margin-bottom: 16px; border-bottom: 1px solid #ccc; padding-bottom: 8px;">
                         <div><strong>${order.customerName}</strong> (${order.email})</div>
@@ -69,6 +83,9 @@
                 await updateOrderStatus(id, status);
                 loadOrders();
             };
+            document.getElementById("applyDateFilter").onclick = () => {
+    loadOrders();
+};
 
             loadUsers();
             loadOrders();

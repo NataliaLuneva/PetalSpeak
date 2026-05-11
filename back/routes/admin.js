@@ -122,15 +122,26 @@ router.put("/users/:id/delete", auth, requireRole("superadmin"), async (req, res
     }
 });
 
-// все заказы
+// все заказы + фильтр по датам
 router.get("/orders", auth, requireRole("superadmin"), async (req, res) => {
     try {
+        const { from, to } = req.query;
+
+        let where = "";
+        const params = [];
+
+        if (from && to) {
+            where = "WHERE o.created_at >= ? AND o.created_at < DATE_ADD(?, INTERVAL 1 DAY)";
+            params.push(from, to);
+        }
+
         const [orders] = await pool.query(`
             SELECT o.*, u.name AS user_name, u.role AS user_role
             FROM orders o
             LEFT JOIN users u ON o.user_id = u.id
+            ${where}
             ORDER BY o.created_at DESC
-        `);
+        `, params);
 
         res.json(orders);
     } catch (error) {
@@ -139,15 +150,27 @@ router.get("/orders", auth, requireRole("superadmin"), async (req, res) => {
     }
 });
 
-// статистика
+// статистика + фильтр по датам
 router.get("/stats", auth, requireRole("superadmin"), async (req, res) => {
     try {
+        const { from, to } = req.query;
+
+        let where = "";
+        const params = [];
+
+        if (from && to) {
+            where = "WHERE created_at >= ? AND created_at < DATE_ADD(?, INTERVAL 1 DAY)";
+            params.push(from, to);
+        }
+
         const [[totalOrdersRow]] = await pool.query(
-            "SELECT COUNT(*) AS count FROM orders"
+            `SELECT COUNT(*) AS count FROM orders ${where}`,
+            params
         );
 
         const [[totalRevenueRow]] = await pool.query(
-            "SELECT COALESCE(SUM(price), 0) AS total FROM orders"
+            `SELECT COALESCE(SUM(price), 0) AS total FROM orders ${where}`,
+            params
         );
 
         const [[monthRevenueRow]] = await pool.query(`
@@ -160,10 +183,11 @@ router.get("/stats", auth, requireRole("superadmin"), async (req, res) => {
         const [topSales] = await pool.query(`
             SELECT bouquet_title, COUNT(*) AS total_sales, COALESCE(SUM(price), 0) AS revenue
             FROM orders
+            ${where}
             GROUP BY bouquet_title
             ORDER BY total_sales DESC, revenue DESC
             LIMIT 5
-        `);
+        `, params);
 
         res.json({
             totalOrders: totalOrdersRow.count,

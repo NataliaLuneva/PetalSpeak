@@ -46,6 +46,14 @@
                         <label class="order-label" for="message" data-i18n="message_label">Message</label>
                         <textarea id="message" class="order-textarea" placeholder="Message for recipient"></textarea>
 
+                        <label class="order-label" for="address" data-i18n="address_label">Delivery address</label>
+                        <input
+                            id="address"
+                            class="order-input"
+                            type="text"
+                            placeholder="Delivery address"
+                        >
+
                         <h3 class="payment-title" data-i18n="payment_title">Payment details</h3>
 
                         <label class="order-label" for="cardName" data-i18n="card_name_label">Cardholder name</label>
@@ -97,6 +105,7 @@
             document.getElementById("name").placeholder = translations["name_placeholder"] || "Your name";
             document.getElementById("email").placeholder = translations["email_placeholder"] || "Email";
             document.getElementById("message").placeholder = translations["message_placeholder"] || "Message for recipient";
+            document.getElementById("address").placeholder = translations["address_placeholder"] || "Delivery address";
             document.getElementById("cardName").placeholder = translations["card_name_placeholder"] || "Name on card";
             document.getElementById("cardNumber").placeholder = "1234 5678 9012 3456";
             document.getElementById("expiry").placeholder = "MM/YY";
@@ -189,14 +198,17 @@
             const customerName = document.getElementById("name").value.trim();
             const email = document.getElementById("email").value.trim();
             const message = document.getElementById("message").value.trim();
+            const address = document.getElementById("address").value.trim();
 
-            if (!customerName || !email) {
-                resultEl.textContent = translations["fill_required_fields"] || "Please fill in all required fields";
+            if (!customerName || !email || !address) {
+                resultEl.textContent =
+                    translations["fill_required_fields"] || "Please fill in all required fields";
                 return;
             }
 
             if (!isValidEmail(email)) {
-                resultEl.textContent = translations["email_invalid_error"] || "Please enter a valid email address";
+                resultEl.textContent =
+                    translations["email_invalid_error"] || "Please enter a valid email address";
                 return;
             }
 
@@ -209,7 +221,8 @@
             const originalBtnText = orderBtn.innerHTML;
             orderBtn.disabled = true;
             orderBtn.classList.add("loading");
-            orderBtn.innerHTML = `<span class="spinner"></span>${translations["processing_btn"] || "Processing..."}`;
+            orderBtn.innerHTML =
+                `<span class="spinner"></span>${translations["processing_btn"] || "Processing..."}`;
 
             const data = {
                 customerName,
@@ -219,6 +232,7 @@
                 bouquetImage: bouquet.img,
                 price: bouquet.price,
                 message,
+                address,
                 paymentStatus: "paid",
                 paymentMethod: "demo_card"
             };
@@ -260,7 +274,8 @@
                 window.location.href = "/success.html";
             } catch (e) {
                 console.error(e);
-                resultEl.textContent = translations["order_error"] || "Error sending order";
+                resultEl.textContent =
+                    translations["order_error"] || "Error sending order";
                 orderBtn.disabled = false;
                 orderBtn.classList.remove("loading");
                 orderBtn.innerHTML = originalBtnText;

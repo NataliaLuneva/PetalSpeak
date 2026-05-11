@@ -450,6 +450,12 @@
     "product_price_placeholder": "Price",
     "product_category_placeholder": "Category (assortment)",
     "product_save_error": "Error saving product",
-    "product_delete_error": "Error deleting product"
+    "product_delete_error": "Error deleting product",
+    "assortment_title": "Assortment",
+    "admin_from": "From:",
+    "admin_to": "To:",
+    "admin_show": "Show",
+    "address_label": "Delivery address",
+    "address_placeholder": "Delivery address"
 
 }

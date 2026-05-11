@@ -449,5 +449,12 @@
     "product_price_placeholder": "Hind",
     "product_category_placeholder": "Kategooria (assortment)",
     "product_save_error": "Viga salvestamisel",
-    "product_delete_error": "Viga kustutamisel"
+    "product_delete_error": "Viga kustutamisel",
+    "assortment_title": "Assortiment",
+    "admin_from": "Alates:",
+    "admin_to": "Kuni:",
+    "admin_show": "Näita",
+    "filter_period_title": "Filtreeri kuupäeva järgi",
+    "address_label": "Tarneaadress",
+    "address_placeholder": "Sisesta tarneaadress"
 }

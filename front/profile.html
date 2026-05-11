@@ -107,6 +107,31 @@
                     </div>
                 </div>
 
+                <div id="adminDateFilterCard" class="profile-card" style="display:none;">
+                    <h2 class="section-title" data-i18n="filter_period_title">Filter period</h2>
+
+                    <div class="date-filter">
+                        <label>
+                            <span data-i18n="admin_from">From:</span>
+                            <input type="date" id="dateFrom">
+                        </label>
+
+                        <label>
+                            <span data-i18n="admin_to">To:</span>
+                            <input type="date" id="dateTo">
+                        </label>
+
+                        <button
+                            id="applyDateFilter"
+                            class="profile-btn"
+                            type="button"
+                            data-i18n="admin_show"
+                        >
+                            Show
+                        </button>
+                    </div>
+                </div>
+
                 <div id="adminStatsCard" class="profile-card" style="display:none;">
                     <h2 class="section-title" data-i18n="statistics_title">Statistics</h2>
                     <div id="adminStatsList" class="list"></div>

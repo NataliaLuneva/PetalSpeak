@@ -1832,3 +1832,25 @@ textarea:-webkit-autofill {
     transition: all 0.3s ease;
 }
 
+.date-filter {
+    display: flex;
+    gap: 14px;
+    align-items: end;
+    flex-wrap: wrap;
+}
+
+.date-filter label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.date-filter input {
+    padding: 12px 14px;
+    border-radius: 14px;
+    border: 1px solid #d3c1c5;
+    background: rgba(255,255,255,0.9);
+    font: inherit;
+    color: #3F3A3A;
+}
+

@@ -448,7 +448,13 @@
     "product_price_placeholder": "Цена",
     "product_category_placeholder": "Категория (assortment)",
     "product_save_error": "Ошибка сохранения",
-    "product_delete_error": "Ошибка удаления"
-    
+    "product_delete_error": "Ошибка удаления",
+    "assortment_title": "Ассортимент",
+    "admin_from": "От:",
+    "admin_to": "До:",
+    "admin_show": "Показать",
+    "filter_period_title": "Фильтрация по дате",
+    "address_label": "Адрес доставки",
+    "address_placeholder": "Введите адрес доставки"
 }
 

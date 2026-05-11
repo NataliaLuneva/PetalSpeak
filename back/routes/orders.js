@@ -18,7 +18,8 @@ router.post("/", async (req, res) => {
             bouquetTitle,
             bouquetImage,
             price,
-            message
+            message,
+            address
         } = req.body;
 
         if (!customerName || !email || !bouquetTitle) {
@@ -102,6 +103,7 @@ router.post("/", async (req, res) => {
                     <p style="margin:8px 0;"><strong>Type:</strong> ${bouquetType || "-"}</p>
                     <p style="margin:8px 0;"><strong>Price:</strong> €${price || "-"}</p>
                     <p style="margin:8px 0;"><strong>Message:</strong> ${message || "-"}</p>
+                    <p style="margin:8px 0;"><strong>Delivery address:</strong> ${address || "-"}</p>
                 </div>
             `,
             attachments

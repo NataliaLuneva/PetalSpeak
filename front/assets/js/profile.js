@@ -63,6 +63,17 @@ function jsonHeaders() {
     };
 }
 
+function getAdminDateQuery() {
+    const from = document.getElementById("dateFrom")?.value;
+    const to = document.getElementById("dateTo")?.value;
+
+    if (from && to) {
+        return `?from=${from}&to=${to}`;
+    }
+
+    return "";
+}
+
 function showMessage(id, text, isError = false) {
     const el = document.getElementById(id);
     if (!el) return;
@@ -125,6 +136,11 @@ async function loadUser() {
             document.getElementById("adminUsersCard").style.display = "block";
             document.getElementById("adminOrdersCard").style.display = "block";
             document.getElementById("adminStatsCard").style.display = "block";
+
+            const dateCard = document.getElementById("adminDateFilterCard");
+            if (dateCard) {
+                dateCard.style.display = "block";
+            }
 
             await loadAdminUsers();
             await loadAdminOrders();
@@ -437,7 +453,9 @@ async function loadAdminOrders() {
     const list = document.getElementById("adminOrdersList");
 
     try {
-        const res = await fetch(`${API_BASE}/admin/orders`, {
+        const dateQuery = getAdminDateQuery();
+
+        const res = await fetch(`${API_BASE}/admin/orders${dateQuery}`, {
             headers: authHeaders()
         });
 
@@ -464,7 +482,7 @@ async function loadAdminOrders() {
             </div>
         `).join("");
     } catch (error) {
-        list.innerHTML = `<p class="empty">${t("no_orders_admin")}</p>`;;
+        list.innerHTML = `<p class="empty">${t("no_orders_admin")}</p>`;
     }
 }
 
@@ -472,7 +490,9 @@ async function loadAdminStats() {
     const list = document.getElementById("adminStatsList");
 
     try {
-        const res = await fetch(`${API_BASE}/admin/stats`, {
+        const dateQuery = getAdminDateQuery();
+
+        const res = await fetch(`${API_BASE}/admin/stats${dateQuery}`, {
             headers: authHeaders()
         });
 
@@ -510,6 +530,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("passwordForm")?.addEventListener("submit", changePassword);
     document.getElementById("avatarInput")?.addEventListener("change", uploadAvatar);
     document.getElementById("logoutBtn")?.addEventListener("click", logout);
+
+    document.getElementById("applyDateFilter")?.addEventListener("click", async () => {
+        await loadAdminOrders();
+        await loadAdminStats();
+    });
 
     document.querySelectorAll(".lang-btn").forEach((btn) => {
         btn.addEventListener("click", async () => {
