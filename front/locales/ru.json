@@ -285,6 +285,7 @@
     "q14_a3": "Уважение",
     "q14_a4": "Радость",
 
+    "q15": "Ваш идеальный букет",
     "refine_btn": "Подобрать точнее",
 
     "order_btn": "Заказать букет",
@@ -441,11 +442,13 @@
     "cancel_btn": "Отмена",
     "product_modal_title_add": "Добавить товар",
     "product_modal_title_edit": "Редактировать товар",
-    "product_title_key_placeholder": "Ключ названия (например b53_title)",
-    "product_text_key_placeholder": "Ключ текста (например b53_text)",
+    "product_title_key_placeholder": "Название товара на русском",
+    "product_text_key_placeholder": "Описание товара на русском",
     "product_image_placeholder": "Путь к изображению (/assets/img/b53.jpg)",
     "product_price_placeholder": "Цена",
     "product_category_placeholder": "Категория (assortment)",
     "product_save_error": "Ошибка сохранения",
     "product_delete_error": "Ошибка удаления"
+    
 }
+

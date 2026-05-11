@@ -1,4 +1,5 @@
 let translations = {};
+let currentLang = localStorage.getItem("lang") || "en";
 let currentUser = null;
 let editingProductId = null;
 
@@ -6,6 +7,7 @@ let editingProductId = null;
 
 async function loadLanguage(lang) {
     try {
+        currentLang = lang;
         const response = await fetch(`/locales/${lang}.json`);
         translations = await response.json();
 
@@ -49,13 +51,6 @@ function authHeaders() {
     return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
-function jsonHeaders() {
-    return {
-        "Content-Type": "application/json",
-        ...authHeaders()
-    };
-}
-
 /* ===== USER ===== */
 
 async function loadCurrentUser() {
@@ -90,7 +85,10 @@ function toggleAdminUi() {
     const addBtn = document.getElementById("addProductBtn");
     if (!addBtn) return;
 
-    const isAdmin = currentUser && (currentUser.role === "admin" || currentUser.role === "superadmin");
+    const isAdmin =
+        currentUser &&
+        (currentUser.role === "admin" || currentUser.role === "superadmin");
+
     addBtn.style.display = isAdmin ? "inline-flex" : "none";
 }
 
@@ -134,59 +132,73 @@ async function loadProducts() {
     if (!list) return;
 
     try {
-        const res = await fetch("/api/products");
+        const res = await fetch("/api/products?category=assortment");
         const products = await res.json();
 
         if (!res.ok) {
             throw new Error(products.message || "Ошибка загрузки товаров");
         }
 
-        const isAdmin = currentUser && (currentUser.role === "admin" || currentUser.role === "superadmin");
+        const isAdmin =
+            currentUser &&
+            (currentUser.role === "admin" || currentUser.role === "superadmin");
 
-        list.innerHTML = products.map(product => `
-            <article class="collection-item">
-                <img class="collection-img" src="${product.image}" alt="">
-                <div class="collection-text">
-                    <h4>${t(product.title_key)}</h4>
-                    <p>${t(product.text_key)}</p>
+        list.innerHTML = products.map(product => {
+            const productTitle =
+                product[`title_${currentLang}`] ||
+                product.title_ru ||
+                t(product.title_key);
 
-                    <button
-                        class="btn buy-btn"
-                        data-type="${product.category}"
-                        data-title="${product.title_key}"
-                        data-img="${product.image}"
-                        data-price="${product.price}"
-                    >
-                        ${t("buy_btn")}
-                    </button>
+            const productText =
+                product[`text_${currentLang}`] ||
+                product.text_ru ||
+                t(product.text_key);
 
-                    ${
-                        isAdmin ? `
-                            <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
-                                <button
-                                    class="profile-btn edit-product-btn"
-                                    data-id="${product.id}"
-                                    data-title-key="${product.title_key}"
-                                    data-text-key="${product.text_key}"
-                                    data-image="${product.image}"
-                                    data-price="${product.price}"
-                                    data-category="${product.category}"
-                                >
-                                    ${t("edit_product_btn")}
-                                </button>
+            return `
+                <article class="collection-item">
+                    <img class="collection-img" src="${product.image}" alt="">
+                    <div class="collection-text">
+                        <h4>${productTitle}</h4>
+                        <p>${productText}</p>
 
-                                <button
-                                    class="profile-btn secondary delete-product-btn"
-                                    data-id="${product.id}"
-                                >
-                                    ${t("delete_product_btn")}
-                                </button>
-                            </div>
-                        ` : ""
-                    }
-                </div>
-            </article>
-        `).join("");
+                        <button
+                            class="btn buy-btn"
+                            data-type="${product.category}"
+                            data-title="${productTitle}"
+                            data-img="${product.image}"
+                            data-price="${product.price}"
+                        >
+                            ${t("buy_btn")}
+                        </button>
+
+                        ${
+                            isAdmin ? `
+                                <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
+                                    <button
+                                        class="profile-btn edit-product-btn"
+                                        data-id="${product.id}"
+                                        data-title-ru="${product.title_ru || product.title_key || ""}"
+                                        data-text-ru="${product.text_ru || product.text_key || ""}"
+                                        data-image="${product.image || ""}"
+                                        data-price="${product.price}"
+                                        data-category="${product.category}"
+                                    >
+                                        ${t("edit_product_btn")}
+                                    </button>
+
+                                    <button
+                                        class="profile-btn secondary delete-product-btn"
+                                        data-id="${product.id}"
+                                    >
+                                        ${t("delete_product_btn")}
+                                    </button>
+                                </div>
+                            ` : ""
+                        }
+                    </div>
+                </article>
+            `;
+        }).join("");
 
         initBuyButtons();
         initProductActionButtons();
@@ -217,8 +229,8 @@ function initProductActionButtons() {
         btn.addEventListener("click", () => {
             openEditProduct(
                 btn.dataset.id,
-                btn.dataset.titleKey,
-                btn.dataset.textKey,
+                btn.dataset.titleRu,
+                btn.dataset.textRu,
                 btn.dataset.image,
                 btn.dataset.price,
                 btn.dataset.category
@@ -239,17 +251,19 @@ function openAddProduct() {
     document.getElementById("productTitleKey").value = "";
     document.getElementById("productTextKey").value = "";
     document.getElementById("productImage").value = "";
+    document.getElementById("productImage").dataset.oldImage = "";
     document.getElementById("productPrice").value = "";
     document.getElementById("productCategory").value = "assortment";
     document.getElementById("productModal").style.display = "flex";
 }
 
-function openEditProduct(id, titleKey, textKey, image, price, category) {
+function openEditProduct(id, titleRu, textRu, image, price, category) {
     editingProductId = id;
     document.getElementById("productModalTitle").textContent = t("product_modal_title_edit");
-    document.getElementById("productTitleKey").value = titleKey || "";
-    document.getElementById("productTextKey").value = textKey || "";
-    document.getElementById("productImage").value = image || "";
+    document.getElementById("productTitleKey").value = titleRu || "";
+    document.getElementById("productTextKey").value = textRu || "";
+    document.getElementById("productImage").value = "";
+    document.getElementById("productImage").dataset.oldImage = image || "";
     document.getElementById("productPrice").value = price || "";
     document.getElementById("productCategory").value = category || "assortment";
     document.getElementById("productModal").style.display = "flex";
@@ -260,29 +274,57 @@ function closeProductModal() {
 }
 
 async function saveProduct() {
-    const payload = {
-        title_key: document.getElementById("productTitleKey").value.trim(),
-        text_key: document.getElementById("productTextKey").value.trim(),
-        image: document.getElementById("productImage").value.trim(),
-        price: document.getElementById("productPrice").value.trim(),
-        category: document.getElementById("productCategory").value.trim() || "assortment",
-        is_active: 1
-    };
+    const formData = new FormData();
+
+    formData.append(
+        "title_ru",
+        document.getElementById("productTitleKey").value.trim()
+    );
+
+    formData.append(
+        "text_ru",
+        document.getElementById("productTextKey").value.trim()
+    );
+    formData.append(
+        "price",
+        document.getElementById("productPrice").value.trim()
+    );
+    formData.append(
+        "category",
+        document.getElementById("productCategory").value.trim() || "assortment"
+    );
+
+    if (editingProductId) {
+        formData.append(
+            "old_image",
+            document.getElementById("productImage").dataset.oldImage || ""
+        );
+    }
+
+    const fileInput = document.getElementById("productImage");
+    const file = fileInput.files[0];
+
+    if (file) {
+        formData.append("image", file);
+    }
 
     try {
-        const url = editingProductId ? `/api/products/${editingProductId}` : "/api/products";
+        const url = editingProductId
+            ? `/api/products/${editingProductId}`
+            : "/api/products";
+
         const method = editingProductId ? "PUT" : "POST";
 
         const res = await fetch(url, {
             method,
-            headers: jsonHeaders(),
-            body: JSON.stringify(payload)
+            headers: authHeaders(),
+            body: formData
         });
 
         const data = await res.json();
 
         if (!res.ok) {
-            throw new Error(data.message || t("product_save_error"));
+            throw new Error(data.message || "Ошибка сохранения");
         }
 
         closeProductModal();
@@ -319,7 +361,7 @@ const questions = [
         answers: [
             { text: "q1_a1", type: "love" },
             { text: "q1_a2", type: "gratitude" },
-            { text: "q1_a3", type: "admiration" },
+            { text: "q1_a3", type: "apology" },
             { text: "q1_a4", type: "friendship" }
         ]
     },
@@ -327,8 +369,8 @@ const questions = [
         question: "q2",
         answers: [
             { text: "q2_a1", type: "love" },
-            { text: "q2_a2", type: "celebration" },
-            { text: "q2_a3", type: "comfort" },
+            { text: "q2_a2", type: "secret_love" },
+            { text: "q2_a3", type: "sympathy" },
             { text: "q2_a4", type: "friendship" }
         ]
     },
@@ -338,16 +380,16 @@ const questions = [
             { text: "q3_a1", type: "love" },
             { text: "q3_a2", type: "gratitude" },
             { text: "q3_a3", type: "friendship" },
-            { text: "q3_a4", type: "comfort" }
+            { text: "q3_a4", type: "sympathy" }
         ]
     },
     {
         question: "q4",
         answers: [
-            { text: "q4_a1", type: "celebration" },
+            { text: "q4_a1", type: "secret_love" },
             { text: "q4_a2", type: "love" },
-            { text: "q4_a3", type: "admiration" },
-            { text: "q4_a4", type: "comfort" }
+            { text: "q4_a3", type: "apology" },
+            { text: "q4_a4", type: "sympathy" }
         ]
     },
     {
@@ -356,16 +398,16 @@ const questions = [
             { text: "q5_a1", type: "love" },
             { text: "q5_a2", type: "friendship" },
             { text: "q5_a3", type: "gratitude" },
-            { text: "q5_a4", type: "admiration" }
+            { text: "q5_a4", type: "apology" }
         ]
     },
     {
         question: "q6",
         answers: [
-            { text: "q6_a1", type: "comfort" },
+            { text: "q6_a1", type: "sympathy" },
             { text: "q6_a2", type: "love" },
             { text: "q6_a3", type: "friendship" },
-            { text: "q6_a4", type: "celebration" }
+            { text: "q6_a4", type: "secret_love" }
         ]
     },
     {
@@ -373,8 +415,8 @@ const questions = [
         answers: [
             { text: "q7_a1", type: "love" },
             { text: "q7_a2", type: "gratitude" },
-            { text: "q7_a3", type: "celebration" },
-            { text: "q7_a4", type: "comfort" }
+            { text: "q7_a3", type: "secret_love" },
+            { text: "q7_a4", type: "sympathy" }
         ]
     }
 ];
@@ -384,25 +426,25 @@ const advancedQuestions = [
         question: "q8",
         answers: [
             { text: "q8_a1", type: "love" },
-            { text: "q8_a2", type: "comfort" },
-            { text: "q8_a3", type: "admiration" },
+            { text: "q8_a2", type: "sympathy" },
+            { text: "q8_a3", type: "apology" },
             { text: "q8_a4", type: "friendship" }
         ]
     },
     {
         question: "q9",
         answers: [
-            { text: "q9_a1", type: "celebration" },
+            { text: "q9_a1", type: "secret_love" },
             { text: "q9_a2", type: "love" },
             { text: "q9_a3", type: "gratitude" },
-            { text: "q9_a4", type: "comfort" }
+            { text: "q9_a4", type: "sympathy" }
         ]
     },
     {
         question: "q10",
         answers: [
             { text: "q10_a1", type: "love" },
-            { text: "q10_a2", type: "admiration" },
+            { text: "q10_a2", type: "apology" },
             { text: "q10_a3", type: "friendship" },
             { text: "q10_a4", type: "gratitude" }
         ]
@@ -410,9 +452,9 @@ const advancedQuestions = [
     {
         question: "q11",
         answers: [
-            { text: "q11_a1", type: "comfort" },
+            { text: "q11_a1", type: "sympathy" },
             { text: "q11_a2", type: "love" },
-            { text: "q11_a3", type: "celebration" },
+            { text: "q11_a3", type: "secret_love" },
             { text: "q11_a4", type: "friendship" }
         ]
     },
@@ -420,15 +462,15 @@ const advancedQuestions = [
         question: "q12",
         answers: [
             { text: "q12_a1", type: "gratitude" },
-            { text: "q12_a2", type: "admiration" },
+            { text: "q12_a2", type: "apology" },
             { text: "q12_a3", type: "love" },
-            { text: "q12_a4", type: "comfort" }
+            { text: "q12_a4", type: "sympathy" }
         ]
     },
     {
         question: "q13",
         answers: [
-            { text: "q13_a1", type: "celebration" },
+            { text: "q13_a1", type: "secret_love" },
             { text: "q13_a2", type: "friendship" },
             { text: "q13_a3", type: "love" },
             { text: "q13_a4", type: "gratitude" }
@@ -438,13 +480,12 @@ const advancedQuestions = [
         question: "q14",
         answers: [
             { text: "q14_a1", type: "love" },
-            { text: "q14_a2", type: "comfort" },
-            { text: "q14_a3", type: "admiration" },
-            { text: "q14_a4", type: "celebration" }
+            { text: "q14_a2", type: "sympathy" },
+            { text: "q14_a3", type: "apology" },
+            { text: "q14_a4", type: "secret_love" }
         ]
     }
 ];
-
 /* ===== STATE ===== */
 
 let currentQuestion = 0;
@@ -452,25 +493,17 @@ let selectedType = null;
 let answersChosen = [];
 let advancedMode = false;
 let refinedOnce = false;
+let testFinished = false;
+let resultProduct = null;
+let resultType = null;
 
 let scores = {
     love: 0,
-    gratitude: 0,
-    admiration: 0,
     friendship: 0,
-    comfort: 0,
-    celebration: 0
-};
-
-/* ===== BOUQUETS ===== */
-
-const bouquets = {
-    love: { title: "bq_love", img: "/assets/img/b1.jpg", price: 45 },
-    friendship: { title: "bq_friendship", img: "/assets/img/b8.jpg", price: 38 },
-    gratitude: { title: "bq_gratitude", img: "/assets/img/b15.jpg", price: 42 },
-    admiration: { title: "bq_admiration", img: "/assets/img/b3.jpg", price: 47 },
-    comfort: { title: "bq_comfort", img: "/assets/img/b29.jpg", price: 40 },
-    celebration: { title: "bq_celebration", img: "/assets/img/b20.jpg", price: 50 }
+    gratitude: 0,
+    apology: 0,
+    sympathy: 0,
+    secret_love: 0
 };
 
 /* ===== TEST ===== */
@@ -557,7 +590,7 @@ function getResult() {
     return result;
 }
 
-function showResult() {
+async function showResult() {
     const questionEl = document.getElementById("question");
     const answersEl = document.getElementById("answers");
     const nextBtn = document.getElementById("next-btn");
@@ -566,72 +599,121 @@ function showResult() {
     if (!questionEl || !answersEl) return;
 
     const result = getResult();
-    const bouquet = bouquets[result];
+    resultType = result;
+    testFinished = true;
 
-    if (localStorage.getItem("token")) {
-        import("/assets/js/test-api.js")
-            .then(({ saveTest }) => saveTest({ result }))
-            .catch((err) => console.error("Save test error:", err));
-    }
-
-    questionEl.textContent = translations["result_title"] || "Your Result";
-
-    let refineHTML = "";
-
-    if (!refinedOnce) {
-        refineHTML = `
-            <button id="refine-btn" style="margin-top:20px;">
-                ${translations["refine_btn"] || "Refine result"}
-            </button>
-        `;
-    }
-
-    answersEl.innerHTML = `
-        <img src="${bouquet.img}" style="width:100%; border-radius:10px;">
-        <h3>${translations[bouquet.title] || bouquet.title}</h3>
-        <p style="margin-top:10px; font-size:18px;">€${bouquet.price}</p>
-
-        <button id="order-btn" style="margin-top:20px;">
-            ${translations["order_btn"] || "Order this bouquet"}
-        </button>
-
-        ${refineHTML}
-    `;
+    questionEl.textContent =
+        currentLang === "ru" ? "  " :
+        currentLang === "et" ? " " :
+        " ";
 
     if (nextBtn) nextBtn.style.display = "none";
     if (prevBtn) prevBtn.style.display = "none";
 
-    const orderBtn = document.getElementById("order-btn");
-    if (orderBtn) {
-        orderBtn.onclick = () => {
+    try {
+        if (!resultProduct) {
+            const res = await fetch(`/api/products?category=catalog&feeling_type=${result}`);
+            const products = await res.json();
+
+            if (!res.ok) throw new Error("Ошибка загрузки");
+
+            if (!products.length) {
+                answersEl.innerHTML = `<p>Букет не найден</p>`;
+                return;
+            }
+
+            resultProduct = products[Math.floor(Math.random() * products.length)];
+        }
+
+        const product = resultProduct;
+
+        const title =
+            product[`title_${currentLang}`] ||
+            product.title_ru ||
+            product.title_en ||
+            product.title_et ||
+            "Букет";
+
+        const text =
+            product[`text_${currentLang}`] ||
+            product.text_ru ||
+            product.text_en ||
+            "";
+
+        const subtitle =
+            currentLang === "ru" ? "Ваш идеальный букет" :
+            currentLang === "et" ? "Sinu ideaalne kimp" :
+            "Your perfect bouquet";
+
+        const orderText =
+            currentLang === "ru" ? "Заказать этот букет" :
+            currentLang === "et" ? "Telli see kimp" :
+            "Order this bouquet";
+
+        const refineText =
+            currentLang === "ru" ? "Найти более точное совпадение" :
+            currentLang === "et" ? "Leia täpsem sobivus" :
+            "Find a more precise match";
+
+        answersEl.innerHTML = `
+            <div class="result-single">
+                <p class="result-subtitle">${subtitle}</p>
+
+                <img src="${product.image}" class="result-img" alt="${title}">
+
+                <h3>${title}</h3>
+                <p class="result-description">${text}</p>
+                <p class="price">${Number(product.price).toFixed(2)}€</p>
+
+                <button class="btn order-result-btn">${orderText}</button>
+
+                ${
+                    !refinedOnce
+                        ? `<button class="btn refine-result-btn">${refineText}</button>`
+                        : ""
+                }
+            </div>
+        `;
+
+        document.querySelector(".order-result-btn").onclick = () => {
             localStorage.setItem("selectedBouquet", JSON.stringify({
-                type: result,
-                title: bouquet.title,
-                img: bouquet.img,
-                price: bouquet.price
+                type: product.feeling_type || resultType,
+                title,
+                img: product.image,
+                price: product.price
             }));
 
             window.location.href = "/order.html";
         };
-    }
 
-    const refineBtn = document.getElementById("refine-btn");
-    if (refineBtn) {
-        refineBtn.onclick = () => {
-            refinedOnce = true;
-            advancedMode = true;
-            currentQuestion = 0;
-            answersChosen = [];
+        const refineBtn = document.querySelector(".refine-result-btn");
 
-            for (const key in scores) {
-                scores[key] = 0;
-            }
+        if (refineBtn) {
+            refineBtn.onclick = () => {
+                refinedOnce = true;
+                advancedMode = true;
+                testFinished = false;
+                resultProduct = null;
+                resultType = null;
 
-            if (nextBtn) nextBtn.style.display = "block";
-            if (prevBtn) prevBtn.style.display = "none";
+                currentQuestion = 0;
+                selectedType = null;
+                answersChosen = [];
 
-            showQuestion();
-        };
+                for (const key in scores) {
+                    scores[key] = 0;
+                }
+
+                if (nextBtn) nextBtn.style.display = "block";
+                if (prevBtn) prevBtn.style.display = "none";
+
+                showQuestion();
+            };
+        }
+
+    } catch (error) {
+        console.error(error);
+        answersEl.innerHTML = `<p>Ошибка загрузки букета</p>`;
     }
 }
 
@@ -668,7 +750,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             await loadLanguage(lang);
 
             if (isTestPage) {
-                showQuestion();
+                if (testFinished && resultProduct) {
+                    showResult();
+                } else {
+                    showQuestion();
+                }
             }
         };
     });

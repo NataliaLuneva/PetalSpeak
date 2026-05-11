@@ -23,7 +23,7 @@ body{
 }
 
 /* Основной текст */
-body, p, span, li, label, input, textarea, .hint, .collection-footer {
+body, p, span, li, label, input, textarea, .hint, .collection-footer, .result-subtitle, .result-description {
     font-family: "Cormorant Infant", serif;
     color: #534B4B;
 }
@@ -38,7 +38,7 @@ h1, h2, h3, h4, h5, h6,
 .tagline {
     font-family: "Cormorant SC", serif;
     font-weight: 900;
-    font-size: 28px;
+    font-size: 30px;
     letter-spacing: 0.2em;
     color: #3F3A3A;
 }
@@ -387,6 +387,7 @@ h3 {
   border-radius: 10px;
   box-shadow: 0 12px 32px rgba(0,0,0,.08);
   text-align: center;
+  font-size: 25px;
 }
 
 #test-title { font-family: "Cormorant SC", serif; font-weight:900; margin-bottom: 10px; color: #3F3A3A; }
@@ -402,15 +403,16 @@ h3 {
   cursor: pointer;
   transition: all .25s ease;
   font-family: "Cormorant SC", serif;
-  font-size: 18px;
+  font-size: 20px;
   color: #3F3A3A;
 }
 
 #answers button:hover { background: #e3bfc1; transform: translateY(-1px); }
-#answers button.active { background: var(--btn); color: #1d1d1d; box-shadow: 0 6px 16px rgba(0,0,0,.1); }
+#answers button.active { background: var(--btn); color: #3F3A3A; box-shadow: 0 6px 16px rgba(0,0,0,.1); }
 
 .nav-buttons { display: flex; justify-content: space-between; margin-top: 28px; }
-#prev-btn { background: transparent; border: none; color: var(--muted); font-size: 13px; cursor: pointer; }
+#prev-btn { background: transparent; border: none; color: #4f4f4f; font-size: 22px; cursor: pointer; transform: scale(1.1); transition: all 0.2s ease; } 
+#prev-btn:hover { color: #484848; transform: scale(1.3); }
 #next-btn { background: var(--btn); border: none; padding: 10px 18px; border-radius: 6px; font-family: "Cormorant SC", serif; font-size: 18px; cursor: pointer; transition: .25s; color: #3F3A3A; }
 #next-btn:hover { background: var(--btnHover); transform: translateY(-1px); }
 
@@ -471,6 +473,9 @@ h3 {
 .order-label {
     font-size: 16px;
     margin-top: 6px;
+    display: inline-block;
+    white-space: nowrap;
+    margin-bottom: 6px;
 }
 
 .order-input,
@@ -478,8 +483,8 @@ h3 {
     width: 100%;
     padding: 14px 16px;
     border-radius: 14px;
-    border: 1px solid rgba(0,0,0,0.12);
-    background: rgba(255,255,255,0.9);
+    border: 1px solid #e8d1d1c5;
+    background-color:rgba(255,255,255,0.55)!important;
     font: inherit;
     box-sizing: border-box;
 }
@@ -487,6 +492,24 @@ h3 {
 .order-textarea {
     min-height: 130px;
     resize: vertical;
+    
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px rgba(255,255,255,0.55) inset !important;
+    -webkit-text-fill-color: #3F3A3A !important;
+    caret-color: #3F3A3A;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+.order-input:focus,
+.order-textarea:focus {
+    outline: none !important;
+    border-color: #e4bcbc;
+    box-shadow: 0 0 8px rgba(228, 180, 180, 0.9), 0 0 0 3px rgba(228, 180, 180, 0.5);
 }
 
 .order-submit {
@@ -518,9 +541,9 @@ h3 {
 
 .buy-btn {
     margin: 12px auto 0;
-    /* display: block;
-    width: fit-content; */
-    width: 300px;
+    display: block;
+    width: fit-content;
+    /* width: 300px; */
     padding: 10px 18px;
     border: none;
     border-radius: 6px;
@@ -1376,7 +1399,8 @@ h3 {
 
     .back-btn {
         margin-left: 12px;
-        font-size: 14px;
+        font-size: 20px;
+        color: #3d2f2f;
     }
 }
 
@@ -1660,8 +1684,8 @@ h3 {
             box-sizing: border-box;
             padding: 18px 18px;
             border-radius: 16px;
-            border: 1px solid #d3c1c5;
-            background: #dfe6f1;
+            border: 1px solid #fbe6eb;
+            background: #eed9de;
             font-size: 18px;
             outline: none;
             color: #3f3333;
@@ -1669,8 +1693,8 @@ h3 {
         }
 
         .auth-input:focus {
-            border-color: #a7c0ad;
-            background: #eef4f1;
+            border-color: #d7e4de;
+            background: #e2e9e6;
         }
 
         .auth-btn {
@@ -1678,7 +1702,7 @@ h3 {
             border: none;
             border-radius: 16px;
             background: #a7c0ad;
-            color: #2f3a34;
+            color: #3F3A3A;
             padding: 16px;
             font-size: 18px;
             cursor: pointer;
@@ -1747,3 +1771,64 @@ h3 {
                 font-size: 16px;
             }
         }
+
+.result-single {
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.result-subtitle {
+    font-size: 30px;
+    margin: auto;
+    text-align: center;
+}
+
+.result-img {
+    width: 400px;
+    height: 400px;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 18px;
+    display: block;
+}
+
+.result-single h3 {
+    margin: 8px 0 0;
+    font-size: 25px;
+    line-height: 1.1;
+    text-align: center;
+}
+
+.result-description {
+    text-align: center;
+    margin: 0;
+    font-size: 25px;
+    line-height: 1.35;
+}
+
+.result-single .price {
+    margin: 0;
+    font-size: 25px;
+}
+
+/* Стилизация самих кнопок в результате */
+.result-single .btn {
+
+    width: 100%; 
+    min-height: 60px; 
+    
+    margin: 5px 0;
+    padding: 15px 30px;
+    
+    font-size: 23px;
+    letter-spacing: 1px;
+    
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
