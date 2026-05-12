@@ -1,5 +1,6 @@
 const express = require("express");
 const path = require("path");
+const fs = require("fs");
 const jwt = require("jsonwebtoken");
 
 const pool = require("../config/mysql");
@@ -22,12 +23,14 @@ router.post("/", async (req, res) => {
             address
         } = req.body;
 
+        // Проверка обязательных полей
         if (!customerName || !email || !bouquetTitle) {
             return res.status(400).json({
                 message: "Заполни обязательные поля"
             });
         }
 
+        // Получаем userId из JWT (если пользователь авторизован)
         let userId = null;
         const authHeader = req.headers.authorization;
 
@@ -41,6 +44,7 @@ router.post("/", async (req, res) => {
             }
         }
 
+        // Сохраняем заказ в БД
         await pool.query(
             `INSERT INTO orders
             (customer_name, email, bouquet_type, bouquet_title, bouquet_image, price, message, user_id)
@@ -57,58 +61,114 @@ router.post("/", async (req, res) => {
             ]
         );
 
+        // Подготавливаем изображение букета для письма
         const attachments = [];
+        let showBouquetImage = false;
 
         if (bouquetImage) {
-            const imagePath = path.join(
-                __dirname,
-                "../../front",
-                bouquetImage.replace(/^\//, "")
-            );
+            const filename = path.basename(bouquetImage);
 
-            attachments.push({
-                filename: path.basename(bouquetImage),
-                path: imagePath,
-                cid: "bouquetimage"
-            });
+            const possiblePaths = [
+                path.join(__dirname, "..", "uploads", "products", filename),
+                path.join(__dirname, "..", "..", "front", "assets", "img", filename)
+            ];
+
+            let imagePath = null;
+
+            for (const p of possiblePaths) {
+                if (fs.existsSync(p)) {
+                    imagePath = p;
+                    break;
+                }
+            }
+
+            console.log("Ищу изображение в:", possiblePaths);
+
+            if (imagePath) {
+                attachments.push({
+                    filename,
+                    path: imagePath,
+                    cid: "bouquetimage"
+                });
+
+                console.log("Изображение успешно прикреплено:", imagePath);
+            } else {
+                console.warn("Изображение не найдено:", filename);
+            }
         }
-
+        // Отправляем письмо клиенту
         await transporter.sendMail({
             from: '"PetalSpeak" <lunjevanatalja@gmail.com>',
             to: email,
             subject: "Thank you for your order! 💐",
             html: `
-                <div style="background:#2b2b2b;padding:16px;color:#ffffff;font-family:Arial,sans-serif;max-width:420px;">
-                    <h2 style="margin:0 0 16px;font-size:30px;font-weight:700;">
+                <div style="
+                    background:#2b2b2b;
+                    padding:16px;
+                    color:#ffffff;
+                    font-family:Arial,sans-serif;
+                    max-width:420px;
+                ">
+                    <h2 style="
+                        margin:0 0 16px;
+                        font-size:30px;
+                        font-weight:700;
+                    ">
                         Thank you for your order! 🎉
                     </h2>
 
                     ${
-                        bouquetImage
+                        attachments.length
                             ? `
                                 <div style="margin-bottom:16px;">
                                     <img
                                         src="cid:bouquetimage"
                                         alt="${bouquetTitle}"
-                                        style="width:100%;max-width:320px;border-radius:12px;display:block;"
+                                        style="
+                                            width:100%;
+                                            max-width:320px;
+                                            border-radius:12px;
+                                            display:block;
+                                        "
                                     >
                                 </div>
                             `
                             : ""
                     }
 
-                    <p style="margin:8px 0;"><strong>Name:</strong> ${customerName}</p>
-                    <p style="margin:8px 0;"><strong>Email:</strong> ${email}</p>
-                    <p style="margin:8px 0;"><strong>Bouquet:</strong> ${bouquetTitle}</p>
-                    <p style="margin:8px 0;"><strong>Type:</strong> ${bouquetType || "-"}</p>
-                    <p style="margin:8px 0;"><strong>Price:</strong> €${price || "-"}</p>
-                    <p style="margin:8px 0;"><strong>Message:</strong> ${message || "-"}</p>
-                    <p style="margin:8px 0;"><strong>Delivery address:</strong> ${address || "-"}</p>
+                    <p style="margin:8px 0;">
+                        <strong>Name:</strong> ${customerName}
+                    </p>
+
+                    <p style="margin:8px 0;">
+                        <strong>Email:</strong> ${email}
+                    </p>
+
+                    <p style="margin:8px 0;">
+                        <strong>Bouquet:</strong> ${bouquetTitle}
+                    </p>
+
+                    <p style="margin:8px 0;">
+                        <strong>Type:</strong> ${bouquetType || "-"}
+                    </p>
+
+                    <p style="margin:8px 0;">
+                        <strong>Price:</strong> €${price || "-"}
+                    </p>
+
+                    <p style="margin:8px 0;">
+                        <strong>Message:</strong> ${message || "-"}
+                    </p>
+
+                    <p style="margin:8px 0;">
+                        <strong>Delivery address:</strong> ${address || "-"}
+                    </p>
                 </div>
             `,
             attachments
         });
 
+        // Возвращаем успешный ответ
         res.json({
             message: "Заказ успешно оформлен"
         });
@@ -120,6 +180,7 @@ router.post("/", async (req, res) => {
     }
 });
 
+// Получение заказов текущего пользователя
 router.get("/my", auth, async (req, res) => {
     try {
         const [orders] = await pool.query(

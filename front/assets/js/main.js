@@ -650,6 +650,20 @@ async function showResult() {
             product.text_en ||
             "";
 
+            await fetch("/api/test-results", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    ...authHeaders()
+                },
+                body: JSON.stringify({
+                    result,
+                    bouquetTitle: title,
+                    bouquetImage: product.image,
+                    price: product.price
+                })
+            });
+
         const subtitle =
             currentLang === "ru" ? "Ваш идеальный букет" :
             currentLang === "et" ? "Sinu ideaalne kimp" :

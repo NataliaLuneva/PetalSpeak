@@ -26,6 +26,7 @@ app.use("/api/tests", testRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/test-results", testRoutes);
 
 app.get("/", (req, res) => {
     res.sendFile(path.join(FRONT_DIR, "index.html"));

@@ -7,23 +7,30 @@ const router = express.Router();
 // сохранить результат теста
 router.post("/", auth, async (req, res) => {
     try {
-        if (!req.user) {
-            return res.status(401).json({
-                message: "Не авторизован"
-            });
-        }
+        const {
+            result,
+            bouquetTitle,
+            bouquetImage,
+            price
+        } = req.body;
 
-        const { result } = req.body;
-
-        if (!result) {
+        if (!result || !bouquetTitle) {
             return res.status(400).json({
                 message: "Результат теста не передан"
             });
         }
 
         await pool.query(
-            "INSERT INTO test_results (user_id, result) VALUES (?, ?)",
-            [req.user.id, result]
+            `INSERT INTO test_results 
+            (user_id, result, bouquet_title, bouquet_image, price) 
+            VALUES (?, ?, ?, ?, ?)`,
+            [
+                req.user.id,
+                result,
+                bouquetTitle,
+                bouquetImage || "",
+                price || null
+            ]
         );
 
         res.json({
@@ -40,14 +47,11 @@ router.post("/", auth, async (req, res) => {
 // мои тесты
 router.get("/my", auth, async (req, res) => {
     try {
-        if (!req.user) {
-            return res.status(401).json({
-                message: "Не авторизован"
-            });
-        }
-
         const [rows] = await pool.query(
-            "SELECT * FROM test_results WHERE user_id = ? ORDER BY created_at DESC",
+            `SELECT *
+             FROM test_results
+             WHERE user_id = ?
+             ORDER BY created_at DESC`,
             [req.user.id]
         );
 

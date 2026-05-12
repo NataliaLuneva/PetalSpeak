@@ -26,6 +26,14 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
+// защита от спама сохранения
+const savingLocks = new Set();
+
+function getLockKey(req, action) {
+    const userId = req.user?.id || req.ip;
+    return `${action}_${userId}_${req.params.id || "new"}`;
+}
+
 // перевод
 async function translateText(text, sourceLang, targetLang) {
     if (!text) return "";
@@ -37,17 +45,12 @@ async function translateText(text, sourceLang, targetLang) {
         if (googleResponse.ok) {
             const googleData = await googleResponse.json();
             const translated = googleData?.[0]?.[0]?.[0];
-            if (translated) {
-                console.log(`Google ${sourceLang} -> ${targetLang}: "${text}" -> "${translated}"`);
-                return translated;
-            }
+            if (translated) return translated;
         }
 
         const libreResponse = await fetch("https://libretranslate.com/translate", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 q: text,
                 source: sourceLang,
@@ -57,17 +60,13 @@ async function translateText(text, sourceLang, targetLang) {
 
         if (libreResponse.ok) {
             const libreData = await libreResponse.json();
-            if (libreData.translatedText) {
-                console.log(`LibreTranslate ${sourceLang} -> ${targetLang}: "${text}" -> "${libreData.translatedText}"`);
-                return libreData.translatedText;
-            }
+            if (libreData.translatedText) return libreData.translatedText;
         }
 
         const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${sourceLang}|${targetLang}`;
         const response = await fetch(url);
         const data = await response.json();
 
-        console.log(`MyMemory ${sourceLang} -> ${targetLang}: "${text}" -> "${data?.responseData?.translatedText}"`);
         return data?.responseData?.translatedText || text;
     } catch (error) {
         console.error("Translate error:", error);
@@ -85,30 +84,30 @@ async function buildTranslations(text, sourceLang) {
     }
 
     const lang = sourceLang || "ru";
-    let title_ru = "";
-    let title_en = "";
-    let title_et = "";
 
     if (lang === "en") {
-        title_en = text;
-        title_ru = await translateText(text, "en", "ru");
-        title_et = await translateText(text, "en", "et");
-    } else if (lang === "et") {
-        title_et = text;
-        title_ru = await translateText(text, "et", "ru");
-        title_en = await translateText(text, "et", "en");
-    } else {
-        title_ru = text;
-        title_en = await translateText(text, "ru", "en");
-        title_et = await translateText(text, "ru", "et");
+        return {
+            title_en: text,
+            title_ru: await translateText(text, "en", "ru"),
+            title_et: await translateText(text, "en", "et")
+        };
     }
 
-    return { title_ru, title_en, title_et };
+    if (lang === "et") {
+        return {
+            title_et: text,
+            title_ru: await translateText(text, "et", "ru"),
+            title_en: await translateText(text, "et", "en")
+        };
+    }
+
+    return {
+        title_ru: text,
+        title_en: await translateText(text, "ru", "en"),
+        title_et: await translateText(text, "ru", "et")
+    };
 }
 
-//
-// ===== ПОЛУЧИТЬ ТОВАРЫ (С ФИЛЬТРОМ ПО ЧУВСТВУ) =====
-//
 router.get("/", async (req, res) => {
     try {
         const { category, feeling_type } = req.query;
@@ -137,21 +136,26 @@ router.get("/", async (req, res) => {
         res.json(rows);
     } catch (error) {
         console.error("Get products error:", error);
-        res.status(500).json({
-            messageKey: "error_load"
-        });
+        res.status(500).json({ messageKey: "error_load" });
     }
 });
 
-//
-// ===== ДОБАВИТЬ ТОВАР =====
-//
 router.post(
     "/",
     auth,
     requireRole("admin", "superadmin"),
     upload.single("image"),
     async (req, res) => {
+        const lockKey = getLockKey(req, "create");
+
+        if (savingLocks.has(lockKey)) {
+            return res.status(429).json({
+                messageKey: "please_wait"
+            });
+        }
+
+        savingLocks.add(lockKey);
+
         try {
             const {
                 title_source,
@@ -168,23 +172,16 @@ router.post(
             const priceValue = typeof price === "string" ? price.trim() : price;
 
             if (!sourceTitle || !sourceText || priceValue === "" || priceValue === undefined || priceValue === null) {
-                return res.status(400).json({
-                    messageKey: "error_fields_missing"
-                });
+                return res.status(400).json({ messageKey: "error_fields_missing" });
             }
 
             const parsedPrice = Number(priceValue);
+
             if (Number.isNaN(parsedPrice)) {
-                return res.status(400).json({
-                    messageKey: "error_invalid_price"
-                });
+                return res.status(400).json({ messageKey: "error_invalid_price" });
             }
 
-            const {
-                title_ru,
-                title_en,
-                title_et
-            } = await buildTranslations(sourceTitle, sourceLang);
+            const { title_ru, title_en, title_et } = await buildTranslations(sourceTitle, sourceLang);
 
             const {
                 title_ru: text_ru,
@@ -196,7 +193,7 @@ router.post(
                 ? `/uploads/products/${req.file.filename}`
                 : null;
 
-            const [result] = await pool.query(`
+            await pool.query(`
                 INSERT INTO products 
                 (
                     title_key,
@@ -228,27 +225,32 @@ router.post(
                 feeling_type || null
             ]);
 
-            res.json({
-                messageKey: "success"
-            });
+            res.json({ messageKey: "success" });
         } catch (error) {
             console.error("Create product error:", error);
-            res.status(500).json({
-                messageKey: "error_save"
-            });
+            res.status(500).json({ messageKey: "error_save" });
+        } finally {
+            savingLocks.delete(lockKey);
         }
     }
 );
 
-//
-// ===== РЕДАКТИРОВАТЬ =====
-//
 router.put(
     "/:id",
     auth,
     requireRole("admin", "superadmin"),
     upload.single("image"),
     async (req, res) => {
+        const lockKey = getLockKey(req, "update");
+
+        if (savingLocks.has(lockKey)) {
+            return res.status(429).json({
+                messageKey: "please_wait"
+            });
+        }
+
+        savingLocks.add(lockKey);
+
         try {
             const {
                 title_source,
@@ -266,23 +268,16 @@ router.put(
             const priceValue = typeof price === "string" ? price.trim() : price;
 
             if (!sourceTitle || !sourceText || priceValue === "" || priceValue === undefined || priceValue === null) {
-                return res.status(400).json({
-                    messageKey: "error_fields_missing"
-                });
+                return res.status(400).json({ messageKey: "error_fields_missing" });
             }
 
             const parsedPrice = Number(priceValue);
+
             if (Number.isNaN(parsedPrice)) {
-                return res.status(400).json({
-                    messageKey: "error_invalid_price"
-                });
+                return res.status(400).json({ messageKey: "error_invalid_price" });
             }
 
-            const {
-                title_ru,
-                title_en,
-                title_et
-            } = await buildTranslations(sourceTitle, sourceLang);
+            const { title_ru, title_en, title_et } = await buildTranslations(sourceTitle, sourceLang);
 
             const {
                 title_ru: text_ru,
@@ -328,21 +323,16 @@ router.put(
                 req.params.id
             ]);
 
-            res.json({
-                messageKey: "success"
-            });
+            res.json({ messageKey: "success" });
         } catch (error) {
             console.error("Update product error:", error);
-            res.status(500).json({
-                messageKey: "error_save"
-            });
+            res.status(500).json({ messageKey: "error_save" });
+        } finally {
+            savingLocks.delete(lockKey);
         }
     }
 );
 
-//
-// ===== УДАЛИТЬ =====
-//
 router.delete(
     "/:id",
     auth,
@@ -351,14 +341,10 @@ router.delete(
         try {
             await pool.query("DELETE FROM products WHERE id = ?", [req.params.id]);
 
-            res.json({
-                messageKey: "success"
-            });
+            res.json({ messageKey: "success" });
         } catch (error) {
             console.error("Delete product error:", error);
-            res.status(500).json({
-                messageKey: "error_delete"
-            });
+            res.status(500).json({ messageKey: "error_delete" });
         }
     }
 );
