@@ -459,8 +459,36 @@
     "address_placeholder": "Sisesta tarneaadress",
     "passwordWeak": "Parool peab olema vähemalt 8 tähemärki pikk ning sisaldama suurtähte, väiketähte, numbrit ja erimärki.",
     "accountTemporarilyBlocked": "Konto on ebaõnnestunud sisselogimiskatsete tõttu ajutiselt 3 tunniks blokeeritud.",
-    "accountBlockedAfterAttempts": "Konto blokeeriti 3 tunniks pärast kolme ebaõnnestunud sisselogimiskatset.",
+    "accountBlockedAfterAttempts": "Konto on 3 tunniks blokeeritud pärast 3 vale parooli sisestamist..",
     "wrongPasswordAttemptsLeft": "Vale parool. Allesjäänud katsed: {count}",
     "newPasswordWeak": "Uus parool peab olema vähemalt 8 tähemärki pikk ning sisaldama suurtähte, väiketähte, numbrit ja erimärki.",
-    "sessionExpired": "Seanss on aegunud. Palun logi uuesti sisse."
+    "sessionExpired": "Seanss on aegunud. Palun logi uuesti sisse.",
+    "email_exists": "Selle e-postiga konto on juba olemas.",
+    "invalid_email": "Palun sisesta korrektne e-posti aadress.",
+    "password_short": "Parool peab olema vähemalt 6 tähemärki pikk.",
+    "password_mismatch": "Paroolid ei ühti.",
+    "registration_success": "Registreerimine õnnestus. Nüüd saad sisse logida.",
+    "login_success": "Sisselogimine õnnestus. Tere tulemast tagasi!",
+    "invalid_credentials": "Vale e-post või parool.",
+    "account_locked": "Konto on mitme ebaõnnestunud sisselogimiskatse tõttu ajutiselt lukus. Palun proovi hiljem uuesti.",
+
+    "profile_update_success": "Profiil on edukalt uuendatud.",
+    "profile_update_error": "Profiili uuendamisel tekkis viga. Palun proovi uuesti.",
+    "password_update_success": "Parool on edukalt uuendatud.",
+    "password_update_error": "Parooli uuendamisel tekkis viga. Palun proovi uuesti.",
+    "avatar_upload_success": "Foto on edukalt uuendatud.",
+    "avatar_upload_error": "Foto üleslaadimisel tekkis viga. Palun proovi uuesti.",
+
+    "orders_load_error": "Tellimuste laadimisel tekkis viga. Palun proovi uuesti.",
+    "tests_load_error": "Testide ajaloo laadimisel tekkis viga. Palun proovi uuesti.",
+    "order_success": "Tellimus on edukalt loodud.",
+    "order_error": "Tellimuse esitamisel tekkis viga. Palun proovi uuesti.",
+
+    "product_save_success": "Toode on edukalt salvestatud.",
+    "product_save_error": "Toote salvestamisel tekkis viga. Palun proovi uuesti.",
+    "product_delete_success": "Toode on edukalt kustutatud.",
+    "product_delete_error": "Toote kustutamisel tekkis viga. Palun proovi uuesti.",
+
+    "user_update_success": "Kasutaja on edukalt uuendatud.",
+    "user_update_error": "Kasutaja uuendamisel tekkis viga. Palun proovi uuesti."
 }

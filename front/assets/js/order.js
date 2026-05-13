@@ -128,7 +128,7 @@ async function submitOrder(event) {
     const message = document.getElementById("message")?.value.trim() || "";
 
     if (!customerName || !email) {
-        showMessage("Please fill in name and email", true);
+        showMessage("fill_required_fields", true);
         return;
     }
 
@@ -156,7 +156,7 @@ async function submitOrder(event) {
             throw new Error(data.message || "Order error");
         }
 
-        showMessage(data.message || "Order placed successfully");
+        showMessage("order_success");
         localStorage.setItem("lastOrder", JSON.stringify({
             customerName,
             email,

@@ -459,8 +459,36 @@
     "address_placeholder": "Delivery address",
     "passwordWeak": "Password must be at least 8 characters long and contain an uppercase letter, a lowercase letter, a number, and a special character.",
     "accountTemporarilyBlocked": "The account has been temporarily locked for 3 hours due to failed login attempts.",
-    "accountBlockedAfterAttempts": "The account has been locked for 3 hours after 3 failed login attempts.",
+    "accountBlockedAfterAttempts": "Account is blocked for 3 hours after 3 failed login attempts.",
     "wrongPasswordAttemptsLeft": "Incorrect password. Attempts remaining: {count}",
     "newPasswordWeak": "The new password must be at least 8 characters long and contain an uppercase letter, a lowercase letter, a number, and a special character.",
-    "sessionExpired": "Session expired. Please sign in again."
+    "sessionExpired": "Session expired. Please sign in again.",
+"email_exists": "An account with this email already exists.",
+    "invalid_email": "Please enter a valid email address.",
+    "password_short": "Password must be at least 6 characters long.",
+    "password_mismatch": "Passwords do not match.",
+    "registration_success": "Registration successful. You can now log in.",
+    "login_success": "Login successful. Welcome back!",
+    "invalid_credentials": "Invalid email or password.",
+    "account_locked": "Your account is locked due to multiple failed login attempts. Please try again later.",
+
+    "profile_update_success": "Profile updated successfully.",
+    "profile_update_error": "Error updating profile. Please try again.",
+    "password_update_success": "Password updated successfully.",
+    "password_update_error": "Error updating password. Please try again.",
+    "avatar_upload_success": "Photo updated successfully.",
+    "avatar_upload_error": "Error uploading photo. Please try again.",
+
+    "orders_load_error": "Error loading orders. Please try again.",
+    "tests_load_error": "Error loading test history. Please try again.",
+    "order_success": "Order placed successfully.",
+    "order_error": "Error placing order. Please try again.",
+
+    "product_save_success": "Product saved successfully.",
+    "product_save_error": "Error saving product. Please try again.",
+    "product_delete_success": "Product deleted successfully.",
+    "product_delete_error": "Error deleting product. Please try again.",
+
+    "user_update_success": "User updated successfully.",
+    "user_update_error": "Error updating user. Please try again."
 }
