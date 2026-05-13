@@ -1,6 +1,4 @@
 const express = require("express");
-const path = require("path");
-const fs = require("fs");
 const jwt = require("jsonwebtoken");
 
 const pool = require("../config/mysql");
@@ -11,26 +9,43 @@ const router = express.Router();
 const JWT_SECRET = "secret123";
 
 router.post("/", async (req, res) => {
+    const connection = await pool.getConnection();
+
     try {
         const {
             customerName,
             email,
+            message,
+            address,
+            items,
+
             bouquetType,
             bouquetTitle,
             bouquetImage,
-            price,
-            message,
-            address
+            price
         } = req.body;
 
-        // Проверка обязательных полей
-        if (!customerName || !email || !bouquetTitle) {
-            return res.status(400).json({
-                message: "Заполни обязательные поля"
-            });
+        if (!customerName || !email) {
+            return res.status(400).json({ message: "Заполни обязательные поля" });
         }
 
-        // Получаем userId из JWT (если пользователь авторизован)
+        let orderItems = Array.isArray(items) && items.length ? items : null;
+
+        if (!orderItems) {
+            if (!bouquetTitle) {
+                return res.status(400).json({ message: "Корзина пустая" });
+            }
+
+            orderItems = [{
+                productId: null,
+                bouquetType: bouquetType || "",
+                bouquetTitle,
+                bouquetImage: bouquetImage || "",
+                price: Number(price) || 0,
+                quantity: 1
+            }];
+        }
+
         let userId = null;
         const authHeader = req.headers.authorization;
 
@@ -40,147 +55,100 @@ router.post("/", async (req, res) => {
                 const decoded = jwt.verify(token, JWT_SECRET);
                 userId = decoded.id;
             } catch (error) {
-                console.log("Заказ без привязки к пользователю:", error.message);
+                console.log("Заказ без пользователя:", error.message);
             }
         }
 
-        // Сохраняем заказ в БД
-        await pool.query(
+        const totalPrice = orderItems.reduce((sum, item) => {
+            return sum + (Number(item.price) || 0) * (Number(item.quantity) || 1);
+        }, 0);
+
+        const firstItem = orderItems[0];
+
+        await connection.beginTransaction();
+
+        const [orderResult] = await connection.query(
             `INSERT INTO orders
-            (customer_name, email, bouquet_type, bouquet_title, bouquet_image, price, message, user_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+            (customer_name, email, bouquet_type, bouquet_title, bouquet_image, price, message, address, user_id)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [
                 customerName,
                 email,
-                bouquetType || "",
-                bouquetTitle,
-                bouquetImage || "",
-                price || null,
+                firstItem.bouquetType || firstItem.type || "",
+                orderItems.length === 1
+                    ? firstItem.bouquetTitle || firstItem.title
+                    : `${orderItems.length} bouquets`,
+                firstItem.bouquetImage || firstItem.img || "",
+                totalPrice,
                 message || "",
+                address || "",
                 userId
             ]
         );
 
-        // Подготавливаем изображение букета для письма
-        const attachments = [];
-        let showBouquetImage = false;
+        const orderId = orderResult.insertId;
 
-        if (bouquetImage) {
-            const filename = path.basename(bouquetImage);
-
-            const possiblePaths = [
-                path.join(__dirname, "..", "uploads", "products", filename),
-                path.join(__dirname, "..", "..", "front", "assets", "img", filename)
-            ];
-
-            let imagePath = null;
-
-            for (const p of possiblePaths) {
-                if (fs.existsSync(p)) {
-                    imagePath = p;
-                    break;
-                }
-            }
-
-            console.log("Ищу изображение в:", possiblePaths);
-
-            if (imagePath) {
-                attachments.push({
-                    filename,
-                    path: imagePath,
-                    cid: "bouquetimage"
-                });
-
-                console.log("Изображение успешно прикреплено:", imagePath);
-            } else {
-                console.warn("Изображение не найдено:", filename);
-            }
+        for (const item of orderItems) {
+            await connection.query(
+                `INSERT INTO order_items
+                (order_id, product_id, bouquet_title, bouquet_type, bouquet_image, price, quantity)
+                VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                [
+                    orderId,
+                    item.productId || item.id || null,
+                    item.bouquetTitle || item.title || "Bouquet",
+                    item.bouquetType || item.type || "",
+                    item.bouquetImage || item.img || "",
+                    Number(item.price) || 0,
+                    Number(item.quantity) || 1
+                ]
+            );
         }
-        // Отправляем письмо клиенту
+
+        await connection.commit();
+
+        const itemsHtml = orderItems.map(item => `
+            <li>
+                ${item.bouquetTitle || item.title} —
+                €${Number(item.price || 0).toFixed(2)}
+                × ${item.quantity || 1}
+            </li>
+        `).join("");
+
         await transporter.sendMail({
             from: '"PetalSpeak" <lunjevanatalja@gmail.com>',
             to: email,
             subject: "Thank you for your order! 💐",
             html: `
-                <div style="
-                    background:#2b2b2b;
-                    padding:16px;
-                    color:#ffffff;
-                    font-family:Arial,sans-serif;
-                    max-width:420px;
-                ">
-                    <h2 style="
-                        margin:0 0 16px;
-                        font-size:30px;
-                        font-weight:700;
-                    ">
-                        Thank you for your order! 🎉
-                    </h2>
+                <div style="background:#2b2b2b;padding:16px;color:#fff;font-family:Arial,sans-serif;max-width:480px;">
+                    <h2>Thank you for your order! 🎉</h2>
 
-                    ${
-                        attachments.length
-                            ? `
-                                <div style="margin-bottom:16px;">
-                                    <img
-                                        src="cid:bouquetimage"
-                                        alt="${bouquetTitle}"
-                                        style="
-                                            width:100%;
-                                            max-width:320px;
-                                            border-radius:12px;
-                                            display:block;
-                                        "
-                                    >
-                                </div>
-                            `
-                            : ""
-                    }
+                    <p><strong>Name:</strong> ${customerName}</p>
+                    <p><strong>Email:</strong> ${email}</p>
+                    <p><strong>Delivery address:</strong> ${address || "-"}</p>
+                    <p><strong>Message:</strong> ${message || "-"}</p>
 
-                    <p style="margin:8px 0;">
-                        <strong>Name:</strong> ${customerName}
-                    </p>
+                    <h3>Your bouquets:</h3>
+                    <ul>${itemsHtml}</ul>
 
-                    <p style="margin:8px 0;">
-                        <strong>Email:</strong> ${email}
-                    </p>
-
-                    <p style="margin:8px 0;">
-                        <strong>Bouquet:</strong> ${bouquetTitle}
-                    </p>
-
-                    <p style="margin:8px 0;">
-                        <strong>Type:</strong> ${bouquetType || "-"}
-                    </p>
-
-                    <p style="margin:8px 0;">
-                        <strong>Price:</strong> €${price || "-"}
-                    </p>
-
-                    <p style="margin:8px 0;">
-                        <strong>Message:</strong> ${message || "-"}
-                    </p>
-
-                    <p style="margin:8px 0;">
-                        <strong>Delivery address:</strong> ${address || "-"}
-                    </p>
+                    <p><strong>Total:</strong> €${totalPrice.toFixed(2)}</p>
                 </div>
-            `,
-            attachments
+            `
         });
 
-        // Возвращаем успешный ответ
         res.json({
-            message: "Заказ успешно оформлен"
+            message: "Заказ успешно оформлен",
+            orderId
         });
     } catch (error) {
+        await connection.rollback();
         console.error("Ошибка оформления заказа:", error);
-        res.status(500).json({
-            message: "Ошибка при оформлении заказа"
-        });
+        res.status(500).json({ message: "Ошибка при оформлении заказа" });
+    } finally {
+        connection.release();
     }
 });
 
-// Получение заказов текущего пользователя
 router.get("/my", auth, async (req, res) => {
     try {
         const [orders] = await pool.query(
@@ -188,12 +156,19 @@ router.get("/my", auth, async (req, res) => {
             [req.user.id]
         );
 
+        for (const order of orders) {
+            const [items] = await pool.query(
+                "SELECT * FROM order_items WHERE order_id = ?",
+                [order.id]
+            );
+
+            order.items = items;
+        }
+
         res.json(orders);
     } catch (error) {
         console.error("Ошибка получения заказов:", error);
-        res.status(500).json({
-            message: "Ошибка получения заказов"
-        });
+        res.status(500).json({ message: "Ошибка получения заказов" });
     }
 });
 

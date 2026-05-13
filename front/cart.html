@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart | PetalSpeak</title>
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+    <header class="topbar">
+        <div class="brand">PETALSPEAK</div>
+
+        <nav class="nav">
+            <a href="/" data-i18n="back_home">Back</a>
+            <a href="/test.html" data-i18n="test">Feelings Test</a>
+            <a href="/cart.html" class="cart-link">🛒 <span id="cartCount">0</span></a>
+
+            <div class="lang-switch">
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="et">ET</button>
+                <button class="lang-btn" data-lang="ru">RU</button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="section">
+            <div class="panel order-panel">
+                <h2 class="center" id="cartTitle">Cart</h2>
+                <div id="cartList"></div>
+                <div id="cartTotal" style="margin-top:20px; font-size:22px; text-align:center;"></div>
+
+                <div style="text-align:center; margin-top:24px;">
+                    <button id="buySelectedBtn" class="btn" type="button">
+                        Buy selected
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        let translations = {};
+        let currentLang = localStorage.getItem("lang") || "en";
+
+        function t(key) {
+            return translations[key] || key;
+        }
+
+        function getCart() {
+            try {
+                return JSON.parse(localStorage.getItem("cart")) || [];
+            } catch {
+                return [];
+            }
+        }
+
+        function saveCart(cart) {
+            localStorage.setItem("cart", JSON.stringify(cart));
+            updateCartCount();
+            renderCart();
+        }
+
+        function updateCartCount() {
+            const countEl = document.getElementById("cartCount");
+            if (!countEl) return;
+
+            const cart = getCart();
+            const count = cart.reduce((sum, item) => sum + Number(item.quantity || 1), 0);
+            countEl.textContent = count;
+        }
+
+        async function loadLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem("lang", lang);
+
+            try {
+                const res = await fetch(`/locales/${lang}.json`);
+                translations = await res.json();
+            } catch {
+                translations = {};
+            }
+
+            applyTexts();
+            renderCart();
+        }
+
+        function applyTexts() {
+            document.querySelectorAll(".lang-btn").forEach(btn => {
+                btn.classList.toggle("active", btn.dataset.lang === currentLang);
+            });
+
+            document.getElementById("cartTitle").textContent =
+                currentLang === "ru" ? "Корзина" :
+                currentLang === "et" ? "Ostukorv" :
+                "Cart";
+
+            document.getElementById("buySelectedBtn").textContent =
+                currentLang === "ru" ? "Купить выбранное" :
+                currentLang === "et" ? "Osta valitud" :
+                "Buy selected";
+        }
+
+        function renderCart() {
+            const cart = getCart();
+            const list = document.getElementById("cartList");
+            const totalEl = document.getElementById("cartTotal");
+
+            if (!cart.length) {
+                list.innerHTML = `
+                    <p class="empty" style="text-align:center;">
+                        ${
+                            currentLang === "ru" ? "Корзина пустая" :
+                            currentLang === "et" ? "Ostukorv on tühi" :
+                            "Cart is empty"
+                        }
+                    </p>
+                `;
+                totalEl.textContent = "";
+                return;
+            }
+
+            list.innerHTML = cart.map((item, index) => `
+                <div class="item" style="display:grid; grid-template-columns:40px 120px 1fr; gap:16px; align-items:center; margin-bottom:18px;">
+                    <input
+                        type="checkbox"
+                        class="cart-check"
+                        data-index="${index}"
+                        ${item.selected === false ? "" : "checked"}
+                    >
+
+                    <img
+                        src="${item.img || ""}"
+                        alt="${item.title || ""}"
+                        style="width:120px; height:120px; object-fit:cover; border-radius:12px;"
+                    >
+
+                    <div>
+                        <div class="item-title">${item.title || "Bouquet"}</div>
+                        <div class="item-meta">€${Number(item.price || 0).toFixed(2)}</div>
+
+                        <div style="display:flex; gap:10px; align-items:center; margin-top:10px;">
+                            <button type="button" class="cart-minus profile-btn secondary" data-index="${index}">−</button>
+                            <span>${item.quantity || 1}</span>
+                            <button type="button" class="cart-plus profile-btn" data-index="${index}">+</button>
+                            <button type="button" class="cart-remove profile-btn secondary" data-index="${index}">
+                                ${
+                                    currentLang === "ru" ? "Удалить" :
+                                    currentLang === "et" ? "Kustuta" :
+                                    "Remove"
+                                }
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join("");
+
+            const selectedItems = cart.filter(item => item.selected !== false);
+            const total = selectedItems.reduce((sum, item) => {
+                return sum + Number(item.price || 0) * Number(item.quantity || 1);
+            }, 0);
+
+            totalEl.textContent =
+                currentLang === "ru" ? `Итого: €${total.toFixed(2)}` :
+                currentLang === "et" ? `Kokku: €${total.toFixed(2)}` :
+                `Total: €${total.toFixed(2)}`;
+
+            initCartButtons();
+            updateCartCount();
+        }
+
+        function initCartButtons() {
+            document.querySelectorAll(".cart-check").forEach(input => {
+                input.onchange = () => {
+                    const cart = getCart();
+                    const index = Number(input.dataset.index);
+                    cart[index].selected = input.checked;
+                    localStorage.setItem("cart", JSON.stringify(cart));
+                    renderCart();
+                };
+            });
+
+            document.querySelectorAll(".cart-minus").forEach(btn => {
+                btn.onclick = () => {
+                    const cart = getCart();
+                    const index = Number(btn.dataset.index);
+
+                    cart[index].quantity = Number(cart[index].quantity || 1) - 1;
+
+                    if (cart[index].quantity <= 0) {
+                        cart.splice(index, 1);
+                    }
+
+                    saveCart(cart);
+                };
+            });
+
+            document.querySelectorAll(".cart-plus").forEach(btn => {
+                btn.onclick = () => {
+                    const cart = getCart();
+                    const index = Number(btn.dataset.index);
+
+                    cart[index].quantity = Number(cart[index].quantity || 1) + 1;
+                    saveCart(cart);
+                };
+            });
+
+            document.querySelectorAll(".cart-remove").forEach(btn => {
+                btn.onclick = () => {
+                    const cart = getCart();
+                    const index = Number(btn.dataset.index);
+
+                    cart.splice(index, 1);
+                    saveCart(cart);
+                };
+            });
+        }
+
+        function buySelected() {
+            const cart = getCart();
+            const selected = cart.filter(item => item.selected !== false);
+
+            if (!selected.length) {
+                alert(
+                    currentLang === "ru" ? "Выберите хотя бы один букет" :
+                    currentLang === "et" ? "Vali vähemalt üks kimp" :
+                    "Select at least one bouquet"
+                );
+                return;
+            }
+
+            localStorage.setItem("checkoutCart", JSON.stringify(selected));
+            window.location.href = "/order.html";
+        }
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            const token = localStorage.getItem("token");
+
+            if (!token) {
+                window.location.href = "/login.html";
+                return;
+            }
+            await loadLanguage(currentLang);
+
+            document.getElementById("buySelectedBtn").addEventListener("click", buySelected);
+
+            document.querySelectorAll(".lang-btn").forEach(btn => {
+                btn.addEventListener("click", async () => {
+                    await loadLanguage(btn.dataset.lang);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

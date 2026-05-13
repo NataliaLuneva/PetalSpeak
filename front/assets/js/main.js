@@ -163,6 +163,7 @@ async function loadProducts() {
 
                         <button
                             class="btn buy-btn"
+                            data-id="${product.id}"
                             data-type="${product.category}"
                             data-title="${productTitle}"
                             data-img="${product.image}"
@@ -209,19 +210,150 @@ async function loadProducts() {
     }
 }
 
+function getCart() {
+    try {
+        return JSON.parse(localStorage.getItem("cart")) || [];
+    } catch {
+        return [];
+    }
+}
+
+function saveCart(cart) {
+    localStorage.setItem("cart", JSON.stringify(cart));
+    updateCartCount();
+}
+
+function updateCartCount() {
+    const countEl = document.getElementById("cartCount");
+    if (!countEl) return;
+
+    const cart = getCart();
+    const count = cart.reduce((sum, item) => {
+        return sum + Number(item.quantity || 1);
+    }, 0);
+
+    countEl.textContent = count;
+}
+
+function addToCart(product) {
+    const token = getToken();
+
+    if (!token) {
+        localStorage.setItem("redirectAfterLogin", window.location.pathname);
+        window.location.href = "/login.html";
+        return false;
+    }
+
+    const cart = getCart();
+
+    const existing = cart.find(item => String(item.id) === String(product.id));
+
+    if (existing) {
+        existing.quantity += 1;
+    } else {
+        cart.push({
+            ...product,
+            quantity: 1
+        });
+    }
+
+    saveCart(cart);
+    return true;
+}
+
 function initBuyButtons() {
     document.querySelectorAll(".buy-btn").forEach((btn) => {
         btn.addEventListener("click", () => {
             const bouquet = {
+                id: btn.dataset.id,
                 type: btn.dataset.type,
                 title: btn.dataset.title,
                 img: btn.dataset.img,
-                price: btn.dataset.price
+                price: Number(btn.dataset.price) || 0
             };
 
-            localStorage.setItem("selectedBouquet", JSON.stringify(bouquet));
-            window.location.href = "/order.html";
+            const added = addToCart(bouquet);
+
+            if (!added) return;
+
+            showQuantityControl(btn, bouquet.id);
         });
+    });
+
+    restoreQuantityControls();
+}
+
+function showQuantityControl(btn, id) {
+    const cart = getCart();
+    const item = cart.find(p => String(p.id) === String(id));
+    const quantity = item ? item.quantity : 1;
+
+    btn.outerHTML = `
+        <div class="cart-qty-box" data-id="${id}">
+            <button type="button" class="qty-minus" data-id="${id}">−</button>
+            <span class="qty-value">${quantity}</span>
+            <button type="button" class="qty-plus" data-id="${id}">+</button>
+        </div>
+    `;
+
+    initQuantityButtons();
+}
+
+function restoreQuantityControls() {
+    const cart = getCart();
+
+    document.querySelectorAll(".buy-btn").forEach(btn => {
+        const id = btn.dataset.id;
+        const item = cart.find(p => String(p.id) === String(id));
+
+        if (item) {
+            showQuantityControl(btn, id);
+        }
+    });
+}
+
+function initQuantityButtons() {
+    document.querySelectorAll(".qty-minus").forEach(btn => {
+        btn.onclick = () => {
+            const id = btn.dataset.id;
+            const cart = getCart();
+            const item = cart.find(p => String(p.id) === String(id));
+            if (!item) return;
+
+            item.quantity -= 1;
+
+            if (item.quantity <= 0) {
+                const index = cart.findIndex(p => String(p.id) === String(id));
+                cart.splice(index, 1);
+                saveCart(cart);
+                loadProducts();
+                return;
+            }
+
+            saveCart(cart);
+
+            const box = btn.closest(".cart-qty-box");
+            if (box) {
+                box.querySelector(".qty-value").textContent = item.quantity;
+            }
+        };
+    });
+
+    document.querySelectorAll(".qty-plus").forEach(btn => {
+        btn.onclick = () => {
+            const id = btn.dataset.id;
+            const cart = getCart();
+            const item = cart.find(p => String(p.id) === String(id));
+            if (!item) return;
+
+            item.quantity += 1;
+            saveCart(cart);
+
+            const box = btn.closest(".cart-qty-box");
+            if (box) {
+                box.querySelector(".qty-value").textContent = item.quantity;
+            }
+        };
     });
 }
 
@@ -679,6 +811,11 @@ async function showResult() {
             currentLang === "et" ? "Leia täpsem sobivus" :
             "Find a more precise match";
 
+        const cartText =
+            currentLang === "ru" ? "Добавить в корзину" :
+            currentLang === "et" ? "Lisa ostukorvi" :
+            "Add to cart";
+
         answersEl.innerHTML = `
             <div class="result-single">
                 <p class="result-subtitle">${subtitle}</p>
@@ -690,6 +827,7 @@ async function showResult() {
                 <p class="price">${Number(product.price).toFixed(2)}€</p>
 
                 <button class="btn order-result-btn">${orderText}</button>
+                <button class="btn add-cart-result-btn">${cartText}</button>
 
                 ${
                     !refinedOnce
@@ -701,13 +839,28 @@ async function showResult() {
 
         document.querySelector(".order-result-btn").onclick = () => {
             localStorage.setItem("selectedBouquet", JSON.stringify({
+                id: product.id,
                 type: product.feeling_type || resultType,
                 title,
                 img: product.image,
-                price: product.price
+                price: Number(product.price) || 0
             }));
 
             window.location.href = "/order.html";
+        };
+
+        document.querySelector(".add-cart-result-btn").onclick = () => {
+            const added = addToCart({
+                id: product.id,
+                type: product.feeling_type || resultType,
+                title,
+                img: product.image,
+                price: Number(product.price) || 0
+            });
+
+            if (added) {
+                alert(cartText);
+            }
         };
 
         const refineBtn = document.querySelector(".refine-result-btn");
@@ -786,4 +939,5 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("addProductBtn")?.addEventListener("click", openAddProduct);
     document.getElementById("cancelProductBtn")?.addEventListener("click", closeProductModal);
     document.getElementById("saveProductBtn")?.addEventListener("click", saveProduct);
+    updateCartCount();
 });

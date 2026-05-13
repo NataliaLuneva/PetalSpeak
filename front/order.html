@@ -12,6 +12,9 @@
 
         <nav class="nav">
             <a href="/" class="back-btn" data-i18n="back_home">Back</a>
+            <a href="/cart.html" class="cart-link">
+                🛒 <span id="cartCount">0</span>
+            </a>
 
             <div class="lang-switch">
                 <button class="lang-btn active" data-lang="en">EN</button>
@@ -88,6 +91,37 @@
     <script>
         let translations = {};
 
+        function getCart() {
+            try {
+                const checkoutCart = JSON.parse(localStorage.getItem("checkoutCart")) || [];
+
+                if (checkoutCart.length) {
+                    return checkoutCart;
+                }
+
+                const selectedBouquet = JSON.parse(localStorage.getItem("selectedBouquet"));
+
+                if (selectedBouquet) {
+                    return [{
+                        ...selectedBouquet,
+                        quantity: 1
+                    }];
+                }
+
+                return [];
+            } catch {
+                return [];
+            }
+        }
+
+        function saveCart(cart) {
+            localStorage.setItem("cart", JSON.stringify(cart));
+        }
+
+        function getToken() {
+            return localStorage.getItem("token");
+        }
+
         async function loadLanguage(lang) {
             const response = await fetch(`/locales/${lang}.json`);
             translations = await response.json();
@@ -102,24 +136,23 @@
                 if (translations[key]) el.innerHTML = translations[key];
             });
 
-            document.getElementById("name").placeholder = translations["name_placeholder"] || "Your name";
-            document.getElementById("email").placeholder = translations["email_placeholder"] || "Email";
-            document.getElementById("message").placeholder = translations["message_placeholder"] || "Message for recipient";
-            document.getElementById("address").placeholder = translations["address_placeholder"] || "Delivery address";
-            document.getElementById("cardName").placeholder = translations["card_name_placeholder"] || "Name on card";
-            document.getElementById("cardNumber").placeholder = "1234 5678 9012 3456";
-            document.getElementById("expiry").placeholder = "MM/YY";
-            document.getElementById("cvv").placeholder = "123";
+            document.getElementById("name").placeholder =
+                translations["name_placeholder"] || "Your name";
+            document.getElementById("email").placeholder =
+                translations["email_placeholder"] || "Email";
+            document.getElementById("message").placeholder =
+                translations["message_placeholder"] || "Message for recipient";
+            document.getElementById("address").placeholder =
+                translations["address_placeholder"] || "Delivery address";
         }
 
         function setActiveButton(lang) {
-            document.querySelectorAll(".lang-btn").forEach(btn => btn.classList.remove("active"));
+            document.querySelectorAll(".lang-btn").forEach(btn => {
+                btn.classList.remove("active");
+            });
+
             const activeBtn = document.querySelector(`[data-lang="${lang}"]`);
             if (activeBtn) activeBtn.classList.add("active");
-        }
-
-        function getToken() {
-            return localStorage.getItem("token");
         }
 
         async function loadCurrentUser() {
@@ -135,8 +168,7 @@
 
                 if (!res.ok) return null;
                 return await res.json();
-            } catch (e) {
-                console.error("Load current user error:", e);
+            } catch {
                 return null;
             }
         }
@@ -158,40 +190,51 @@
         }
 
         function loadOrderPreview() {
-            const bouquet = JSON.parse(localStorage.getItem("selectedBouquet"));
-            if (!bouquet) return;
+            const cart = getCart();
 
-            document.getElementById("preview").src = bouquet.img;
-            document.getElementById("title").textContent = translations[bouquet.title] || bouquet.title;
-            document.getElementById("price").textContent =
-                `${translations["price_label"] || "Price"}: €${bouquet.price || 0}`;
+            const previewCard = document.querySelector(".order-preview-card");
+
+            if (!previewCard) return;
+
+            if (!cart.length) {
+                previewCard.innerHTML = `<p>Cart is empty</p>`;
+                return;
+            }
+
+            const total = cart.reduce((sum, item) => {
+                return sum + (Number(item.price) || 0) * (Number(item.quantity) || 1);
+            }, 0);
+
+            previewCard.innerHTML = `
+                <h3 class="order-preview-title">Your cart</h3>
+
+                ${cart.map(item => `
+                    <div style="margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid #ddd;">
+                        <img class="order-preview-img" src="${item.img || ""}" alt="${item.title || ""}">
+                        <h3 class="order-preview-title">${item.title || "Bouquet"}</h3>
+                        <p class="order-price">
+                            €${Number(item.price || 0).toFixed(2)} × ${item.quantity || 1}
+                        </p>
+                    </div>
+                `).join("")}
+
+                <h3 class="order-preview-title">
+                    Total: €${total.toFixed(2)}
+                </h3>
+            `;
         }
 
         function isValidEmail(email) {
             return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
         }
 
-        function validateCard() {
-            const cardName = document.getElementById("cardName").value.trim();
-            const cardNumber = document.getElementById("cardNumber").value.replace(/\s/g, "");
-            const expiry = document.getElementById("expiry").value.trim();
-            const cvv = document.getElementById("cvv").value.trim();
-
-            if (!cardName) return "card_name_error";
-            if (!/^\d{16}$/.test(cardNumber)) return "card_number_error";
-            if (!/^\d{2}\/\d{2}$/.test(expiry)) return "expiry_error";
-            if (!/^\d{3}$/.test(cvv)) return "cvv_error";
-
-            return null;
-        }
-
         async function sendOrder() {
-            const bouquet = JSON.parse(localStorage.getItem("selectedBouquet"));
+            const cart = getCart();
             const resultEl = document.getElementById("result");
             const orderBtn = document.getElementById("orderBtn");
 
-            if (!bouquet) {
-                resultEl.textContent = translations["no_bouquet_selected"] || "No bouquet selected";
+            if (!cart.length) {
+                resultEl.textContent = "Cart is empty";
                 return;
             }
 
@@ -202,121 +245,109 @@
 
             if (!customerName || !email || !address) {
                 resultEl.textContent =
-                    translations["fill_required_fields"] || "Please fill in all required fields";
+                    translations["fill_required_fields"] ||
+                    "Please fill in all required fields";
                 return;
             }
 
             if (!isValidEmail(email)) {
-                resultEl.textContent =
-                    translations["email_invalid_error"] || "Please enter a valid email address";
+                resultEl.textContent = "Invalid email";
                 return;
             }
 
-            const cardErrorKey = validateCard();
-            if (cardErrorKey) {
-                resultEl.textContent = translations[cardErrorKey] || "Invalid card data";
-                return;
-            }
-
-            const originalBtnText = orderBtn.innerHTML;
-            orderBtn.disabled = true;
-            orderBtn.classList.add("loading");
-            orderBtn.innerHTML =
-                `<span class="spinner"></span>${translations["processing_btn"] || "Processing..."}`;
-
-            const data = {
-                customerName,
-                email,
-                bouquetType: bouquet.type,
-                bouquetTitle: translations[bouquet.title] || bouquet.title,
-                bouquetImage: bouquet.img,
-                price: bouquet.price,
-                message,
-                address,
-                paymentStatus: "paid",
-                paymentMethod: "demo_card"
+            const headers = {
+                "Content-Type": "application/json"
             };
 
+            const token = getToken();
+            if (token) {
+                headers.Authorization = `Bearer ${token}`;
+            }
+
+            orderBtn.disabled = true;
+
             try {
-                const headers = {
-                    "Content-Type": "application/json"
-                };
-
-                const token = getToken();
-                if (token) {
-                    headers.Authorization = `Bearer ${token}`;
-                }
-
                 const res = await fetch("/api/orders", {
                     method: "POST",
                     headers,
-                    body: JSON.stringify(data)
+                    body: JSON.stringify({
+                        customerName,
+                        email,
+                        message,
+                        address,
+                        items: cart
+                    })
                 });
 
-                const result = await res.json();
+                const data = await res.json();
 
                 if (!res.ok) {
-                    resultEl.textContent = result.message || result.error || "Order failed";
-                    orderBtn.disabled = false;
-                    orderBtn.classList.remove("loading");
-                    orderBtn.innerHTML = originalBtnText;
-                    return;
+                    throw new Error(data.message || "Order failed");
                 }
 
+                const total = cart.reduce((sum, item) => {
+                    return sum + (Number(item.price) || 0) * (Number(item.quantity) || 1);
+                }, 0);
+
                 localStorage.setItem("lastOrderedBouquet", JSON.stringify({
-                    title: bouquet.title,
-                    titleText: translations[bouquet.title] || bouquet.title,
-                    img: bouquet.img,
-                    price: bouquet.price
+                    titleText:
+                        cart.length === 1
+                            ? cart[0].title
+                            : `${cart.length} bouquets`,
+                    price: total
                 }));
 
+                const fullCart = JSON.parse(localStorage.getItem("cart") || "[]");
+                const boughtIds = cart.map(item => String(item.id));
+
+                const updatedCart = fullCart.filter(item => {
+                    return !boughtIds.includes(String(item.id));
+                });
+
+                localStorage.setItem("cart", JSON.stringify(updatedCart));
+
+                localStorage.removeItem("checkoutCart");
                 localStorage.removeItem("selectedBouquet");
+
                 window.location.href = "/success.html";
-            } catch (e) {
-                console.error(e);
-                resultEl.textContent =
-                    translations["order_error"] || "Error sending order";
+            } catch (error) {
+                console.error(error);
+                resultEl.textContent = error.message || "Order failed";
                 orderBtn.disabled = false;
-                orderBtn.classList.remove("loading");
-                orderBtn.innerHTML = originalBtnText;
             }
         }
 
+        function updateCartCount() {
+            const countEl = document.getElementById("cartCount");
+            if (!countEl) return;
+
+            const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+            const count = cart.reduce((sum, item) => {
+                return sum + Number(item.quantity || 1);
+            }, 0);
+
+            countEl.textContent = count;
+        }
+
         document.addEventListener("DOMContentLoaded", async () => {
-            const cardNumber = document.getElementById("cardNumber");
-            const expiry = document.getElementById("expiry");
-            const cvv = document.getElementById("cvv");
-
-            cardNumber.addEventListener("input", e => {
-                let value = e.target.value.replace(/\D/g, "").slice(0, 16);
-                value = value.replace(/(.{4})/g, "$1 ").trim();
-                e.target.value = value;
-            });
-
-            expiry.addEventListener("input", e => {
-                let value = e.target.value.replace(/\D/g, "").slice(0, 4);
-                if (value.length >= 3) value = value.slice(0, 2) + "/" + value.slice(2);
-                e.target.value = value;
-            });
-
-            cvv.addEventListener("input", e => {
-                e.target.value = e.target.value.replace(/\D/g, "").slice(0, 3);
-            });
-
             const savedLang = localStorage.getItem("lang") || "en";
+
             await loadLanguage(savedLang);
             await autofillUserData();
 
-            document.getElementById("orderBtn").addEventListener("click", sendOrder);
+            document.getElementById("orderBtn")
+                .addEventListener("click", sendOrder);
 
             document.querySelectorAll(".lang-btn").forEach(btn => {
                 btn.addEventListener("click", async () => {
                     const lang = btn.dataset.lang;
                     localStorage.setItem("lang", lang);
                     await loadLanguage(lang);
+                    updateCartCount();
                 });
             });
+            updateCartCount();
         });
-    </script>
-</body>
+        </script>
+    </body>
 </html>
