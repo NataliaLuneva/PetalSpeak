@@ -128,7 +128,7 @@ router.post("/login", async (req, res) => {
             });
         }
 
-        // временная блокировка
+        // // временная блокировка
         if (user.blocked_until && new Date(user.blocked_until) > new Date()) {
             return res.status(403).json({
                 messageKey: "accountTemporarilyBlocked"
@@ -140,7 +140,7 @@ router.post("/login", async (req, res) => {
         if (!isValid) {
             const attempts = (user.failed_attempts || 0) + 1;
 
-            // если 3 попытки → блокировка
+        //     // если 3 попытки → блокировка
             if (attempts >= 3) {
                 await pool.query(
                     "UPDATE users SET failed_attempts = 0, blocked_until = DATE_ADD(NOW(), INTERVAL 3 HOUR) WHERE id = ?",
@@ -164,7 +164,7 @@ router.post("/login", async (req, res) => {
             });
         }
 
-        // успех → сброс
+    //     // успех → сброс
         await pool.query(
             "UPDATE users SET failed_attempts = 0, blocked_until = NULL WHERE id = ?",
             [user.id]
