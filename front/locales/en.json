@@ -491,5 +491,6 @@
 
     "user_update_success": "User updated successfully.",
     "user_update_error": "Error updating user. Please try again.",
-    "your_cart" : "Your cart"
+    "your_cart" : "Your cart",
+    "next": "Next"
 }

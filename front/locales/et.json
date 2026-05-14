@@ -491,5 +491,6 @@
 
     "user_update_success": "Kasutaja on edukalt uuendatud.",
     "user_update_error": "Kasutaja uuendamisel tekkis viga. Palun proovi uuesti.",
-    "your_cart" : "Teie korv"
+    "your_cart" : "Teie korv",
+    "next": "Edasi"
 }

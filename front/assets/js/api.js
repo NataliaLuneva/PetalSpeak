@@ -1,9 +1,13 @@
+// API serveri põhiaadress.
 const API = "http://localhost:3000/api";
 
+// Tagastab JWT tokeni brauseri localStorage'ist.
 function getToken(){
     return localStorage.getItem("token");
 }
 
+// Loob HTTP päringute päised.
+// Kui token on olemas, lisatakse Authorization päis.
 function getHeaders(){
     const token = getToken();
 
@@ -19,7 +23,7 @@ function getHeaders(){
     };
 }
 
-// сохранить тест
+// Salvestab kasutaja testi tulemuse serverisse.
 export async function saveTestResult(data){
     const res = await fetch(`${API}/tests`, {
         method: "POST",
@@ -30,10 +34,12 @@ export async function saveTestResult(data){
     return res.json();
 }
 
+// Tagastab superadmini jaoks kõik tellimused.
+// Vajadusel lisatakse kuupäevavahemiku filter.
 export async function getAdminOrders(from, to) {
     let url = `${API}/admin/orders`;
 
-    // если выбран период, добавляем параметры ?from=YYYY-MM-DD&to=YYYY-MM-DD
+    // Kui kuupäevad on valitud, lisame need päringu parameetritena.
     if (from && to) {
         url += `?from=${from}&to=${to}`;
     }
@@ -46,11 +52,12 @@ export async function getAdminOrders(from, to) {
     return res.json();
 }
 
-// получить статистику для супер-админа
+// Tagastab superadmini statistika.
+// Vajadusel lisatakse kuupäevavahemiku filter.
 export async function getAdminStats(from, to) {
     let url = `${API}/admin/stats`;
 
-    // если выбран период, добавляем параметры ?from=YYYY-MM-DD&to=YYYY-MM-DD
+    // Kui kuupäevad on valitud, lisame need päringu parameetritena.
     if (from && to) {
         url += `?from=${from}&to=${to}`;
     }
@@ -62,3 +69,8 @@ export async function getAdminStats(from, to) {
 
     return res.json();
 }
+
+// Этот модуль содержит функции для взаимодействия с серверным API. 
+// Сначала определяется базовый адрес API, затем реализуются вспомогательные функции для получения JWT-токена из localStorage и формирования HTTP-заголовков. 
+// Если пользователь авторизован, в заголовки автоматически добавляется Authorization: Bearer <token>. 
+// Далее реализованы функции для сохранения результата теста, получения списка заказов для супер-администратора и получения статистики с возможностью фильтрации по диапазону дат.

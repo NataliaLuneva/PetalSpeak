@@ -5,7 +5,7 @@ const pool = require("../config/mysql");
 const auth = require("../middleware/auth");
 const requireRole = require("../middleware/requireRole");
 
-// все пользователи
+// Tagastab kõik kasutajad.
 router.get("/users", auth, requireRole("superadmin"), async (req, res) => {
     try {
         const [users] = await pool.query(`
@@ -21,11 +21,12 @@ router.get("/users", auth, requireRole("superadmin"), async (req, res) => {
     }
 });
 
-// назначить admin
+// Määrab kasutajale admini rolli.
 router.put("/users/:id/make-admin", auth, requireRole("superadmin"), async (req, res) => {
     try {
         const userId = Number(req.params.id);
 
+        // Keelame enda rolli muutmise.
         if (userId === req.user.id) {
             return res.status(400).json({ message: "Себя менять не нужно" });
         }
@@ -42,7 +43,7 @@ router.put("/users/:id/make-admin", auth, requireRole("superadmin"), async (req,
     }
 });
 
-// убрать admin
+// Eemaldab kasutajalt admini rolli.
 router.put("/users/:id/remove-admin", auth, requireRole("superadmin"), async (req, res) => {
     try {
         const userId = Number(req.params.id);
@@ -63,7 +64,7 @@ router.put("/users/:id/remove-admin", auth, requireRole("superadmin"), async (re
     }
 });
 
-// блокировка
+// Blokeerib kasutaja.
 router.put("/users/:id/block", auth, requireRole("superadmin"), async (req, res) => {
     try {
         const userId = Number(req.params.id);
@@ -84,7 +85,7 @@ router.put("/users/:id/block", auth, requireRole("superadmin"), async (req, res)
     }
 });
 
-// разблокировка
+// Eemaldab kasutaja blokeeringu.
 router.put("/users/:id/unblock", auth, requireRole("superadmin"), async (req, res) => {
     try {
         const userId = Number(req.params.id);
@@ -101,7 +102,7 @@ router.put("/users/:id/unblock", auth, requireRole("superadmin"), async (req, re
     }
 });
 
-// мягкое удаление
+// Märgib kasutaja kustutatuks ilma andmeid päriselt eemaldamata.
 router.put("/users/:id/delete", auth, requireRole("superadmin"), async (req, res) => {
     try {
         const userId = Number(req.params.id);
@@ -122,7 +123,7 @@ router.put("/users/:id/delete", auth, requireRole("superadmin"), async (req, res
     }
 });
 
-// все заказы + фильтр по датам
+// Tagastab kõik tellimused koos kuupäevafiltriga.
 router.get("/orders", auth, requireRole("superadmin"), async (req, res) => {
     try {
         const { from, to } = req.query;
@@ -130,6 +131,7 @@ router.get("/orders", auth, requireRole("superadmin"), async (req, res) => {
         let where = "";
         const params = [];
 
+        // Kui kuupäevad on antud, filtreerime tellimused perioodi järgi.
         if (from && to) {
             where = "WHERE o.created_at >= ? AND o.created_at < DATE_ADD(?, INTERVAL 1 DAY)";
             params.push(from, to);
@@ -143,6 +145,7 @@ router.get("/orders", auth, requireRole("superadmin"), async (req, res) => {
             ORDER BY o.created_at DESC
         `, params);
 
+        // Lisame igale tellimusele selle tooted.
         for (const order of orders) {
             const [items] = await pool.query(
                 "SELECT * FROM order_items WHERE order_id = ?",
@@ -159,7 +162,7 @@ router.get("/orders", auth, requireRole("superadmin"), async (req, res) => {
     }
 });
 
-// статистика + фильтр по датам
+// Tagastab statistika koos kuupäevafiltriga.
 router.get("/stats", auth, requireRole("superadmin"), async (req, res) => {
     try {
         const { from, to } = req.query;
@@ -172,16 +175,19 @@ router.get("/stats", auth, requireRole("superadmin"), async (req, res) => {
             params.push(from, to);
         }
 
+        // Tellimuste koguarv.
         const [[totalOrdersRow]] = await pool.query(
             `SELECT COUNT(*) AS count FROM orders ${where}`,
             params
         );
 
+        // Kogutulu valitud perioodil.
         const [[totalRevenueRow]] = await pool.query(
             `SELECT COALESCE(SUM(price), 0) AS total FROM orders ${where}`,
             params
         );
 
+        // Käesoleva kuu tulu.
         const [[monthRevenueRow]] = await pool.query(`
             SELECT COALESCE(SUM(price), 0) AS total
             FROM orders
@@ -189,6 +195,7 @@ router.get("/stats", auth, requireRole("superadmin"), async (req, res) => {
               AND MONTH(created_at) = MONTH(CURDATE())
         `);
 
+        // Enim müüdud kimbud.
         const [topSales] = await pool.query(`
             SELECT bouquet_title, COUNT(*) AS total_sales, COALESCE(SUM(price), 0) AS revenue
             FROM orders
@@ -211,3 +218,7 @@ router.get("/stats", auth, requireRole("superadmin"), async (req, res) => {
 });
 
 module.exports = router;
+
+// Этот файл содержит маршруты административной панели для superadmin. 
+// Через них можно получать список пользователей, назначать и удалять роль администратора, блокировать, разблокировать и мягко удалять пользователей. 
+// Также здесь реализовано получение всех заказов с возможностью фильтрации по датам и получение статистики: общее количество заказов, общая выручка, выручка за текущий месяц и список самых продаваемых букетов.

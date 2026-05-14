@@ -11,6 +11,7 @@ const auth = require("../middleware/auth");
 const router = express.Router();
 const JWT_SECRET = "secret123";
 
+// Kontrollib, kas parool vastab turvanõuetele.
 function isStrongPassword(password) {
     return (
         password.length >= 8 &&
@@ -21,13 +22,13 @@ function isStrongPassword(password) {
     );
 }
 
-// ===== uploads folder =====
+// Loome avataride üleslaadimise kausta, kui seda veel pole.
 const uploadDir = path.join(__dirname, "..", "uploads", "avatars");
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-// ===== multer config =====
+// Seadistame failide salvestamise.
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, uploadDir);
@@ -38,12 +39,14 @@ const storage = multer.diskStorage({
     }
 });
 
+// Seadistame avatari üleslaadimise.
 const upload = multer({
     storage,
     limits: {
         fileSize: 5 * 1024 * 1024
     },
     fileFilter: (req, file, cb) => {
+        // Lubame ainult pildifailid.
         if (file.mimetype.startsWith("image/")) {
             cb(null, true);
         } else {
@@ -52,23 +55,26 @@ const upload = multer({
     }
 });
 
-// ===== register =====
+// Kasutaja registreerimine.
 router.post("/register", async (req, res) => {
     try {
         const { name, email, password } = req.body;
 
+        // Kontrollime kohustuslikke välju.
         if (!name || !email || !password) {
             return res.status(400).json({
                 messageKey: "error_fields_missing"
             });
         }
 
+        // Kontrollime parooli tugevust.
         if (!isStrongPassword(password)) {
             return res.status(400).json({
                 messageKey: "passwordWeak"
             });
         }
 
+        // Kontrollime, kas kasutaja on juba olemas.
         const [existing] = await pool.query(
             "SELECT id FROM users WHERE email = ?",
             [email]
@@ -80,8 +86,10 @@ router.post("/register", async (req, res) => {
             });
         }
 
+        // Krüpteerime parooli.
         const hashedPassword = await bcrypt.hash(password, 10);
 
+        // Salvestame uue kasutaja andmebaasi.
         await pool.query(
             "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
             [name, email, hashedPassword]
@@ -98,11 +106,12 @@ router.post("/register", async (req, res) => {
     }
 });
 
-// ===== login =====
+// Kasutaja sisselogimine.
 router.post("/login", async (req, res) => {
     try {
         const { email, password } = req.body;
 
+        // Otsime kasutajat e-posti järgi.
         const [rows] = await pool.query(
             "SELECT * FROM users WHERE email = ?",
             [email]
@@ -116,6 +125,7 @@ router.post("/login", async (req, res) => {
 
         const user = rows[0];
 
+        // Kontrollime, kas konto on kustutatud või blokeeritud.
         if (user.is_deleted) {
             return res.status(403).json({
                 messageKey: "account_deleted"
@@ -128,19 +138,20 @@ router.post("/login", async (req, res) => {
             });
         }
 
-        // // временная блокировка
+        // Kontrollime ajutist blokeeringut.
         if (user.blocked_until && new Date(user.blocked_until) > new Date()) {
             return res.status(403).json({
                 messageKey: "accountTemporarilyBlocked"
             });
         }
 
+        // Võrdleme sisestatud parooli andmebaasis oleva parooliga.
         const isValid = await bcrypt.compare(password, user.password);
 
         if (!isValid) {
             const attempts = (user.failed_attempts || 0) + 1;
 
-        //     // если 3 попытки → блокировка
+            // Pärast kolme valet katset blokeerime konto ajutiselt.
             if (attempts >= 3) {
                 await pool.query(
                     "UPDATE users SET failed_attempts = 0, blocked_until = DATE_ADD(NOW(), INTERVAL 3 HOUR) WHERE id = ?",
@@ -152,7 +163,7 @@ router.post("/login", async (req, res) => {
                 });
             }
 
-            // увеличиваем попытки
+            // Suurendame vale parooli katsete arvu.
             await pool.query(
                 "UPDATE users SET failed_attempts = ? WHERE id = ?",
                 [attempts, user.id]
@@ -164,12 +175,13 @@ router.post("/login", async (req, res) => {
             });
         }
 
-    //     // успех → сброс
+        // Eduka sisselogimise korral nullime veakatsed.
         await pool.query(
             "UPDATE users SET failed_attempts = 0, blocked_until = NULL WHERE id = ?",
             [user.id]
         );
 
+        // Loome JWT tokeni.
         const token = jwt.sign(
             {
                 id: user.id,
@@ -200,7 +212,7 @@ router.post("/login", async (req, res) => {
     }
 });
 
-// ===== current user =====
+// Tagastab praeguse kasutaja andmed.
 router.get("/me", auth, async (req, res) => {
     try {
         const [rows] = await pool.query(
@@ -223,7 +235,7 @@ router.get("/me", auth, async (req, res) => {
     }
 });
 
-// ===== update profile =====
+// Uuendab kasutaja profiili.
 router.put("/profile", auth, async (req, res) => {
     try {
         const { name, email } = req.body;
@@ -234,6 +246,7 @@ router.put("/profile", auth, async (req, res) => {
             });
         }
 
+        // Kontrollime, et uus e-post ei kuuluks teisele kasutajale.
         const [emailCheck] = await pool.query(
             "SELECT id FROM users WHERE email = ? AND id != ?",
             [email, req.user.id]
@@ -267,7 +280,7 @@ router.put("/profile", auth, async (req, res) => {
     }
 });
 
-// ===== change password =====
+// Muudab kasutaja parooli.
 router.put("/password", auth, async (req, res) => {
     try {
         const { currentPassword, newPassword, confirmPassword } = req.body;
@@ -278,13 +291,10 @@ router.put("/password", auth, async (req, res) => {
             });
         }
 
+        // Kontrollime uue parooli tugevust.
         if (!isStrongPassword(newPassword)) {
             return res.status(400).json({
                 message: "Новый пароль должен быть минимум 8 символов и содержать заглавную букву, строчную букву, цифру и спецсимвол"
-            });
-
-            return res.status(400).json({
-                messageKey: "newPasswordWeak"
             });
         }
 
@@ -305,6 +315,7 @@ router.put("/password", auth, async (req, res) => {
             });
         }
 
+        // Kontrollime praegust parooli.
         const isValid = await bcrypt.compare(currentPassword, rows[0].password);
 
         if (!isValid) {
@@ -313,6 +324,7 @@ router.put("/password", auth, async (req, res) => {
             });
         }
 
+        // Krüpteerime ja salvestame uue parooli.
         const hashedPassword = await bcrypt.hash(newPassword, 10);
 
         await pool.query(
@@ -331,7 +343,7 @@ router.put("/password", auth, async (req, res) => {
     }
 });
 
-// ===== upload avatar =====
+// Laadib üles kasutaja avatari.
 router.post("/avatar", auth, (req, res) => {
     upload.single("avatar")(req, res, async (err) => {
         try {
@@ -349,6 +361,7 @@ router.post("/avatar", auth, (req, res) => {
 
             const avatarPath = `/uploads/avatars/${req.file.filename}`;
 
+            // Salvestame avatari tee andmebaasi.
             await pool.query(
                 "UPDATE users SET avatar = ? WHERE id = ?",
                 [avatarPath, req.user.id]
@@ -368,3 +381,8 @@ router.post("/avatar", auth, (req, res) => {
 });
 
 module.exports = router;
+
+// Этот файл содержит маршруты для регистрации, входа, получения текущего пользователя, обновления профиля, смены пароля и загрузки аватара. 
+// При регистрации пароль проверяется на сложность и сохраняется в зашифрованном виде. 
+// При входе проверяются удалённые, заблокированные и временно заблокированные аккаунты, а после успешной авторизации создаётся JWT-токен. 
+// Также реализована защита от перебора пароля: после трёх неверных попыток аккаунт временно блокируется на 3 часа.

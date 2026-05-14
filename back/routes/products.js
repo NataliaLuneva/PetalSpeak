@@ -8,12 +8,15 @@ const pool = require("../config/mysql");
 const auth = require("../middleware/auth");
 const requireRole = require("../middleware/requireRole");
 
+// Määrame toodete piltide üleslaadimise kausta.
 const uploadDir = path.join(__dirname, "..", "uploads", "products");
 
+// Loome kausta, kui seda veel pole.
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
 }
 
+// Seadistame pildi salvestamise.
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, uploadDir);
@@ -26,15 +29,16 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// защита от спама сохранения
+// Kaitse korduva kiire salvestamise vastu.
 const savingLocks = new Set();
 
+// Loob lukuvõtme kasutaja ja tegevuse järgi.
 function getLockKey(req, action) {
     const userId = req.user?.id || req.ip;
     return `${action}_${userId}_${req.params.id || "new"}`;
 }
 
-// перевод
+// Tõlgib teksti valitud keelest sihtkeelde.
 async function translateText(text, sourceLang, targetLang) {
     if (!text) return "";
 
@@ -74,6 +78,7 @@ async function translateText(text, sourceLang, targetLang) {
     }
 }
 
+// Loob teksti tõlked vene, inglise ja eesti keelde.
 async function buildTranslations(text, sourceLang) {
     if (!text) {
         return {
@@ -108,6 +113,7 @@ async function buildTranslations(text, sourceLang) {
     };
 }
 
+// Leiab kategooria ja tunde tüübi ID-d nende koodide järgi.
 async function getRelationIds(category, feeling_type) {
     const categoryCode = category || "assortment";
 
@@ -133,6 +139,7 @@ async function getRelationIds(category, feeling_type) {
     };
 }
 
+// Tagastab aktiivsed tooted koos filtritega.
 router.get("/", async (req, res) => {
     try {
         const { category, feeling_type } = req.query;
@@ -161,10 +168,11 @@ router.get("/", async (req, res) => {
         res.json(rows);
     } catch (error) {
         console.error("Get products error:", error);
-        res.json([]); // Return empty array for testing
+        res.json([]);
     }
 });
 
+// Lisab uue toote.
 router.post(
     "/",
     auth,
@@ -173,6 +181,7 @@ router.post(
     async (req, res) => {
         const lockKey = getLockKey(req, "create");
 
+        // Kui sama kasutaja juba salvestab, peatame korduva päringu.
         if (savingLocks.has(lockKey)) {
             return res.status(429).json({
                 messageKey: "please_wait"
@@ -196,6 +205,7 @@ router.post(
             const sourceLang = (src_lang || "ru").trim() || "ru";
             const priceValue = typeof price === "string" ? price.trim() : price;
 
+            // Kontrollime kohustuslikke välju.
             if (!sourceTitle || !sourceText || priceValue === "" || priceValue === undefined || priceValue === null) {
                 return res.status(400).json({ messageKey: "error_fields_missing" });
             }
@@ -206,6 +216,7 @@ router.post(
                 return res.status(400).json({ messageKey: "error_invalid_price" });
             }
 
+            // Loome pealkirja ja kirjelduse tõlked.
             const { title_ru, title_en, title_et } = await buildTranslations(sourceTitle, sourceLang);
 
             const {
@@ -218,11 +229,12 @@ router.post(
                 ? `/uploads/products/${req.file.filename}`
                 : null;
 
-                const { categoryId, feelingTypeId } = await getRelationIds(
-                    category || "assortment",
-                    feeling_type || null
-                );
+            const { categoryId, feelingTypeId } = await getRelationIds(
+                category || "assortment",
+                feeling_type || null
+            );
 
+            // Salvestame toote andmebaasi.
             await pool.query(`
                 INSERT INTO products 
                 (
@@ -269,6 +281,7 @@ router.post(
     }
 );
 
+// Uuendab olemasolevat toodet.
 router.put(
     "/:id",
     auth,
@@ -311,6 +324,7 @@ router.put(
                 return res.status(400).json({ messageKey: "error_invalid_price" });
             }
 
+            // Uuendame tõlked.
             const { title_ru, title_en, title_et } = await buildTranslations(sourceTitle, sourceLang);
 
             const {
@@ -319,6 +333,7 @@ router.put(
                 title_et: text_et
             } = await buildTranslations(sourceText, sourceLang);
 
+            // Kui uut pilti pole, jätame vana pildi alles.
             let imagePath = old_image || null;
 
             if (req.file) {
@@ -376,6 +391,7 @@ router.put(
     }
 );
 
+// Kustutab toote andmebaasist.
 router.delete(
     "/:id",
     auth,
@@ -393,3 +409,8 @@ router.delete(
 );
 
 module.exports = router;
+
+// Этот файл отвечает за работу с товарами: получение списка активных товаров, добавление нового товара, редактирование и удаление. 
+// Для админских действий используется авторизация и проверка роли admin или superadmin. 
+// При создании и обновлении товара загружается изображение, проверяются обязательные поля, цена преобразуется в число, а название и описание автоматически переводятся на русский, английский и эстонский языки. 
+// Также товар связывается с категорией и типом эмоции через соответствующие ID.

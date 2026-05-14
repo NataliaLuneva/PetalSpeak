@@ -291,7 +291,14 @@ function showQuantityControl(btn, id) {
     btn.outerHTML = `
         <div class="cart-qty-box" data-id="${id}">
             <button type="button" class="qty-minus" data-id="${id}">−</button>
-            <span class="qty-value">${quantity}</span>
+            <input
+                class="qty-value qty-input"
+                type="number"
+                min="1"
+                value="${quantity}"
+                data-id="${id}"
+                style="width:55px; text-align:center;"
+            >
             <button type="button" class="qty-plus" data-id="${id}">+</button>
         </div>
     `;
@@ -334,7 +341,7 @@ function initQuantityButtons() {
 
             const box = btn.closest(".cart-qty-box");
             if (box) {
-                box.querySelector(".qty-value").textContent = item.quantity;
+                box.querySelector(".qty-value").value = item.quantity;
             }
         };
     });
@@ -351,8 +358,29 @@ function initQuantityButtons() {
 
             const box = btn.closest(".cart-qty-box");
             if (box) {
-                box.querySelector(".qty-value").textContent = item.quantity;
+                box.querySelector(".qty-value").value = item.quantity;
             }
+        };
+    });
+
+    document.querySelectorAll(".qty-input").forEach(input => {
+        input.onchange = () => {
+            const id = input.dataset.id;
+            const cart = getCart();
+            const item = cart.find(p => String(p.id) === String(id));
+            if (!item) return;
+
+            let value = Number(input.value);
+
+            if (!value || value < 1) {
+                value = 1;
+            }
+
+            value = Math.floor(value);
+
+            item.quantity = value;
+            input.value = value;
+            saveCart(cart);
         };
     });
 }

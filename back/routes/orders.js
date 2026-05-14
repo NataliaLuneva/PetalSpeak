@@ -8,6 +8,7 @@ const transporter = require("../utils/mailer");
 const router = express.Router();
 const JWT_SECRET = "secret123";
 
+// Loob uue tellimuse.
 router.post("/", async (req, res) => {
     const connection = await pool.getConnection();
 
@@ -26,12 +27,15 @@ router.post("/", async (req, res) => {
             price
         } = req.body;
 
+        // Kontrollime kohustuslikke välju.
         if (!customerName || !email) {
             return res.status(400).json({ message: "Заполни обязательные поля" });
         }
 
+        // Kui ostukorvis on tooted, kasutame neid.
         let orderItems = Array.isArray(items) && items.length ? items : null;
 
+        // Kui ostukorvi pole, loome tellimuse ühe buketi andmetest.
         if (!orderItems) {
             if (!bouquetTitle) {
                 return res.status(400).json({ message: "Корзина пустая" });
@@ -50,24 +54,29 @@ router.post("/", async (req, res) => {
         let userId = null;
         const authHeader = req.headers.authorization;
 
+        // Kui token on olemas, seome tellimuse kasutajaga.
         if (authHeader && authHeader.startsWith("Bearer ")) {
             try {
                 const token = authHeader.split(" ")[1];
                 const decoded = jwt.verify(token, JWT_SECRET);
                 userId = decoded.id;
             } catch (error) {
+                // Kui token on vigane, jätkub tellimus külalistellimusena.
                 console.log("Заказ без пользователя:", error.message);
             }
         }
 
+        // Arvutame tellimuse kogusumma.
         const totalPrice = orderItems.reduce((sum, item) => {
             return sum + (Number(item.price) || 0) * (Number(item.quantity) || 1);
         }, 0);
 
         const firstItem = orderItems[0];
 
+        // Alustame transaktsiooni, et tellimus ja tooted salvestuksid koos.
         await connection.beginTransaction();
 
+        // Salvestame tellimuse põhiandmed.
         const [orderResult] = await connection.query(
             `INSERT INTO orders
             (customer_name, email, bouquet_type, bouquet_title, bouquet_image, price, message, address, user_id)
@@ -89,6 +98,7 @@ router.post("/", async (req, res) => {
 
         const orderId = orderResult.insertId;
 
+        // Salvestame kõik tellimuse tooted eraldi tabelisse.
         for (const item of orderItems) {
             await connection.query(
                 `INSERT INTO order_items
@@ -106,8 +116,10 @@ router.post("/", async (req, res) => {
             );
         }
 
+        // Kinnitame andmebaasi muudatused.
         await connection.commit();
 
+        // Loome tellitud toodete HTML-nimekirja e-kirja jaoks.
         const itemsHtml = orderItems.map(item => `
             <li>
                 ${item.bouquetTitle || item.title} —
@@ -116,8 +128,10 @@ router.post("/", async (req, res) => {
             </li>
         `).join("");
 
+        // Valime e-kirja keele.
         const mailLang = ["ru", "et", "en"].includes(lang) ? lang : "en";
 
+        // E-kirja tekstid eri keeltes.
         const mailText = {
             en: {
                 subject: "Thank you for your order! 💐",
@@ -153,6 +167,7 @@ router.post("/", async (req, res) => {
 
         const m = mailText[mailLang];
 
+        // Saadame kliendile tellimuse kinnituse.
         await transporter.sendMail({
             from: '"PetalSpeak" <lunjevanatalja@gmail.com>',
             to: email,
@@ -179,14 +194,17 @@ router.post("/", async (req, res) => {
             orderId
         });
     } catch (error) {
+        // Kui midagi läheb valesti, tühistame transaktsiooni.
         await connection.rollback();
         console.error("Ошибка оформления заказа:", error);
         res.status(500).json({ message: "Ошибка при оформлении заказа" });
     } finally {
+        // Vabastame andmebaasiühenduse.
         connection.release();
     }
 });
 
+// Tagastab sisselogitud kasutaja tellimused.
 router.get("/my", auth, async (req, res) => {
     try {
         const [orders] = await pool.query(
@@ -194,6 +212,7 @@ router.get("/my", auth, async (req, res) => {
             [req.user.id]
         );
 
+        // Lisame igale tellimusele selle tooted.
         for (const order of orders) {
             const [items] = await pool.query(
                 "SELECT * FROM order_items WHERE order_id = ?",
@@ -211,3 +230,8 @@ router.get("/my", auth, async (req, res) => {
 });
 
 module.exports = router;
+
+// Этот файл отвечает за оформление заказов и получение заказов текущего пользователя. 
+// При создании заказа данные берутся либо из корзины items, либо из одного выбранного букета. 
+// Если пользователь авторизован, заказ связывается с его id, а если токен отсутствует или недействителен, заказ оформляется как гостевой. 
+// Заказ и его товары сохраняются в базе данных внутри транзакции, после чего клиенту отправляется письмо с подтверждением на выбранном языке: русском, эстонском или английском.

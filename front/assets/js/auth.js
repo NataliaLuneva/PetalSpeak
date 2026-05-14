@@ -1,12 +1,15 @@
 const AUTH_API = "/api/auth";
 
+// Hoiame tõlkeid ja aktiivset keelt.
 let translations = {};
 let currentLang = localStorage.getItem("lang") || "ru";
 
+// Tagastab tõlgitud teksti võtme järgi.
 function t(key) {
     return translations[key] || key;
 }
 
+// Laadib valitud keele tõlkefaili.
 async function loadLanguage(lang) {
     try {
         const response = await fetch(`/locales/${lang}.json`);
@@ -21,6 +24,7 @@ async function loadLanguage(lang) {
     }
 }
 
+// Rakendab tõlked lehe tekstidele ja placeholderitele.
 function applyTranslations() {
     document.querySelectorAll("[data-i18n]").forEach((el) => {
         const key = el.getAttribute("data-i18n");
@@ -37,24 +41,29 @@ function applyTranslations() {
     });
 }
 
+// Märgib aktiivse keelenupu.
 function setActiveLangButton(lang) {
     document.querySelectorAll(".lang-btn").forEach((btn) => {
         btn.classList.toggle("active", btn.dataset.lang === lang);
     });
 }
 
+// Võtab tokeni localStorage'ist.
 function getToken() {
     return localStorage.getItem("token");
 }
 
+// Salvestab tokeni localStorage'isse.
 function saveToken(token) {
     localStorage.setItem("token", token);
 }
 
+// Eemaldab tokeni localStorage'ist.
 function removeToken() {
     localStorage.removeItem("token");
 }
 
+// Kuvab kasutajale teate.
 function showMessage(text, isError = false) {
     const messageEl = document.getElementById("authMessage");
     if (!messageEl) return;
@@ -63,6 +72,7 @@ function showMessage(text, isError = false) {
     messageEl.style.color = isError ? "crimson" : "#567a67";
 }
 
+// Paneb nupu laadimisolekusse.
 function setLoading(button, text) {
     if (!button) return;
 
@@ -71,6 +81,7 @@ function setLoading(button, text) {
     button.textContent = text;
 }
 
+// Eemaldab nupu laadimisoleku.
 function resetLoading(button) {
     if (!button) return;
 
@@ -81,6 +92,7 @@ function resetLoading(button) {
     }
 }
 
+// Teeb API päringu ja töötleb vastuse.
 async function apiRequest(url, options = {}) {
     const response = await fetch(url, options);
     const data = await response.json().catch(() => ({}));
@@ -88,24 +100,29 @@ async function apiRequest(url, options = {}) {
     if (!response.ok) {
         const messageKey = data.messageKey || "request_error";
         let message = t(messageKey) || data.message || "Ошибка запроса";
+
         if (data.count !== undefined) {
             message = message.replace("{count}", data.count);
         }
+
         throw new Error(message);
     }
 
-    // Translate success message if present
+    // Tõlgime eduteate, kui server tagastab messageKey.
     if (data.messageKey) {
         let message = t(data.messageKey);
+
         if (data.count !== undefined) {
             message = message.replace("{count}", data.count);
         }
+
         data.message = message;
     }
 
     return data;
 }
 
+// Registreerib uue kasutaja.
 async function register(event) {
     event.preventDefault();
 
@@ -120,16 +137,19 @@ async function register(event) {
 
     showMessage("");
 
+    // Kontrollime kohustuslikke välju.
     if (!name || !email || !password || !confirmPassword) {
         showMessage(t("fill_required"), true);
         return;
     }
 
+    // Kontrollime parooli minimaalset pikkust.
     if (password.length < 6) {
         showMessage(t("password_short"), true);
         return;
     }
 
+    // Kontrollime, kas paroolid kattuvad.
     if (password !== confirmPassword) {
         showMessage(t("password_mismatch"), true);
         return;
@@ -148,6 +168,7 @@ async function register(event) {
 
         showMessage(data.message || t("register_success"));
 
+        // Pärast edukat registreerimist avame sisselogimise vormi.
         setTimeout(() => {
             switchToLogin();
 
@@ -163,6 +184,7 @@ async function register(event) {
     }
 }
 
+// Logib kasutaja sisse.
 async function login(event) {
     event.preventDefault();
 
@@ -194,8 +216,8 @@ async function login(event) {
             throw new Error(t("request_error"));
         }
 
+        // Salvestame tokeni ja suuname kasutaja avalehele.
         saveToken(data.token);
-        // showMessage(data.message || t("login_success"));
         showMessage(t("login_success"));
 
         setTimeout(() => {
@@ -208,6 +230,7 @@ async function login(event) {
     }
 }
 
+// Kuvab sisselogimise vormi.
 function switchToLogin() {
     const loginBlock = document.getElementById("loginBlock");
     const registerBlock = document.getElementById("registerBlock");
@@ -218,6 +241,7 @@ function switchToLogin() {
     if (message) message.textContent = "";
 }
 
+// Kuvab registreerimise vormi.
 function switchToRegister() {
     const loginBlock = document.getElementById("loginBlock");
     const registerBlock = document.getElementById("registerBlock");
@@ -228,11 +252,13 @@ function switchToRegister() {
     if (message) message.textContent = "";
 }
 
+// Logib kasutaja välja.
 function logout() {
     removeToken();
     window.location.href = "/index.html";
 }
 
+// Käivitub pärast HTML-i laadimist.
 document.addEventListener("DOMContentLoaded", async () => {
     await loadLanguage(currentLang);
 
@@ -241,6 +267,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const showLoginBtn = document.getElementById("showLogin");
     const showRegisterBtn = document.getElementById("showRegister");
 
+    // Seome vormid ja nupud sündmustega.
     if (registerForm) {
         registerForm.addEventListener("submit", register);
     }
@@ -257,9 +284,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         showRegisterBtn.addEventListener("click", switchToRegister);
     }
 
+    // Seome keelenupud keele vahetamisega.
     document.querySelectorAll(".lang-btn").forEach((btn) => {
         btn.addEventListener("click", async () => {
             await loadLanguage(btn.dataset.lang);
         });
     });
 });
+
+// Этот файл отвечает за авторизацию и регистрацию пользователя на фронтенде. 
+// Он загружает переводы, применяет их к элементам страницы, переключает язык интерфейса, показывает сообщения об ошибках и успешных действиях, а также управляет состоянием кнопок во время загрузки. 
+// При регистрации данные отправляются на сервер, а после успешной регистрации пользователь автоматически переключается на форму входа. 
+// При входе сервер возвращает JWT-токен, который сохраняется в localStorage, после чего пользователь перенаправляется на главную страницу.

@@ -4,7 +4,7 @@ const auth = require("../middleware/auth");
 
 const router = express.Router();
 
-// сохранить результат теста
+// Salvestab kasutaja testi tulemuse.
 router.post("/", auth, async (req, res) => {
     try {
         const {
@@ -14,12 +14,14 @@ router.post("/", auth, async (req, res) => {
             price
         } = req.body;
 
+        // Kontrollime, kas vajalikud andmed on olemas.
         if (!result || !bouquetTitle) {
             return res.status(400).json({
                 message: "Результат теста не передан"
             });
         }
 
+        // Salvestame testi tulemuse andmebaasi.
         await pool.query(
             `INSERT INTO test_results 
             (user_id, result, bouquet_title, bouquet_image, price) 
@@ -44,7 +46,7 @@ router.post("/", auth, async (req, res) => {
     }
 });
 
-// мои тесты
+// Tagastab sisselogitud kasutaja testi tulemused.
 router.get("/my", auth, async (req, res) => {
     try {
         const [rows] = await pool.query(
@@ -65,3 +67,7 @@ router.get("/my", auth, async (req, res) => {
 });
 
 module.exports = router;
+
+// Этот файл отвечает за сохранение и получение результатов теста пользователя. 
+// Первый маршрут сохраняет результат теста, название букета, изображение и цену в таблицу test_results, привязывая запись к авторизованному пользователю. 
+// Второй маршрут возвращает все результаты тестов текущего пользователя, отсортированные по дате создания от новых к старым.

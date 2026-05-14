@@ -1,3 +1,5 @@
+/* Üldised muutujad: värvid ja põhistiilid */
+
 :root{
   --bg: #f5f5f5;
   --panel: #e9c7c9;
@@ -7,6 +9,8 @@
   --btn:#a7c0ad;
   --btnHover:#95b7a0;
 }
+
+/* Lehe üldised seaded */
 
 *{ box-sizing:border-box; }
 
@@ -22,13 +26,13 @@ body{
   background:var(--bg);
 }
 
-/* Основной текст */
+/* Põhiteksti stiilid */
 body, p, span, li, label, input, textarea, .hint, .collection-footer, .result-subtitle, .result-description {
     font-family: "Cormorant Infant", serif;
     color: #534B4B;
 }
 
-/* Все заголовки и акценты */
+/* Pealkirjade ja rõhutatud tekstide stiilid */
 h1, h2, h3, h4, h5, h6,
 .panel h2, .panel h3, .panel h4,
 .accordion-btn,
@@ -47,10 +51,11 @@ h3 {
     font-size: 24px;
 }
 
-/* Класс center теперь только для выравнивания */
+/* Teksti tsentreerimine */
+
 .center { text-align:center; }
 
-/* HEADER */
+/* Päis ja navigatsioon */
 .topbar{
   position:sticky;
   top:0;
@@ -87,7 +92,7 @@ h3 {
   opacity:1;
 }
 
-/* LANGUAGE SWITCH */
+/* Keelevahetuse nupud */
 .lang-switch{
   display:flex;
   gap:6px;
@@ -117,7 +122,7 @@ h3 {
   box-shadow:0 4px 10px rgba(0,0,0,.12);
 }
 
-/* HERO */
+/* Avalehe hero-plokk */
 .hero{
   position:relative;
   min-height:520px;
@@ -162,6 +167,7 @@ h3 {
   margin-bottom:18px;
 }
 
+/* Üldine nupu stiil */
 .btn{
   display:inline-block;
   padding:10px 18px;
@@ -192,7 +198,7 @@ h3 {
   line-height:1.4;
 }
 
-/* SECTIONS */
+/* Üldised sektsioonid ja paneelid */
 .section{
   padding:36px 16px;
   display:flex;
@@ -225,7 +231,7 @@ h3 {
   line-height:1.55;
 }
 
-/* INTRO */
+/* Tutvustuse plokk */
 .intro-panel{
   text-align:center;
 }
@@ -235,7 +241,7 @@ h3 {
   margin:10px auto;
 }
 
-/* HOW */
+/* Selgituse plokk */
 .how h3 {
   text-align: center;
 }
@@ -250,7 +256,7 @@ h3 {
   margin: 8px auto 0;
 }
 
-/* COLLECTION */
+/* Kollektsiooni plokk */
 .collection-sub{
   text-align:center;
   margin-bottom:18px;
@@ -301,12 +307,7 @@ h3 {
   line-height:1.7;
   color: #534B4B;
 }
-
-/* ASSORTMENT */
-
-
-
-/* ACCORDION */
+/* Akordioni stiilid */
 .accordion{
   margin-bottom:20px;
 }
@@ -345,7 +346,7 @@ h3 {
   transition:max-height .4s ease;
 }
 
-/* REVEAL */
+/* Elementide ilmumise animatsioon */
 .reveal{
   opacity:0;
   transform:translateY(18px);
@@ -357,7 +358,7 @@ h3 {
   transform:translateY(0);
 }
 
-/* RESPONSIVE */
+/* Kohandused väiksematele ekraanidele */
 @media (max-width:900px){
   .logo-img{ width:300px; }
   .collection-item{ grid-template-columns:200px 1fr; }
@@ -371,13 +372,14 @@ h3 {
   .collection-img{ width:100%; height:auto; max-height:320px; }
 }
 
-/* ABOUT TEXT CENTER */
+/* About-sektsiooni tekst */
 #about .panel{ text-align:center; }
 #about .panel p{ max-width:640px; margin:12px auto; }
 
+/* Tagasi-nupp */
 .back-btn { margin-left: 20px; text-decoration: none; font-size: 18px; color: black; cursor: pointer; }
 
-/* TEST UI */
+/* Testi kasutajaliides */
 .test-wrapper {
   min-height: 80vh;
   display: flex;
@@ -422,7 +424,7 @@ h3 {
 #next-btn { background: var(--btn); border: none; padding: 10px 18px; border-radius: 6px; font-family: "Cormorant SC", serif; font-size: 18px; cursor: pointer; transition: .25s; color: #3F3A3A; }
 #next-btn:hover { background: var(--btnHover); transform: translateY(-1px); }
 
-/* ORDER FORM */
+/* Tellimuse vorm */
 .order-wrapper{ display:flex; justify-content:center; padding:60px 20px; }
 .order-card{ max-width:500px; width:100%; background:#fff; padding:30px; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,0.1); }
 .order-preview{ text-align:center; margin-bottom:20px; }
@@ -432,6 +434,7 @@ h3 {
 .order-form textarea{ min-height:80px; }
 .order-form button{ width:100%; }
 
+/* Modaaliaken */
 .modal-overlay {
     position: fixed;
     inset: 0;
@@ -822,6 +825,7 @@ textarea:-webkit-autofill {
     white-space: nowrap;
 }
 
+/* Profiilileht */
 .profile-page {
     max-width: 1100px;
     margin: 0 auto;
@@ -1636,7 +1640,7 @@ textarea:-webkit-autofill {
     max-width: 120px;
 }
 
-/* ===== FOOTER ===== */
+/* Jalus */
 .footer {
     background: #f5e5e6;
     padding: 40px 20px 20px;
@@ -1718,7 +1722,7 @@ textarea:-webkit-autofill {
             object-fit: contain;
             display: block;
         }
-
+        /* Autoriseerimise leht */
         .auth-page {
             min-height: calc(100vh - 60px);
             display: flex;
@@ -1844,6 +1848,7 @@ textarea:-webkit-autofill {
             }
         }
 
+/* Testi tulemuse plokk */
 .result-single {
     width: 100%;
     margin: 0 auto;
@@ -1904,6 +1909,7 @@ textarea:-webkit-autofill {
     transition: all 0.3s ease;
 }
 
+/* Kuupäevafiltri stiilid */
 .date-filter {
     display: flex;
     gap: 14px;
@@ -1925,3 +1931,5 @@ textarea:-webkit-autofill {
     font: inherit;
     color: #3F3A3A;
 }
+
+/* Я добавила документацию по основным смысловым блокам CSS: общие стили, шрифты, шапка, навигация, hero-блок, кнопки, секции, коллекция, аккордеон, тест, заказ, профиль, авторизация, футер и адаптивность.*/
