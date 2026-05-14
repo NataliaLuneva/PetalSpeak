@@ -490,5 +490,6 @@
     "product_delete_error": "Error deleting product. Please try again.",
 
     "user_update_success": "User updated successfully.",
-    "user_update_error": "Error updating user. Please try again."
+    "user_update_error": "Error updating user. Please try again.",
+    "your_cart" : "Your cart"
 }

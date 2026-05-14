@@ -108,6 +108,31 @@ async function buildTranslations(text, sourceLang) {
     };
 }
 
+async function getRelationIds(category, feeling_type) {
+    const categoryCode = category || "assortment";
+
+    const [[categoryRow]] = await pool.query(
+        "SELECT id FROM bouquet_categories WHERE code = ?",
+        [categoryCode]
+    );
+
+    let feelingRow = null;
+
+    if (feeling_type) {
+        const [feelingRows] = await pool.query(
+            "SELECT id FROM feeling_types WHERE code = ?",
+            [feeling_type]
+        );
+
+        feelingRow = feelingRows[0] || null;
+    }
+
+    return {
+        categoryId: categoryRow?.id || null,
+        feelingTypeId: feelingRow?.id || null
+    };
+}
+
 router.get("/", async (req, res) => {
     try {
         const { category, feeling_type } = req.query;
@@ -193,6 +218,11 @@ router.post(
                 ? `/uploads/products/${req.file.filename}`
                 : null;
 
+                const { categoryId, feelingTypeId } = await getRelationIds(
+                    category || "assortment",
+                    feeling_type || null
+                );
+
             await pool.query(`
                 INSERT INTO products 
                 (
@@ -207,9 +237,11 @@ router.post(
                     image,
                     price,
                     category,
-                    feeling_type
+                    feeling_type,
+                    category_id,
+                    feeling_type_id
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             `, [
                 sourceTitle,
                 sourceText,
@@ -222,7 +254,9 @@ router.post(
                 imagePath,
                 parsedPrice,
                 category || "assortment",
-                feeling_type || null
+                feeling_type || null,
+                categoryId,
+                feelingTypeId
             ]);
 
             res.json({ messageKey: "success" });
@@ -291,6 +325,11 @@ router.put(
                 imagePath = `/uploads/products/${req.file.filename}`;
             }
 
+            const { categoryId, feelingTypeId } = await getRelationIds(
+                category || "assortment",
+                feeling_type || null
+            );
+
             await pool.query(`
                 UPDATE products
                 SET 
@@ -305,7 +344,9 @@ router.put(
                     image = ?,
                     price = ?,
                     category = ?,
-                    feeling_type = ?
+                    feeling_type = ?,
+                    category_id = ?,
+                    feeling_type_id = ?
                 WHERE id = ?
             `, [
                 sourceTitle,
@@ -320,6 +361,8 @@ router.put(
                 parsedPrice,
                 category || "assortment",
                 feeling_type || null,
+                categoryId,
+                feelingTypeId,
                 req.params.id
             ]);
 

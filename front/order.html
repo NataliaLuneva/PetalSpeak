@@ -135,17 +135,34 @@
         function applyTranslations() {
             document.querySelectorAll("[data-i18n]").forEach(el => {
                 const key = el.getAttribute("data-i18n");
-                if (translations[key]) el.innerHTML = translations[key];
+                if (translations[key]) {
+                    el.innerHTML = translations[key];
+                }
             });
 
             document.getElementById("name").placeholder =
                 translations["name_placeholder"] || "Your name";
+
             document.getElementById("email").placeholder =
                 translations["email_placeholder"] || "Email";
+
             document.getElementById("message").placeholder =
                 translations["message_placeholder"] || "Message for recipient";
+
             document.getElementById("address").placeholder =
                 translations["address_placeholder"] || "Delivery address";
+
+            document.getElementById("cardName").placeholder =
+                translations["card_name_placeholder"] || "Name on card";
+
+            document.getElementById("cardNumber").placeholder =
+                "1234 5678 9012 3456";
+
+            document.getElementById("expiry").placeholder =
+                translations["expiry_placeholder"] || "MM/YY";
+
+            document.getElementById("cvv").placeholder =
+                translations["cvv_placeholder"] || "123";
         }
 
         function setActiveButton(lang) {
@@ -208,7 +225,13 @@
             }, 0);
 
             previewCard.innerHTML = `
-                <h3 class="order-preview-title">Your cart</h3>
+                <h3 class="order-preview-title">
+                    ${
+                        localStorage.getItem("lang") === "ru" ? "Ваш заказ" :
+                        localStorage.getItem("lang") === "et" ? "Sinu tellimus" :
+                        "Your order"
+                    }
+                </h3>
 
                 ${cart.map(item => `
                     <div style="margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid #ddd;">
@@ -221,7 +244,11 @@
                 `).join("")}
 
                 <h3 class="order-preview-title">
-                    Total: €${total.toFixed(2)}
+                    ${
+                        localStorage.getItem("lang") === "ru" ? "Итого" :
+                        localStorage.getItem("lang") === "et" ? "Kokku" :
+                        "Total"
+                    }: €${total.toFixed(2)}
                 </h3>
             `;
         }
@@ -268,6 +295,11 @@
 
             orderBtn.disabled = true;
 
+            const originalBtnText = orderBtn.innerHTML;
+            orderBtn.classList.add("loading");
+            orderBtn.innerHTML =
+                `<span class="spinner"></span>${translations["processing_btn"] || "Processing..."}`;
+
             try {
                 const res = await fetch("/api/orders", {
                     method: "POST",
@@ -277,7 +309,8 @@
                         email,
                         message,
                         address,
-                        items: cart
+                        items: cart,
+                        lang: localStorage.getItem("lang") || "en"
                     })
                 });
 
@@ -292,10 +325,10 @@
                 }, 0);
 
                 localStorage.setItem("lastOrderedBouquet", JSON.stringify({
-                    titleText:
-                        cart.length === 1
-                            ? cart[0].title
-                            : `${cart.length} bouquets`,
+                    items: cart.map(item => ({
+                        title: item.title,
+                        quantity: item.quantity || 1
+                    })),
                     price: total
                 }));
 
@@ -316,6 +349,8 @@
                 console.error(error);
                 resultEl.textContent = error.message || "Order failed";
                 orderBtn.disabled = false;
+                orderBtn.classList.remove("loading");
+                orderBtn.innerHTML = originalBtnText;
             }
         }
 
@@ -333,6 +368,26 @@
 
         document.addEventListener("DOMContentLoaded", async () => {
             const savedLang = localStorage.getItem("lang") || "en";
+
+            const cardNumber = document.getElementById("cardNumber");
+            const expiry = document.getElementById("expiry");
+            const cvv = document.getElementById("cvv");
+
+            cardNumber.addEventListener("input", e => {
+                let value = e.target.value.replace(/\D/g, "").slice(0, 16);
+                value = value.replace(/(.{4})/g, "$1 ").trim();
+                e.target.value = value;
+            });
+
+            expiry.addEventListener("input", e => {
+                let value = e.target.value.replace(/\D/g, "").slice(0, 4);
+                if (value.length >= 3) value = value.slice(0, 2) + "/" + value.slice(2);
+                e.target.value = value;
+            });
+
+            cvv.addEventListener("input", e => {
+                e.target.value = e.target.value.replace(/\D/g, "").slice(0, 3);
+            });
 
             await loadLanguage(savedLang);
             await autofillUserData();

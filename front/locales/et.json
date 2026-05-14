@@ -490,5 +490,6 @@
     "product_delete_error": "Toote kustutamisel tekkis viga. Palun proovi uuesti.",
 
     "user_update_success": "Kasutaja on edukalt uuendatud.",
-    "user_update_error": "Kasutaja uuendamisel tekkis viga. Palun proovi uuesti."
+    "user_update_error": "Kasutaja uuendamisel tekkis viga. Palun proovi uuesti.",
+    "your_cart" : "Teie korv"
 }

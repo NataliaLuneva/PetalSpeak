@@ -143,6 +143,15 @@ router.get("/orders", auth, requireRole("superadmin"), async (req, res) => {
             ORDER BY o.created_at DESC
         `, params);
 
+        for (const order of orders) {
+            const [items] = await pool.query(
+                "SELECT * FROM order_items WHERE order_id = ?",
+                [order.id]
+            );
+
+            order.items = items;
+        }
+
         res.json(orders);
     } catch (error) {
         console.error("Get admin orders error:", error);

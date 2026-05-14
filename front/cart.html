@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,9 +11,8 @@
         <div class="brand">PETALSPEAK</div>
 
         <nav class="nav">
-            <a href="/" data-i18n="back_home">Back</a>
+            <a href="/" class="back-btn" data-i18n="back_home">Back</a>
             <a href="/test.html" data-i18n="test">Feelings Test</a>
-            <a href="/cart.html" class="cart-link">🛒 <span id="cartCount">0</span></a>
 
             <div class="lang-switch">
                 <button class="lang-btn active" data-lang="en">EN</button>
@@ -22,7 +21,7 @@
             </div>
         </nav>
     </header>
-
+            
     <main>
         <section class="section">
             <div class="panel order-panel">
@@ -86,6 +85,13 @@
         }
 
         function applyTexts() {
+            document.querySelectorAll("[data-i18n]").forEach(el => {
+                const key = el.getAttribute("data-i18n");
+
+                if (translations[key]) {
+                    el.innerHTML = translations[key];
+                }
+            });
             document.querySelectorAll(".lang-btn").forEach(btn => {
                 btn.classList.toggle("active", btn.dataset.lang === currentLang);
             });

@@ -26,7 +26,7 @@
 
     <script>
         const lang = localStorage.getItem("lang") || "en";
-        const bouquet = JSON.parse(localStorage.getItem("lastOrderedBouquet"));
+        const order = JSON.parse(localStorage.getItem("lastOrderedBouquet"));
 
         const text = {
             en: {
@@ -55,9 +55,13 @@
         document.getElementById("success-text").textContent = t.desc;
         document.getElementById("success-home-btn").textContent = t.home;
 
-        if (bouquet) {
+        if (order?.items?.length) {
+            document.getElementById("success-bouquet").innerHTML =
+                `${t.bouquetPrefix}<br>` +
+                order.items.map(item => `${item.title} × ${item.quantity || 1}`).join("<br>");
+        } else if (order) {
             document.getElementById("success-bouquet").textContent =
-                `${t.bouquetPrefix} ${bouquet.titleText || bouquet.title}`;
+                `${t.bouquetPrefix} ${order.titleText || order.title || ""}`;
         }
     </script>
 </body>

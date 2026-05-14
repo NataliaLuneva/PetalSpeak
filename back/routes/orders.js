@@ -18,6 +18,7 @@ router.post("/", async (req, res) => {
             message,
             address,
             items,
+            lang,
 
             bouquetType,
             bouquetTitle,
@@ -115,23 +116,60 @@ router.post("/", async (req, res) => {
             </li>
         `).join("");
 
+        const mailLang = ["ru", "et", "en"].includes(lang) ? lang : "en";
+
+        const mailText = {
+            en: {
+                subject: "Thank you for your order! 💐",
+                title: "Thank you for your order! 🎉",
+                name: "Name",
+                email: "Email",
+                address: "Delivery address",
+                message: "Message",
+                bouquets: "Your bouquets",
+                total: "Total"
+            },
+            ru: {
+                subject: "Спасибо за ваш заказ! 💐",
+                title: "Спасибо за ваш заказ! 🎉",
+                name: "Имя",
+                email: "Почта",
+                address: "Адрес доставки",
+                message: "Сообщение",
+                bouquets: "Ваши букеты",
+                total: "Итого"
+            },
+            et: {
+                subject: "Aitäh tellimuse eest! 💐",
+                title: "Aitäh tellimuse eest! 🎉",
+                name: "Nimi",
+                email: "E-post",
+                address: "Tarneaadress",
+                message: "Sõnum",
+                bouquets: "Sinu kimbud",
+                total: "Kokku"
+            }
+        };
+
+        const m = mailText[mailLang];
+
         await transporter.sendMail({
             from: '"PetalSpeak" <lunjevanatalja@gmail.com>',
             to: email,
-            subject: "Thank you for your order! 💐",
+            subject: m.subject,
             html: `
                 <div style="background:#2b2b2b;padding:16px;color:#fff;font-family:Arial,sans-serif;max-width:480px;">
-                    <h2>Thank you for your order! 🎉</h2>
+                    <h2>${m.title}</h2>
 
-                    <p><strong>Name:</strong> ${customerName}</p>
-                    <p><strong>Email:</strong> ${email}</p>
-                    <p><strong>Delivery address:</strong> ${address || "-"}</p>
-                    <p><strong>Message:</strong> ${message || "-"}</p>
+                    <p><strong>${m.name}:</strong> ${customerName}</p>
+                    <p><strong>${m.email}:</strong> ${email}</p>
+                    <p><strong>${m.address}:</strong> ${address || "-"}</p>
+                    <p><strong>${m.message}:</strong> ${message || "-"}</p>
 
-                    <h3>Your bouquets:</h3>
+                    <h3>${m.bouquets}:</h3>
                     <ul>${itemsHtml}</ul>
 
-                    <p><strong>Total:</strong> €${totalPrice.toFixed(2)}</p>
+                    <p><strong>${m.total}:</strong> €${totalPrice.toFixed(2)}</p>
                 </div>
             `
         });

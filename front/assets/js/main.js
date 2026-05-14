@@ -838,12 +838,15 @@ async function showResult() {
         `;
 
         document.querySelector(".order-result-btn").onclick = () => {
+            localStorage.removeItem("checkoutCart");
+
             localStorage.setItem("selectedBouquet", JSON.stringify({
                 id: product.id,
                 type: product.feeling_type || resultType,
                 title,
                 img: product.image,
-                price: Number(product.price) || 0
+                price: Number(product.price) || 0,
+                quantity: 1
             }));
 
             window.location.href = "/order.html";

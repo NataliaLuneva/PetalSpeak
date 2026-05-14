@@ -264,32 +264,82 @@ async function loadOrders() {
             return;
         }
 
-        list.innerHTML = data.map(order => `
-            <div class="item">
-                <div class="item-title">${order.bouquet_title || t("bouquet_default")}</div>
-                <div class="item-meta">${t("email_label")}: ${order.email || "-"}</div>
-                <div class="item-meta">${t("type_label")}: ${order.bouquet_type || "-"}</div>
-                <div class="item-meta">${t("price_label")}: ${order.price || "-"}</div>
-                <div class="item-meta">${t("message_label")}: ${order.message || "-"}</div>
-                <div class="item-meta">${t("date_label")}: ${formatDate(order.created_at)}</div>
-            </div>
-        `).join("");
+        list.innerHTML = data.map(order => {
+            const items = Array.isArray(order.items) && order.items.length
+                ? order.items
+                : [{
+                    bouquet_title: order.bouquet_title,
+                    bouquet_type: order.bouquet_type,
+                    price: order.price,
+                    quantity: 1
+                }];
+
+            return `
+                <div class="item">
+                    <div class="item-title">
+                        ${items.map(item => `
+                            <div>
+                                ${item.bouquet_title || t("bouquet_default")} × ${item.quantity || 1}
+                            </div>
+                        `).join("")}
+                    </div>
+
+                    <div class="item-meta">${t("email_label")}: ${order.email || "-"}</div>
+                    <div class="item-meta">${t("price_label")}: €${order.price || "-"}</div>
+                    <div class="item-meta">${t("message_label")}: ${order.message || "-"}</div>
+                    <div class="item-meta">${t("date_label")}: ${formatDate(order.created_at)}</div>
+                </div>
+            `;
+        }).join("");
     } catch (error) {
         list.innerHTML = `<p class="empty">${error.message}</p>`;
     }
 }
 
+function translateFeelingType(type) {
+    const map = {
+        love: {
+            ru: "Любовь",
+            en: "Love",
+            et: "Armastus"
+        },
+        friendship: {
+            ru: "Дружба",
+            en: "Friendship",
+            et: "Sõprus"
+        },
+        gratitude: {
+            ru: "Благодарность",
+            en: "Gratitude",
+            et: "Tänulikkus"
+        },
+        apology: {
+            ru: "Извинение",
+            en: "Apology",
+            et: "Vabandus"
+        },
+        sympathy: {
+            ru: "Сочувствие",
+            en: "Sympathy",
+            et: "Kaastunne"
+        },
+        secret_love: {
+            ru: "Тайная любовь",
+            en: "Secret love",
+            et: "Salajane armastus"
+        },
+        comfort: {
+            ru: "Поддержка",
+            en: "Comfort",
+            et: "Lohutus"
+        }
+    };
+
+    return map[type]?.[currentLang] || type || "Bouquet";
+}
+
 async function loadTests() {
     const list = document.getElementById("testsList");
-
-    const bouquets = {
-        love: { title: "bq_love", img: "/assets/img/b1.jpg" },
-        friendship: { title: "bq_friendship", img: "/assets/img/b8.jpg" },
-        gratitude: { title: "bq_gratitude", img: "/assets/img/b15.jpg" },
-        admiration: { title: "bq_admiration", img: "/assets/img/b3.jpg" },
-        comfort: { title: "bq_comfort", img: "/assets/img/b29.jpg" },
-        celebration: { title: "bq_celebration", img: "/assets/img/b20.jpg" }
-    };
 
     try {
         const res = await fetch(`${API_BASE}/tests/my`, {
@@ -303,25 +353,25 @@ async function loadTests() {
         }
 
         if (!Array.isArray(data) || !data.length) {
-            list.innerHTML = `<p class="empty">Нет истории тестов</p>`;
+            list.innerHTML = `<p class="empty">${t("no_tests_yet") || "Нет истории тестов"}</p>`;
             return;
         }
 
         list.innerHTML = data.map(test => {
-            const bouquet = bouquets[test.result] || {};
-
             return `
                 <div class="item">
                     ${
-                        bouquet.img
-                            ? `<img src="${bouquet.img}" style="width:100%; max-width:200px; border-radius:12px; margin-bottom:10px;">`
+                        test.bouquet_image
+                            ? `<img src="${test.bouquet_image}" style="width:100%; max-width:200px; border-radius:12px; margin-bottom:10px;">`
                             : ""
                     }
+
                     <div class="item-title">
-                        ${translations[bouquet.title] || bouquet.title}
+                        ${test.bouquet_title || translateFeelingType(test.result)}
                     </div>
+
                     <div class="item-meta">
-                        ${translations["date_label"] || "Date"}: ${formatDate(test.created_at)}
+                        ${t("date_label")}: ${formatDate(test.created_at)}
                     </div>
                 </div>
             `;
@@ -470,17 +520,37 @@ async function loadAdminOrders() {
             return;
         }
 
-        list.innerHTML = orders.map(order => `
-            <div class="item">
-                <div><b>${order.bouquet_title || "-"}</b></div>
-                <div>${t("user_label")}: ${order.user_name || t("guest_label")}</div>
-                <div>${t("email_label")}: ${order.email || "-"}</div>
-                <div>${t("type_label")}: ${order.bouquet_type || "-"}</div>
-                <div>${t("price_label")}: €${order.price || "-"}</div>
-                <div>${t("message_label")}: ${order.message || "-"}</div>
-                <div>${t("date_label")}: ${formatDate(order.created_at)}</div>
-            </div>
-        `).join("");
+        list.innerHTML = orders.map(order => {
+            const items = Array.isArray(order.items) && order.items.length
+                ? order.items
+                : [{
+                    bouquet_title: order.bouquet_title,
+                    bouquet_type: order.bouquet_type,
+                    price: order.price,
+                    quantity: 1
+                }];
+
+            return `
+                <div class="item">
+                    <div><b>Order #${order.id}</b></div>
+
+                    <div style="margin-top:8px;">
+                        ${items.map(item => `
+                            <div>
+                                <b>${item.bouquet_title || "-"}</b> × ${item.quantity || 1}
+                                — €${item.price || "-"}
+                            </div>
+                        `).join("")}
+                    </div>
+
+                    <div>${t("user_label")}: ${order.user_name || t("guest_label")}</div>
+                    <div>${t("email_label")}: ${order.email || "-"}</div>
+                    <div>${t("price_label")}: €${order.price || "-"}</div>
+                    <div>${t("message_label")}: ${order.message || "-"}</div>
+                    <div>${t("date_label")}: ${formatDate(order.created_at)}</div>
+                </div>
+            `;
+        }).join("");
     } catch (error) {
         list.innerHTML = `<p class="empty">${t("no_orders_admin")}</p>`;
     }
