@@ -8,9 +8,9 @@
 </head>
 <body>
     <header class="topbar">
-        <div class="brand">PETALSPEAK</div>
+        <a href="/index.html" class="brand">PETALSPEAK</a>
 
-        <nav class="nav">
+        <nav class="nav" id="nav">
             <a href="/" class="back-btn" data-i18n="back_home">Back</a>
             <a href="/cart.html" class="cart-link">
                 🛒 <span id="cartCount">0</span>
@@ -22,6 +22,7 @@
                 <button class="lang-btn" data-lang="ru">RU</button>
             </div>
         </nav>
+        <button class="burger" onclick="toggleMenu()">☰</button>
     </header>
 
     <main>
@@ -91,6 +92,14 @@
     <div id="orderMessage" class="message"></div>
 
     <script>
+        /* ===== MENU TOGGLE ===== */
+        function toggleMenu() {
+            const nav = document.getElementById('nav');
+            if (nav) {
+                nav.classList.toggle('open');
+            }
+        }
+
         let translations = {};
 
         function getCart() {

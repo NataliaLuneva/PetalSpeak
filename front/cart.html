@@ -8,9 +8,9 @@
 </head>
 <body>
     <header class="topbar">
-        <div class="brand">PETALSPEAK</div>
+        <a href="/index.html" class="brand">PETALSPEAK</a>
 
-        <nav class="nav">
+        <nav class="nav" id="nav">
             <a href="/" class="back-btn" data-i18n="back_home">Back</a>
             <a href="/test.html" data-i18n="test">Feelings Test</a>
 
@@ -20,6 +20,7 @@
                 <button class="lang-btn" data-lang="ru">RU</button>
             </div>
         </nav>
+        <button class="burger" onclick="toggleMenu()">☰</button>
     </header>
             
     <main>
@@ -39,6 +40,14 @@
     </main>
 
     <script>
+        /* ===== MENU TOGGLE ===== */
+        function toggleMenu() {
+            const nav = document.getElementById('nav');
+            if (nav) {
+                nav.classList.toggle('open');
+            }
+        }
+
         let translations = {};
         let currentLang = localStorage.getItem("lang") || "en";
 
@@ -127,36 +136,39 @@
             }
 
             list.innerHTML = cart.map((item, index) => `
-                <div class="item" style="display:grid; grid-template-columns:40px 120px 1fr; gap:16px; align-items:center; margin-bottom:18px;">
+                <div class="cart-item" style="background: #faf6f7; border-radius: 16px; padding: 16px; margin-bottom: 16px; display: grid; grid-template-columns: 40px 130px 1fr; gap: 16px; align-items: start;">
                     <input
                         type="checkbox"
                         class="cart-check"
                         data-index="${index}"
                         ${item.selected === false ? "" : "checked"}
+                        style="margin-top: 6px;"
                     >
 
-                    <img
-                        src="${item.img || ""}"
-                        alt="${item.title || ""}"
-                        style="width:120px; height:120px; object-fit:cover; border-radius:12px;"
-                    >
+                    <div style="text-align: center;">
+                        <img
+                            src="${item.img || ""}"
+                            alt="${item.title || ""}"
+                            style="width: 130px; height: 130px; object-fit: cover; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"
+                        >
+                    </div>
 
-                    <div>
-                        <div class="item-title">${item.title || "Bouquet"}</div>
-                        <div class="item-meta">€${Number(item.price || 0).toFixed(2)}</div>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <div class="item-title" style="font-size: 18px; margin: 0;">${item.title || "Bouquet"}</div>
+                        <div class="item-meta" style="font-size: 16px; margin: 0;">€${Number(item.price || 0).toFixed(2)}</div>
 
-                        <div style="display:flex; gap:10px; align-items:center; margin-top:10px;">
-                            <button type="button" class="cart-minus profile-btn secondary" data-index="${index}">−</button>
+                        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                            <span style="font-size: 14px; color: #6b6b6b; min-width: 60px;">Qty:</span>
+                            <button type="button" class="cart-minus profile-btn secondary" data-index="${index}" style="padding: 8px 10px; font-size: 16px;">−</button>
                             <input
                                 type="number"
                                 min="1"
                                 class="cart-qty-input"
                                 data-index="${index}"
                                 value="${item.quantity || 1}"
-                                style="width:55px; text-align:center;"
                             >
-                            <button type="button" class="cart-plus profile-btn" data-index="${index}">+</button>
-                            <button type="button" class="cart-remove profile-btn secondary" data-index="${index}">
+                            <button type="button" class="cart-plus profile-btn" data-index="${index}" style="padding: 8px 10px; font-size: 16px;">+</button>
+                            <button type="button" class="cart-remove profile-btn secondary" data-index="${index}" style="padding: 8px 12px; font-size: 13px;">
                                 ${
                                     currentLang === "ru" ? "Удалить" :
                                     currentLang === "et" ? "Kustuta" :

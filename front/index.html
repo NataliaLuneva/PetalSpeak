@@ -14,36 +14,38 @@
 
 <body>
     <header class="topbar">
-        <div class="brand">PETALSPEAK</div>
+    <a href="/index.html" class="brand">PETALSPEAK</a>
 
-        <nav class="nav">
-            <a href="#about" data-i18n="about">About Us</a>
-            <a href="/test.html" data-i18n="test">Feelings Test</a>
+    <nav class="nav" id="nav">
+        <a href="#about" data-i18n="about">About Us</a>
+        <a href="/test.html" data-i18n="test">Feelings Test</a>
 
-            <a href="/cart.html" class="cart-link">
-                🛒 <span id="cartCount">0</span>
-            </a>
+        <a href="/cart.html" class="cart-link">
+            🛒 <span id="cartCount">0</span>
+        </a>
 
-            <div class="lang-switch">
-                <button class="lang-btn active" data-lang="en">EN</button>
-                <button class="lang-btn" data-lang="et">ET</button>
-                <button class="lang-btn" data-lang="ru">RU</button>
+        <div class="lang-switch">
+    <button class="lang-btn active" data-lang="en">EN</button>
+    <button class="lang-btn" data-lang="et">ET</button>
+    <button class="lang-btn" data-lang="ru">RU</button>
 
-                <div id="guestBlock" class="header-auth">
-                    <a href="/login.html" class="login-icon" title="Login">
-                        <img src="/assets/img/user.png" alt="Login">
-                    </a>
-                </div>
+    <div id="guestBlock" class="header-auth">
+        <a href="/login.html" class="login-icon" title="Login">
+            <img src="/assets/img/user.png" alt="Login">
+        </a>
+    </div>
 
-                <div id="authBlock" class="header-auth" style="display: none;">
-                    <a href="/profile.html" class="header-profile-link" title="Profile">
-                        <img id="headerAvatar" src="/assets/img/user.png" alt="Avatar">
-                        <span id="headerUserName">Profile</span>
-                    </a>
-                </div>
-            </div>
-        </nav>
-    </header>
+    <div id="authBlock" class="header-auth" style="display: none;">
+        <a href="/profile.html" class="header-profile-link" title="Profile">
+            <img id="headerAvatar" src="/assets/img/user.png" alt="Avatar">
+            <span id="headerUserName">Profile</span>
+        </a>
+    </div>
+    </div>
+    </nav>
+
+    <button class="burger" onclick="toggleMenu()">☰</button>
+</header>
 
     <main>
         <!-- HERO -->

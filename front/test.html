@@ -9,16 +9,19 @@
 
 <body>
     <header class="topbar">
-        <div class="brand">PETALSPEAK</div>
-        <a href="/" class="back-btn" data-i18n="back_home">Back</a>
-        <div class="lang-switch">
-            <button class="lang-btn active" data-lang="en">EN</button>
-            <button class="lang-btn" data-lang="et">ET</button>
-            <button class="lang-btn" data-lang="ru">RU</button>            
-            <a href="/cart.html" class="cart-link">
-                🛒 <span id="cartCount">0</span>
-            </a>
-        </div>
+        <a href="/index.html" class="brand">PETALSPEAK</a>
+        <nav class="nav" id="nav">
+            <a href="/" class="back-btn" data-i18n="back_home">Back</a>
+            <div class="lang-switch">
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="et">ET</button>
+                <button class="lang-btn" data-lang="ru">RU</button>            
+                <a href="/cart.html" class="cart-link">
+                    🛒 <span id="cartCount">0</span>
+                </a>
+            </div>
+        </nav>
+        <button class="burger" onclick="toggleMenu()">☰</button>
     </header>
 
     <section class="test-wrapper">

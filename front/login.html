@@ -13,8 +13,8 @@
 
 <body>
     <header class="topbar">
-        <div class="brand">PETALSPEAK</div>
-        <nav class="nav">
+        <a href="/index.html" class="brand">PETALSPEAK</a>
+        <nav class="nav" id="nav">
             <a href="/index.html#about" data-i18n="back_home">На главную</a>
             <a href="/test.html" data-i18n="test">Feelings Test</a>
             <div class="lang-switch">
@@ -26,6 +26,7 @@
                 </a>
             </div>
         </nav>
+        <button class="burger" onclick="toggleMenu()">☰</button>
     </header>
 
     <main class="auth-page">
