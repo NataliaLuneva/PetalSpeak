@@ -50,3 +50,101 @@ Projekt ühendab **traditsioonilise lillede sümboolika** **kaasaegse digitaalse
 ---
 
 ✨ *Petal Speak — räägi lilledega.*
+
+
+# PetalSpeak — Veebirakendus
+
+## Ülevaade
+
+Veebirakendus PetalSpeak on loodud kasutajasõbralikuks lillede tellimise platvormiks.
+
+Rakenduse eesmärk on pakkuda mugavat ja loogilist kasutuskogemust, kus kasutaja saab:
+- valida sobivaid lillekimpe  
+- läbida emotsioonipõhiseid teste  
+- esitada tellimusi veebikeskkonnas  
+
+Süsteem on loodud intuitiivse liidesega, mis lihtsustab navigeerimist ja funktsioonide kasutamist.
+
+---
+
+## Projekti kasutusjuhend
+
+Kõigepealt avage GitHub ja minge projekti hoidlasse PetalSpeak.
+
+Vajutage nuppu **Code** ja kopeerige repo link.
+
+Kui Git Bash pole paigaldatud, laadige see alla ja installige.
+
+Ava Git Bash ja liigu kausta, kuhu tahad projekti salvestada.
+
+Käivita:
+
+git clone https://github.com/Petal-Spek/PetalSpeak.git
+
+Pärast seda tekib kaust PetalSpeak.
+
+---
+
+Ava Visual Studio Code.
+
+Vali File → Open Folder.
+
+Vali kaust PetalSpeak.
+
+---
+
+## Andmebaasi seadistamine (XAMPP)
+
+Kui XAMPP puudub, installi see.
+
+Käivita XAMPP Control Panel.
+
+Start MySQL.
+
+Ava phpMyAdmin (Admin nupp).
+
+---
+
+### Andmebaas
+
+Loo uus andmebaas nimega:
+
+petalspeak
+
+Importi SQL fail.
+
+---
+
+## Serveri käivitamine
+
+Ava terminal:
+
+Terminal → New Terminal
+
+cd back
+npm install
+npm install nodemailer multer mysql2
+
+---
+
+## Frontend
+
+cd ../front
+npm install express
+
+---
+
+## Käivitamine
+
+cd ..
+node back/server.js
+
+Server töötab:
+
+http://localhost:3000
+
+---
+
+## Valmis
+
+Rakendus PetalSpeak on nüüd kasutamiseks valmis.
