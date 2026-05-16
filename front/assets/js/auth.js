@@ -6,14 +6,6 @@ let currentLang = localStorage.getItem("lang") || "ru";
 
 /* ===== MENU TOGGLE ===== */
 
-        // function toggleMenu() {
-        //     const nav = document.getElementById('nav');
-        //     if (nav) {
-        //         nav.classList.toggle('open');
-        //     }
-        // }
-
-
 function toggleMenu() {
     document.getElementById("nav").classList.toggle("active");
 }

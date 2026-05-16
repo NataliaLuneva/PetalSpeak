@@ -299,16 +299,15 @@ function showQuantityControl(btn, id) {
 
     btn.outerHTML = `
         <div class="cart-qty-box" data-id="${id}">
-            <button type="button" class="qty-minus" data-id="${id}">−</button>
+            <button type="button" class="qty-minus" data-id="${id}" title="Decrease quantity">−</button>
             <input
                 class="qty-value qty-input"
                 type="number"
                 min="1"
                 value="${quantity}"
                 data-id="${id}"
-                style="width:55px; text-align:center;"
             >
-            <button type="button" class="qty-plus" data-id="${id}">+</button>
+            <button type="button" class="qty-plus" data-id="${id}" title="Increase quantity">+</button>
         </div>
     `;
 

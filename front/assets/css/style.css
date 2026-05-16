@@ -644,6 +644,79 @@ textarea:-webkit-autofill {
     transform: translateY(-2px);
 }
 
+/* ===== QUANTITY CONTROLS ON HOMEPAGE ===== */
+
+.cart-qty-box {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 12px auto 0;
+}
+
+.qty-minus,
+.qty-plus {
+    border: none;
+    background: var(--btn);
+    color: #3F3A3A;
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.qty-minus:hover,
+.qty-plus:hover {
+    background: var(--btnHover);
+    transform: translateY(-1px);
+}
+
+.qty-minus:active,
+.qty-plus:active {
+    transform: scale(0.95);
+}
+
+.qty-value,
+.qty-input {
+    width: 55px;
+    text-align: center;
+    padding: 8px 8px;
+    border: 1.5px solid #c0a5a7;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+    color: #3F3A3A;
+    font-family: inherit;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.qty-value:focus,
+.qty-input:focus {
+    outline: none;
+    border-color: #a7c0ad;
+    background: white;
+    box-shadow: 0 0 8px rgba(167, 192, 173, 0.3);
+}
+
+.qty-value::-webkit-outer-spin-button,
+.qty-value::-webkit-inner-spin-button,
+.qty-input::-webkit-outer-spin-button,
+.qty-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.qty-value[type=number],
+.qty-input[type=number] {
+    -moz-appearance: textfield;
+}
+
 @media (max-width: 600px) {
     .buy-btn {
         padding: 10px 18px;
@@ -821,8 +894,8 @@ textarea:-webkit-autofill {
     .cart-qty-input,
     .qty-input,
     .qty-value {
-        width: 52px !important;
-        font-size: 14px;
+        width: 48px !important;
+        font-size: 13px !important;
     }
 
     /* BUTTONS */
@@ -830,15 +903,18 @@ textarea:-webkit-autofill {
     .qty-plus,
     .cart-minus,
     .cart-plus {
-        padding: 8px 10px !important;
-        border-radius: 10px;
+        padding: 6px 8px !important;
+        border-radius: 8px;
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 14px !important;
     }
 
     /* OPTIONAL: keep alignment clean */
     .cart-qty-box {
         display: inline-flex;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
     }
 }
 
@@ -2305,11 +2381,11 @@ textarea:-webkit-autofill {
     }
 
     /* OPTIONAL: keep alignment clean */
-    .cart-qty-box {
+    /* .cart-qty-box {
         display: inline-flex;
         align-items: center;
         gap: 8px;
-    }
+    } */
 
 /* ===== CART STYLES ===== */
 
