@@ -65,8 +65,6 @@ Rakenduse eesmärk on pakkuda mugavat ja loogilist kasutuskogemust, kus kasutaja
 
 Süsteem on loodud intuitiivse liidesega, mis lihtsustab navigeerimist ja funktsioonide kasutamist.
 
----
-
 ## Projekti kasutusjuhend
 
 Kõigepealt avage GitHub ja minge projekti hoidlasse PetalSpeak.
@@ -83,15 +81,12 @@ git clone https://github.com/Petal-Spek/PetalSpeak.git
 
 Pärast seda tekib kaust PetalSpeak.
 
----
-
 Ava Visual Studio Code.
 
 Vali File → Open Folder.
 
 Vali kaust PetalSpeak.
 
----
 
 ## Andmebaasi seadistamine (XAMPP)
 
@@ -103,7 +98,6 @@ Start MySQL.
 
 Ava phpMyAdmin (Admin nupp).
 
----
 
 ### Andmebaas
 
@@ -113,7 +107,6 @@ petalspeak
 
 Importi SQL fail.
 
----
 
 ## Serveri käivitamine
 
