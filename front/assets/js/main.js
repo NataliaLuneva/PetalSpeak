@@ -3,6 +3,16 @@ let currentLang = localStorage.getItem("lang") || "en";
 let currentUser = null;
 let editingProductId = null;
 
+const MAX_CART_QTY = 40;
+
+function maxQtyMessage() {
+    return currentLang === "ru"
+        ? "Для большого заказа напишите нам на почту."
+        : currentLang === "et"
+            ? "Suure tellimuse jaoks kirjuta meile e-posti."
+            : "For a large order, please contact us by email.";
+}
+
 /* ===== MENU TOGGLE ===== */
 
 const burger = document.querySelector(".burger");
@@ -254,10 +264,14 @@ function addToCart(product) {
     }
 
     const cart = getCart();
-
     const existing = cart.find(item => String(item.id) === String(product.id));
 
     if (existing) {
+        if (existing.quantity >= MAX_CART_QTY) {
+            alert(maxQtyMessage());
+            return false;
+        }
+
         existing.quantity += 1;
     } else {
         cart.push({
@@ -361,6 +375,11 @@ function initQuantityButtons() {
             const item = cart.find(p => String(p.id) === String(id));
             if (!item) return;
 
+            if (item.quantity >= MAX_CART_QTY) {
+                alert(maxQtyMessage());
+                return;
+            }
+
             item.quantity += 1;
             saveCart(cart);
 
@@ -385,6 +404,11 @@ function initQuantityButtons() {
             }
 
             value = Math.floor(value);
+
+            if (value > MAX_CART_QTY) {
+                value = MAX_CART_QTY;
+                alert(maxQtyMessage());
+            }
 
             item.quantity = value;
             input.value = value;

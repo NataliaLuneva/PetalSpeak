@@ -172,7 +172,7 @@ async function register(event) {
             body: JSON.stringify({ name, email, password })
         });
 
-        showMessage(data.message || t("register_success"));
+        showMessage(t("register_success"));
 
         // Pärast edukat registreerimist avame sisselogimise vormi.
         setTimeout(() => {
@@ -184,7 +184,7 @@ async function register(event) {
             }
         }, 700);
     } catch (error) {
-        showMessage(error.message || t("request_error"), true);
+        showMessage(t("request_error"));
     } finally {
         resetLoading(submitBtn);
     }

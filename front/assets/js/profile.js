@@ -380,7 +380,15 @@ async function loadTests() {
                     </div>
 
                     <div class="item-meta">
-                        ${t("date_label")}: ${formatDate(test.created_at)}
+                        ${t("result_label") || "Результат"}: ${translateFeelingType(test.result)}
+                    </div>
+
+                    <div class="item-meta">
+                        ${t("price_label") || "Цена"}: €${test.price || "-"}
+                    </div>
+
+                    <div class="item-meta">
+                        ${t("date_label") || "Дата"}: ${formatDate(test.created_at)}
                     </div>
                 </div>
             `;
@@ -632,4 +640,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     await loadUser();
     await loadOrders();
     await loadTests();
+    updateCartCount();
 });
+
+function updateCartCount() {
+    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+    const count = cart.reduce((sum, item) => sum + Number(item.quantity || 1), 0);
+
+    const cartCount = document.getElementById("cartCount");
+    if (cartCount) {
+        cartCount.textContent = count;
+    }
+}

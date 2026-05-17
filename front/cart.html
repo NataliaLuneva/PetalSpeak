@@ -51,6 +51,16 @@
         let translations = {};
         let currentLang = localStorage.getItem("lang") || "en";
 
+        const MAX_CART_QTY = 40;
+
+        function maxQtyMessage() {
+            return currentLang === "ru"
+                ? "Для большого заказа напишите нам на почту."
+                : currentLang === "et"
+                    ? "Suure tellimuse jaoks kirjuta meile e-posti."
+                    : "For a large order, please contact us by email.";
+        }
+
         function t(key) {
             return translations[key] || key;
         }
@@ -158,11 +168,14 @@
                         <div class="item-meta" style="font-size: 16px; margin: 0;">€${Number(item.price || 0).toFixed(2)}</div>
 
                         <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-                            <span style="font-size: 14px; color: #6b6b6b; min-width: 60px;">Qty:</span>
+                        <span style="font-size: 14px; color: #6b6b6b; min-width: 60px;">
+                            ${t("quantity_label")}
+                        </span>
                             <button type="button" class="cart-minus profile-btn secondary" data-index="${index}" style="padding: 8px 10px; font-size: 16px;">−</button>
                             <input
                                 type="number"
                                 min="1"
+                                max="40"
                                 class="cart-qty-input"
                                 data-index="${index}"
                                 value="${item.quantity || 1}"
@@ -225,6 +238,11 @@
                     const cart = getCart();
                     const index = Number(btn.dataset.index);
 
+                    if (Number(cart[index].quantity || 1) >= MAX_CART_QTY) {
+                        alert(maxQtyMessage());
+                        return;
+                    }
+
                     cart[index].quantity = Number(cart[index].quantity || 1) + 1;
                     saveCart(cart);
                 };
@@ -251,6 +269,11 @@
                     }
 
                     value = Math.floor(value);
+
+                    if (value > MAX_CART_QTY) {
+                        value = MAX_CART_QTY;
+                        alert(maxQtyMessage());
+                    }
 
                     cart[index].quantity = value;
                     input.value = value;

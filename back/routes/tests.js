@@ -50,7 +50,14 @@ router.post("/", auth, async (req, res) => {
 router.get("/my", auth, async (req, res) => {
     try {
         const [rows] = await pool.query(
-            `SELECT *
+            `SELECT 
+                id,
+                user_id,
+                result,
+                bouquet_title,
+                bouquet_image,
+                price,
+                created_at
              FROM test_results
              WHERE user_id = ?
              ORDER BY created_at DESC`,

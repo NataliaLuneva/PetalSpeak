@@ -197,14 +197,17 @@ router.get("/stats", auth, requireRole("superadmin"), async (req, res) => {
 
         // Enim müüdud kimbud.
         const [topSales] = await pool.query(`
-            SELECT bouquet_title, COUNT(*) AS total_sales, COALESCE(SUM(price), 0) AS revenue
-            FROM orders
-            ${where}
-            GROUP BY bouquet_title
+            SELECT 
+                oi.bouquet_title,
+                SUM(oi.quantity) AS total_sales,
+                COALESCE(SUM(oi.price * oi.quantity), 0) AS revenue
+            FROM order_items oi
+            INNER JOIN orders o ON oi.order_id = o.id
+            ${where ? where.replace(/created_at/g, "o.created_at") : ""}
+            GROUP BY oi.bouquet_title
             ORDER BY total_sales DESC, revenue DESC
             LIMIT 5
         `, params);
-
         res.json({
             totalOrders: totalOrdersRow.count,
             totalRevenue: totalRevenueRow.total,
