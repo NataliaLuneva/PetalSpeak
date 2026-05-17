@@ -1,15 +1,13 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
-
 const pool = require("../config/mysql");
 const auth = require("../middleware/auth");
 const transporter = require("../utils/mailer");
-
 const router = express.Router();
 const JWT_SECRET = "secret123";
 
-// Loob uue tellimuse.
 router.post("/", async (req, res) => {
+
     const connection = await pool.getConnection();
 
     try {
@@ -20,25 +18,22 @@ router.post("/", async (req, res) => {
             address,
             items,
             lang,
-
             bouquetType,
             bouquetTitle,
             bouquetImage,
             price
         } = req.body;
 
-        // Kontrollime kohustuslikke välju.
         if (!customerName || !email) {
-            return res.status(400).json({ message: "Заполни обязательные поля" });
+            return res.status(400).json({ message: "Please fill in all required fields." });
         }
 
-        // Kui ostukorvis on tooted, kasutame neid.
         let orderItems = Array.isArray(items) && items.length ? items : null;
 
-        // Kui ostukorvi pole, loome tellimuse ühe buketi andmetest.
         if (!orderItems) {
+
             if (!bouquetTitle) {
-                return res.status(400).json({ message: "Корзина пустая" });
+                return res.status(400).json({ message: "The cart is empty." });
             }
 
             orderItems = [{
@@ -49,34 +44,31 @@ router.post("/", async (req, res) => {
                 price: Number(price) || 0,
                 quantity: 1
             }];
+
         }
 
         let userId = null;
         const authHeader = req.headers.authorization;
 
-        // Kui token on olemas, seome tellimuse kasutajaga.
         if (authHeader && authHeader.startsWith("Bearer ")) {
+
             try {
                 const token = authHeader.split(" ")[1];
                 const decoded = jwt.verify(token, JWT_SECRET);
                 userId = decoded.id;
             } catch (error) {
-                // Kui token on vigane, jätkub tellimus külalistellimusena.
-                console.log("Заказ без пользователя:", error.message);
+                console.log("Order without a user:", error.message);
             }
         }
 
-        // Arvutame tellimuse kogusumma.
         const totalPrice = orderItems.reduce((sum, item) => {
             return sum + (Number(item.price) || 0) * (Number(item.quantity) || 1);
         }, 0);
 
         const firstItem = orderItems[0];
 
-        // Alustame transaktsiooni, et tellimus ja tooted salvestuksid koos.
         await connection.beginTransaction();
 
-        // Salvestame tellimuse põhiandmed.
         const [orderResult] = await connection.query(
             `INSERT INTO orders
             (customer_name, email, bouquet_type, bouquet_title, bouquet_image, price, message, address, user_id)

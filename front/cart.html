@@ -1,322 +1,316 @@
 <!doctype html>
 <html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cart | PetalSpeak</title>
-    <link rel="stylesheet" href="/assets/css/style.css">
-</head>
-<body>
-    <header class="topbar">
-        <a href="/index.html" class="brand">PETALSPEAK</a>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Cart | PetalSpeak</title>
+        <link rel="stylesheet" href="/assets/css/style.css">
+    </head>
+    <body>
+        <header class="topbar">
+            <a href="/index.html" class="brand">PETALSPEAK</a>
 
-        <nav class="nav" id="nav">
-            <a href="/" class="back-btn" data-i18n="back_home">Back</a>
-            <a href="/test.html" data-i18n="test">Feelings Test</a>
+            <nav class="nav" id="nav">
+                <a href="/" class="back-btn" data-i18n="back_home">Back</a>
+                <a href="/test.html" data-i18n="test">Feelings Test</a>
 
-            <div class="lang-switch">
-                <button class="lang-btn active" data-lang="en">EN</button>
-                <button class="lang-btn" data-lang="et">ET</button>
-                <button class="lang-btn" data-lang="ru">RU</button>
-            </div>
-        </nav>
-        <button class="burger" onclick="toggleMenu()">☰</button>
-    </header>
-            
-    <main>
-        <section class="section">
-            <div class="panel order-panel">
-                <h2 class="center" id="cartTitle">Cart</h2>
-                <div id="cartList"></div>
-                <div id="cartTotal" style="margin-top:20px; font-size:22px; text-align:center;"></div>
-
-                <div style="text-align:center; margin-top:24px;">
-                    <button id="buySelectedBtn" class="btn" type="button">
-                        Buy selected
-                    </button>
+                <div class="lang-switch">
+                    <button class="lang-btn active" data-lang="en">EN</button>
+                    <button class="lang-btn" data-lang="et">ET</button>
+                    <button class="lang-btn" data-lang="ru">RU</button>
                 </div>
-            </div>
-        </section>
-    </main>
+            </nav>
+            <button class="burger" onclick="toggleMenu()">☰</button>
+        </header>
+                
+        <main>
+            <section class="section">
+                <div class="panel order-panel">
+                    <h2 class="center" id="cartTitle">Cart</h2>
+                    <div id="cartList"></div>
+                    <div id="cartTotal" style="margin-top:20px; font-size:22px; text-align:center;"></div>
 
-    <script>
-        /* ===== MENU TOGGLE ===== */
-        function toggleMenu() {
-            const nav = document.getElementById('nav');
-            if (nav) {
-                nav.classList.toggle('open');
-            }
-        }
-
-        let translations = {};
-        let currentLang = localStorage.getItem("lang") || "en";
-
-        const MAX_CART_QTY = 40;
-
-        function maxQtyMessage() {
-            return currentLang === "ru"
-                ? "Для большого заказа напишите нам на почту."
-                : currentLang === "et"
-                    ? "Suure tellimuse jaoks kirjuta meile e-posti."
-                    : "For a large order, please contact us by email.";
-        }
-
-        function t(key) {
-            return translations[key] || key;
-        }
-
-        function getCart() {
-            try {
-                return JSON.parse(localStorage.getItem("cart")) || [];
-            } catch {
-                return [];
-            }
-        }
-
-        function saveCart(cart) {
-            localStorage.setItem("cart", JSON.stringify(cart));
-            updateCartCount();
-            renderCart();
-        }
-
-        function updateCartCount() {
-            const countEl = document.getElementById("cartCount");
-            if (!countEl) return;
-
-            const cart = getCart();
-            const count = cart.reduce((sum, item) => sum + Number(item.quantity || 1), 0);
-            countEl.textContent = count;
-        }
-
-        async function loadLanguage(lang) {
-            currentLang = lang;
-            localStorage.setItem("lang", lang);
-
-            try {
-                const res = await fetch(`/locales/${lang}.json`);
-                translations = await res.json();
-            } catch {
-                translations = {};
-            }
-
-            applyTexts();
-            renderCart();
-        }
-
-        function applyTexts() {
-            document.querySelectorAll("[data-i18n]").forEach(el => {
-                const key = el.getAttribute("data-i18n");
-
-                if (translations[key]) {
-                    el.innerHTML = translations[key];
-                }
-            });
-            document.querySelectorAll(".lang-btn").forEach(btn => {
-                btn.classList.toggle("active", btn.dataset.lang === currentLang);
-            });
-
-            document.getElementById("cartTitle").textContent =
-                currentLang === "ru" ? "Корзина" :
-                currentLang === "et" ? "Ostukorv" :
-                "Cart";
-
-            document.getElementById("buySelectedBtn").textContent =
-                currentLang === "ru" ? "Купить выбранное" :
-                currentLang === "et" ? "Osta valitud" :
-                "Buy selected";
-        }
-
-        function renderCart() {
-            const cart = getCart();
-            const list = document.getElementById("cartList");
-            const totalEl = document.getElementById("cartTotal");
-
-            if (!cart.length) {
-                list.innerHTML = `
-                    <p class="empty" style="text-align:center;">
-                        ${
-                            currentLang === "ru" ? "Корзина пустая" :
-                            currentLang === "et" ? "Ostukorv on tühi" :
-                            "Cart is empty"
-                        }
-                    </p>
-                `;
-                totalEl.textContent = "";
-                return;
-            }
-
-            list.innerHTML = cart.map((item, index) => `
-                <div class="cart-item" style="background: #faf6f7; border-radius: 16px; padding: 16px; margin-bottom: 16px; display: grid; grid-template-columns: 40px 130px 1fr; gap: 16px; align-items: start;">
-                    <input
-                        type="checkbox"
-                        class="cart-check"
-                        data-index="${index}"
-                        ${item.selected === false ? "" : "checked"}
-                        style="margin-top: 6px;"
-                    >
-
-                    <div style="text-align: center;">
-                        <img
-                            src="${item.img || ""}"
-                            alt="${item.title || ""}"
-                            style="width: 130px; height: 130px; object-fit: cover; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"
-                        >
+                    <div style="text-align:center; margin-top:24px;">
+                        <button id="buySelectedBtn" class="btn" type="button">
+                            Buy selected
+                        </button>
                     </div>
+                </div>
+            </section>
+        </main>
 
-                    <div style="display: flex; flex-direction: column; gap: 10px;">
-                        <div class="item-title" style="font-size: 18px; margin: 0;">${item.title || "Bouquet"}</div>
-                        <div class="item-meta" style="font-size: 16px; margin: 0;">€${Number(item.price || 0).toFixed(2)}</div>
+        <script>
+            /* ===== MENU TOGGLE ===== */
+            function toggleMenu() {
+                const nav = document.getElementById('nav');
+                if (nav) {
+                    nav.classList.toggle('open');
+                }
+            }
 
-                        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-                        <span style="font-size: 14px; color: #6b6b6b; min-width: 60px;">
-                            ${t("quantity_label")}
-                        </span>
-                            <button type="button" class="cart-minus profile-btn secondary" data-index="${index}" style="padding: 8px 10px; font-size: 16px;">−</button>
-                            <input
-                                type="number"
-                                min="1"
-                                max="40"
-                                class="cart-qty-input"
-                                data-index="${index}"
-                                value="${item.quantity || 1}"
+            let translations = {};
+            let currentLang = localStorage.getItem("lang") || "en";
+
+            const MAX_CART_QTY = 40;
+
+            function maxQtyMessage() {
+                return currentLang === "ru"
+                    ? "Для большого заказа напишите нам на почту."
+                    : currentLang === "et"
+                        ? "Suure tellimuse jaoks kirjuta meile e-posti."
+                        : "For a large order, please contact us by email.";
+            }
+
+            function t(key) {
+                return translations[key] || key;
+            }
+
+            function getCart() {
+                try {
+                    return JSON.parse(localStorage.getItem("cart")) || [];
+                } catch {
+                    return [];
+                }
+            }
+
+            function saveCart(cart) {
+                localStorage.setItem("cart", JSON.stringify(cart));
+                updateCartCount();
+                renderCart();
+            }
+
+            function updateCartCount() {
+                const countEl = document.getElementById("cartCount");
+                if (!countEl) return;
+
+                const cart = getCart();
+                const count = cart.reduce((sum, item) => sum + Number(item.quantity || 1), 0);
+                countEl.textContent = count;
+            }
+
+            async function loadLanguage(lang) {
+                currentLang = lang;
+                localStorage.setItem("lang", lang);
+
+                try {
+                    const res = await fetch(`/locales/${lang}.json`);
+                    translations = await res.json();
+                } catch {
+                    translations = {};
+                }
+
+                applyTexts();
+                renderCart();
+            }
+
+            function applyTexts() {
+                document.querySelectorAll("[data-i18n]").forEach(el => {
+                    const key = el.getAttribute("data-i18n");
+
+                    if (translations[key]) {
+                        el.innerHTML = translations[key];
+                    }
+                });
+                document.querySelectorAll(".lang-btn").forEach(btn => {
+                    btn.classList.toggle("active", btn.dataset.lang === currentLang);
+                });
+
+                document.getElementById("cartTitle").textContent =
+                    currentLang === "ru" ? "Корзина" :
+                    currentLang === "et" ? "Ostukorv" :
+                    "Cart";
+
+                document.getElementById("buySelectedBtn").textContent =
+                    currentLang === "ru" ? "Купить выбранное" :
+                    currentLang === "et" ? "Osta valitud" :
+                    "Buy selected";
+            }
+
+            function renderCart() {
+                const cart = getCart();
+                const list = document.getElementById("cartList");
+                const totalEl = document.getElementById("cartTotal");
+
+                if (!cart.length) {
+                    list.innerHTML = `
+                        <p class="empty" style="text-align:center;">
+                            ${
+                                currentLang === "ru" ? "Корзина пустая" :
+                                currentLang === "et" ? "Ostukorv on tühi" :
+                                "Cart is empty"
+                            }
+                        </p>
+                    `;
+                    totalEl.textContent = "";
+                    return;
+                }
+
+                list.innerHTML = cart.map((item, index) => `
+                    <div class="cart-item" style="background: #faf6f7; border-radius: 16px; padding: 16px; margin-bottom: 16px; display: grid; grid-template-columns: 40px 130px 1fr; gap: 16px; align-items: start;">
+                        <input
+                            type="checkbox"
+                            class="cart-check"
+                            data-index="${index}"
+                            ${item.selected === false ? "" : "checked"}
+                            style="margin-top: 6px;"
+                        >
+
+                        <div style="text-align: center;">
+                            <img
+                                src="${item.img || ""}"
+                                alt="${item.title || ""}"
+                                style="width: 130px; height: 130px; object-fit: cover; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"
                             >
-                            <button type="button" class="cart-plus profile-btn" data-index="${index}" style="padding: 8px 10px; font-size: 16px;">+</button>
-                            <button type="button" class="cart-remove profile-btn secondary" data-index="${index}" style="padding: 8px 12px; font-size: 13px;">
-                                ${
-                                    currentLang === "ru" ? "Удалить" :
-                                    currentLang === "et" ? "Kustuta" :
-                                    "Remove"
-                                }
-                            </button>
+                        </div>
+
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <div class="item-title" style="font-size: 18px; margin: 0;">${item.title || "Bouquet"}</div>
+                            <div class="item-meta" style="font-size: 16px; margin: 0;">€${Number(item.price || 0).toFixed(2)}</div>
+
+                            <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                            <span style="font-size: 14px; color: #6b6b6b; min-width: 60px;">
+                                ${t("quantity_label")}
+                            </span>
+                                <button type="button" class="cart-minus profile-btn secondary" data-index="${index}" style="padding: 8px 10px; font-size: 16px;">−</button>
+                                <input
+                                    type="number"
+                                    min="1"
+                                    max="40"
+                                    class="cart-qty-input"
+                                    data-index="${index}"
+                                    value="${item.quantity || 1}"
+                                >
+                                <button type="button" class="cart-plus profile-btn" data-index="${index}" style="padding: 8px 10px; font-size: 16px;">+</button>
+                                <button type="button" class="cart-remove profile-btn secondary" data-index="${index}" style="padding: 8px 12px; font-size: 13px;">
+                                    ${
+                                        currentLang === "ru" ? "Удалить" :
+                                        currentLang === "et" ? "Kustuta" :
+                                        "Remove"
+                                    }
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            `).join("");
+                `).join("");
 
-            const selectedItems = cart.filter(item => item.selected !== false);
-            const total = selectedItems.reduce((sum, item) => {
-                return sum + Number(item.price || 0) * Number(item.quantity || 1);
-            }, 0);
+                const selectedItems = cart.filter(item => item.selected !== false);
+                const total = selectedItems.reduce((sum, item) => {
+                    return sum + Number(item.price || 0) * Number(item.quantity || 1);
+                }, 0);
 
-            totalEl.textContent =
-                currentLang === "ru" ? `Итого: €${total.toFixed(2)}` :
-                currentLang === "et" ? `Kokku: €${total.toFixed(2)}` :
-                `Total: €${total.toFixed(2)}`;
+                totalEl.textContent =
+                    currentLang === "ru" ? `Итого: €${total.toFixed(2)}` :
+                    currentLang === "et" ? `Kokku: €${total.toFixed(2)}` :
+                    `Total: €${total.toFixed(2)}`;
 
-            initCartButtons();
-            updateCartCount();
-        }
+                initCartButtons();
+                updateCartCount();
+            }
 
-        function initCartButtons() {
-            document.querySelectorAll(".cart-check").forEach(input => {
-                input.onchange = () => {
-                    const cart = getCart();
-                    const index = Number(input.dataset.index);
-                    cart[index].selected = input.checked;
-                    localStorage.setItem("cart", JSON.stringify(cart));
-                    renderCart();
-                };
-            });
+            function initCartButtons() {
+                document.querySelectorAll(".cart-check").forEach(input => {
+                    input.onchange = () => {
+                        const cart = getCart();
+                        const index = Number(input.dataset.index);
+                        cart[index].selected = input.checked;
+                        localStorage.setItem("cart", JSON.stringify(cart));
+                        renderCart();
+                    };
+                });
 
-            document.querySelectorAll(".cart-minus").forEach(btn => {
-                btn.onclick = () => {
-                    const cart = getCart();
-                    const index = Number(btn.dataset.index);
+                document.querySelectorAll(".cart-minus").forEach(btn => {
+                    btn.onclick = () => {
+                        const cart = getCart();
+                        const index = Number(btn.dataset.index);
 
-                    cart[index].quantity = Number(cart[index].quantity || 1) - 1;
+                        cart[index].quantity = Number(cart[index].quantity || 1) - 1;
 
-                    if (cart[index].quantity <= 0) {
+                        if (cart[index].quantity <= 0) {
+                            cart.splice(index, 1);
+                        }
+
+                        saveCart(cart);
+                    };
+                });
+
+                document.querySelectorAll(".cart-plus").forEach(btn => {
+                    btn.onclick = () => {
+                        const cart = getCart();
+                        const index = Number(btn.dataset.index);
+
+                        if (Number(cart[index].quantity || 1) >= MAX_CART_QTY) {
+                            alert(maxQtyMessage());
+                            return;
+                        }
+
+                        cart[index].quantity = Number(cart[index].quantity || 1) + 1;
+                        saveCart(cart);
+                    };
+                });
+
+                document.querySelectorAll(".cart-remove").forEach(btn => {
+                    btn.onclick = () => {
+                        const cart = getCart();
+                        const index = Number(btn.dataset.index);
+
                         cart.splice(index, 1);
-                    }
+                        saveCart(cart);
+                    };
+                });
+                document.querySelectorAll(".cart-qty-input").forEach(input => {
+                    input.onchange = () => {
+                        const cart = getCart();
+                        const index = Number(input.dataset.index);
 
-                    saveCart(cart);
-                };
-            });
+                        let value = Number(input.value);
 
-            document.querySelectorAll(".cart-plus").forEach(btn => {
-                btn.onclick = () => {
-                    const cart = getCart();
-                    const index = Number(btn.dataset.index);
+                        if (!value || value < 1) {
+                            value = 1;
+                        }
 
-                    if (Number(cart[index].quantity || 1) >= MAX_CART_QTY) {
-                        alert(maxQtyMessage());
-                        return;
-                    }
+                        value = Math.floor(value);
 
-                    cart[index].quantity = Number(cart[index].quantity || 1) + 1;
-                    saveCart(cart);
-                };
-            });
+                        if (value > MAX_CART_QTY) {
+                            value = MAX_CART_QTY;
+                            alert(maxQtyMessage());
+                        }
 
-            document.querySelectorAll(".cart-remove").forEach(btn => {
-                btn.onclick = () => {
-                    const cart = getCart();
-                    const index = Number(btn.dataset.index);
+                        cart[index].quantity = value;
+                        input.value = value;
 
-                    cart.splice(index, 1);
-                    saveCart(cart);
-                };
-            });
-            document.querySelectorAll(".cart-qty-input").forEach(input => {
-                input.onchange = () => {
-                    const cart = getCart();
-                    const index = Number(input.dataset.index);
-
-                    let value = Number(input.value);
-
-                    if (!value || value < 1) {
-                        value = 1;
-                    }
-
-                    value = Math.floor(value);
-
-                    if (value > MAX_CART_QTY) {
-                        value = MAX_CART_QTY;
-                        alert(maxQtyMessage());
-                    }
-
-                    cart[index].quantity = value;
-                    input.value = value;
-
-                    saveCart(cart);
-                };
-            });
-        }
-
-        function buySelected() {
-            const cart = getCart();
-            const selected = cart.filter(item => item.selected !== false);
-
-            if (!selected.length) {
-                alert(
-                    currentLang === "ru" ? "Выберите хотя бы один букет" :
-                    currentLang === "et" ? "Vali vähemalt üks kimp" :
-                    "Select at least one bouquet"
-                );
-                return;
+                        saveCart(cart);
+                    };
+                });
             }
 
-            localStorage.setItem("checkoutCart", JSON.stringify(selected));
-            window.location.href = "/order.html";
-        }
+            function buySelected() {
+                const cart = getCart();
+                const selected = cart.filter(item => item.selected !== false);
 
-        document.addEventListener("DOMContentLoaded", async () => {
-            const token = localStorage.getItem("token");
+                if (!selected.length) {
+                    alert(
+                        currentLang === "ru" ? "Выберите хотя бы один букет" :
+                        currentLang === "et" ? "Vali vähemalt üks kimp" :
+                        "Select at least one bouquet"
+                    );
+                    return;
+                }
 
-            if (!token) {
-                window.location.href = "/login.html";
-                return;
+                localStorage.setItem("checkoutCart", JSON.stringify(selected));
+                window.location.href = "/order.html";
             }
-            await loadLanguage(currentLang);
 
-            document.getElementById("buySelectedBtn").addEventListener("click", buySelected);
+            document.addEventListener("DOMContentLoaded", async () => {
+                await loadLanguage(currentLang);
 
-            document.querySelectorAll(".lang-btn").forEach(btn => {
-                btn.addEventListener("click", async () => {
-                    await loadLanguage(btn.dataset.lang);
+                document.getElementById("buySelectedBtn").addEventListener("click", buySelected);
+
+                document.querySelectorAll(".lang-btn").forEach(btn => {
+                    btn.addEventListener("click", async () => {
+                        await loadLanguage(btn.dataset.lang);
+                    });
                 });
             });
-        });
-    </script>
-</body>
+        </script>
+    </body>
 </html>

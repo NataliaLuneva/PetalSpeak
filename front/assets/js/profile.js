@@ -181,7 +181,7 @@ async function saveProfile(event) {
             throw new Error(data.message || t("profile_update_error"));
         }
 
-        showMessage("profileMessage", data.message || t("profile_updated"));
+        showMessage("profileMessage", t("profile_updated"));
         await loadUser();
     } catch (error) {
         showMessage("profileMessage", error.message, true);
@@ -213,7 +213,7 @@ async function changePassword(event) {
         }
 
         document.getElementById("passwordForm").reset();
-        showMessage("passwordMessage", data.message || t("password_updated"));
+        showMessage("passwordMessage", t("password_updated"));
     } catch (error) {
         showMessage("passwordMessage", error.message, true);
     }
@@ -247,7 +247,7 @@ async function uploadAvatar(event) {
             document.getElementById("headerAvatar").src = avatarUrl;
         }
 
-        showMessage("avatarMessage", data.message || t("avatar_updated"));
+        showMessage("avatarMessage", t("avatar_updated"));
         await loadUser();
     } catch (error) {
         showMessage("avatarMessage", error.message, true);

@@ -1,7 +1,10 @@
 const jwt = require("jsonwebtoken");
 const JWT_SECRET = "secret123";
 
+// This middleware verifies the JWT token and adds user data to the request object.
+
 module.exports = (req, res, next) => {
+    
     const authHeader = req.headers.authorization;
     if (!authHeader) {
         return res.status(401).json({

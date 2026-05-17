@@ -255,14 +255,6 @@ function updateCartCount() {
 }
 
 function addToCart(product) {
-    const token = getToken();
-
-    if (!token) {
-        localStorage.setItem("redirectAfterLogin", window.location.pathname);
-        window.location.href = "/login.html";
-        return false;
-    }
-
     const cart = getCart();
     const existing = cart.find(item => String(item.id) === String(product.id));
 

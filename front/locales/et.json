@@ -331,7 +331,7 @@
     "login_link": "Logi sisse",
 
     "fill_required": "Täida kõik kohustuslikud väljad",
-    "password_short": "Parool peab olema vähemalt 6 tähemärki",
+    "password_short": "Parool on liiga lihtne. Lisa suur täht, väike täht, number ja erimärk",
     "password_mismatch": "Paroolid ei ühti",
 
     "register_loading": "Registreerimine...",

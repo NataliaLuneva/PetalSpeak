@@ -5,7 +5,7 @@ const auth = require("../middleware/auth");
 const router = express.Router();
 
 // Salvestab kasutaja testi tulemuse.
-router.post("/", auth, async (req, res) => {
+router.post("/", async (req, res) => {
     try {
         const {
             result,
@@ -27,7 +27,7 @@ router.post("/", auth, async (req, res) => {
             (user_id, result, bouquet_title, bouquet_image, price) 
             VALUES (?, ?, ?, ?, ?)`,
             [
-                req.user.id,
+                null,
                 result,
                 bouquetTitle,
                 bouquetImage || "",

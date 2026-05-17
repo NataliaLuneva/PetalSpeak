@@ -150,14 +150,18 @@ async function register(event) {
     }
 
     // Kontrollime parooli minimaalset pikkust.
-    if (password.length < 6) {
-        showMessage(t("password_short"), true);
+    // Сначала проверяем, совпадают ли пароли.
+    if (password !== confirmPassword) {
+        showMessage(t("password_mismatch"), true);
         return;
     }
 
-    // Kontrollime, kas paroolid kattuvad.
-    if (password !== confirmPassword) {
-        showMessage(t("password_mismatch"), true);
+    // Затем проверяем сложность пароля.
+    const passwordRegex =
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$/;
+
+    if (!passwordRegex.test(password)) {
+        showMessage(t("password_short"), true);
         return;
     }
 
@@ -184,8 +188,8 @@ async function register(event) {
             }
         }, 700);
     } catch (error) {
-        showMessage(t("request_error"));
-    } finally {
+        showMessage(error.message || t("request_error"), true);
+    }finally {
         resetLoading(submitBtn);
     }
 }

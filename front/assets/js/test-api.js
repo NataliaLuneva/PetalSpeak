@@ -1,10 +1,6 @@
 import { saveTestResult } from "/assets/js/api.js";
 
 export function saveTest(data) {
-    const token = localStorage.getItem("token");
-
-    if (!token) return;
-
     const testData = {
         result: data.result || data.resultType || "",
         bouquetTitle: data.bouquetTitle || data.bouquet_title || data.title || "",

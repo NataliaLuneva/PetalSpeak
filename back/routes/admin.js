@@ -1,92 +1,99 @@
 const express = require("express");
 const router = express.Router();
-
 const pool = require("../config/mysql");
 const auth = require("../middleware/auth");
 const requireRole = require("../middleware/requireRole");
 
-// Tagastab kõik kasutajad.
+// This file contains routes for the super administrator panel.
+// It is used to manage users, orders, and system statistics.
+
 router.get("/users", auth, requireRole("superadmin"), async (req, res) => {
+
+// This route retrieves all registered users from the database.
+
     try {
         const [users] = await pool.query(`
             SELECT id, name, email, avatar, role, is_blocked, is_deleted, created_at
             FROM users
             ORDER BY created_at DESC
         `);
-
         res.json(users);
     } catch (error) {
         console.error("Get users error:", error);
-        res.status(500).json({ message: "Ошибка получения пользователей" });
+        res.status(500).json({ message: "Error retrieving users." });
     }
+
 });
 
-// Määrab kasutajale admini rolli.
 router.put("/users/:id/make-admin", auth, requireRole("superadmin"), async (req, res) => {
+
+    // This route assigns the administrator role to a selected user.
+
     try {
         const userId = Number(req.params.id);
-
-        // Keelame enda rolli muutmise.
         if (userId === req.user.id) {
-            return res.status(400).json({ message: "Себя менять не нужно" });
+            return res.status(400).json({ message: "You do not need to change yourself." });
         }
 
         await pool.query(
             "UPDATE users SET role = 'admin' WHERE id = ? AND is_deleted = 0",
             [userId]
         );
-
-        res.json({ message: "Пользователь назначен админом" });
+        res.json({ message: "User has been assigned as an administrator." });
     } catch (error) {
         console.error("Make admin error:", error);
-        res.status(500).json({ message: "Ошибка назначения админа" });
+        res.status(500).json({ message: "Error assigning administrator role." });
     }
+
 });
 
-// Eemaldab kasutajalt admini rolli.
 router.put("/users/:id/remove-admin", auth, requireRole("superadmin"), async (req, res) => {
+
+    // This route removes administrator privileges from a user.
+
     try {
         const userId = Number(req.params.id);
-
         if (userId === req.user.id) {
-            return res.status(400).json({ message: "Нельзя убрать права у самого себя" });
+            return res.status(400).json({ message: "You cannot remove your own administrator privileges." });
         }
-
         await pool.query(
             "UPDATE users SET role = 'user' WHERE id = ? AND is_deleted = 0",
             [userId]
         );
-
-        res.json({ message: "Права админа убраны" });
+        res.json({ message: "Administrator privileges have been removed." });
     } catch (error) {
         console.error("Remove admin error:", error);
-        res.status(500).json({ message: "Ошибка удаления прав админа" });
+        res.status(500).json({ message: "Error removing administrator privileges." });
     }
+
 });
 
-// Blokeerib kasutaja.
 router.put("/users/:id/block", auth, requireRole("superadmin"), async (req, res) => {
+
+    // This route blocks a user account.
+
     try {
         const userId = Number(req.params.id);
-
         if (userId === req.user.id) {
-            return res.status(400).json({ message: "Нельзя заблокировать самого себя" });
+            return res.status(400).json({ message: "You cannot block yourself." });
         }
-
         await pool.query(
             "UPDATE users SET is_blocked = 1 WHERE id = ? AND is_deleted = 0",
             [userId]
         );
-
-        res.json({ message: "Пользователь заблокирован" });
+        res.json({ message: "User has been blocked." });
     } catch (error) {
         console.error("Block user error:", error);
-        res.status(500).json({ message: "Ошибка блокировки пользователя" });
+        res.status(500).json({ message: "Error blocking user." });
     }
+
+
 });
 
-// Eemaldab kasutaja blokeeringu.
 router.put("/users/:id/unblock", auth, requireRole("superadmin"), async (req, res) => {
+
+    // This route restores access to a blocked user
+
     try {
         const userId = Number(req.params.id);
 
@@ -95,43 +102,44 @@ router.put("/users/:id/unblock", auth, requireRole("superadmin"), async (req, re
             [userId]
         );
 
-        res.json({ message: "Пользователь разблокирован" });
+        res.json({ message: "User has been unblocked." });
     } catch (error) {
         console.error("Unblock user error:", error);
-        res.status(500).json({ message: "Ошибка разблокировки пользователя" });
+        res.status(500).json({ message: "Error unblocking user." });
     }
+
 });
 
-// Märgib kasutaja kustutatuks ilma andmeid päriselt eemaldamata.
 router.put("/users/:id/delete", auth, requireRole("superadmin"), async (req, res) => {
+
+    // This route performs a soft delete of a user account.
+
     try {
         const userId = Number(req.params.id);
-
         if (userId === req.user.id) {
-            return res.status(400).json({ message: "Нельзя удалить самого себя" });
+            return res.status(400).json({ message: "You cannot delete yourself." });
         }
-
         await pool.query(
             "UPDATE users SET is_deleted = 1 WHERE id = ?",
             [userId]
         );
-
-        res.json({ message: "Пользователь удалён" });
+        res.json({ message: "User has been deleted." });
     } catch (error) {
         console.error("Delete user error:", error);
-        res.status(500).json({ message: "Ошибка удаления пользователя" });
+        res.status(500).json({ message: "Error deleting user." });
     }
+
 });
 
-// Tagastab kõik tellimused koos kuupäevafiltriga.
 router.get("/orders", auth, requireRole("superadmin"), async (req, res) => {
+
+    // This route retrieves all customer orders with their items.
+
     try {
         const { from, to } = req.query;
-
         let where = "";
-        const params = [];
 
-        // Kui kuupäevad on antud, filtreerime tellimused perioodi järgi.
+        const params = [];
         if (from && to) {
             where = "WHERE o.created_at >= ? AND o.created_at < DATE_ADD(?, INTERVAL 1 DAY)";
             params.push(from, to);
@@ -145,7 +153,6 @@ router.get("/orders", auth, requireRole("superadmin"), async (req, res) => {
             ORDER BY o.created_at DESC
         `, params);
 
-        // Lisame igale tellimusele selle tooted.
         for (const order of orders) {
             const [items] = await pool.query(
                 "SELECT * FROM order_items WHERE order_id = ?",
@@ -154,19 +161,20 @@ router.get("/orders", auth, requireRole("superadmin"), async (req, res) => {
 
             order.items = items;
         }
-
         res.json(orders);
     } catch (error) {
         console.error("Get admin orders error:", error);
-        res.status(500).json({ message: "Ошибка получения заказов" });
+        res.status(500).json({ message: "Error retrieving orders." });
     }
+
 });
 
-// Tagastab statistika koos kuupäevafiltriga.
 router.get("/stats", auth, requireRole("superadmin"), async (req, res) => {
+
+    // This route generates sales and revenue statistics.
+
     try {
         const { from, to } = req.query;
-
         let where = "";
         const params = [];
 
@@ -175,19 +183,16 @@ router.get("/stats", auth, requireRole("superadmin"), async (req, res) => {
             params.push(from, to);
         }
 
-        // Tellimuste koguarv.
         const [[totalOrdersRow]] = await pool.query(
             `SELECT COUNT(*) AS count FROM orders ${where}`,
             params
         );
 
-        // Kogutulu valitud perioodil.
         const [[totalRevenueRow]] = await pool.query(
             `SELECT COALESCE(SUM(price), 0) AS total FROM orders ${where}`,
             params
         );
 
-        // Käesoleva kuu tulu.
         const [[monthRevenueRow]] = await pool.query(`
             SELECT COALESCE(SUM(price), 0) AS total
             FROM orders
@@ -195,7 +200,6 @@ router.get("/stats", auth, requireRole("superadmin"), async (req, res) => {
               AND MONTH(created_at) = MONTH(CURDATE())
         `);
 
-        // Enim müüdud kimbud.
         const [topSales] = await pool.query(`
             SELECT 
                 oi.bouquet_title,
@@ -216,12 +220,9 @@ router.get("/stats", auth, requireRole("superadmin"), async (req, res) => {
         });
     } catch (error) {
         console.error("Get stats error:", error);
-        res.status(500).json({ message: "Ошибка получения статистики" });
+        res.status(500).json({ message: "Error retrieving statistics." });
     }
+
 });
 
 module.exports = router;
-
-// Этот файл содержит маршруты административной панели для superadmin. 
-// Через них можно получать список пользователей, назначать и удалять роль администратора, блокировать, разблокировать и мягко удалять пользователей. 
-// Также здесь реализовано получение всех заказов с возможностью фильтрации по датам и получение статистики: общее количество заказов, общая выручка, выручка за текущий месяц и список самых продаваемых букетов.
