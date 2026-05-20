@@ -1,12 +1,19 @@
 const express = require("express");
+const jwt = require("jsonwebtoken");
 const pool = require("../config/mysql");
 const auth = require("../middleware/auth");
-
 const router = express.Router();
+const JWT_SECRET = "secret123";
 
-// Salvestab kasutaja testi tulemuse.
+// Saves a bouquet test result.
+// The result can be saved both for authenticated users and guest users.
+
 router.post("/", async (req, res) => {
+
     try {
+
+        // Extract test result data from the request body.
+
         const {
             result,
             bouquetTitle,
@@ -14,20 +21,50 @@ router.post("/", async (req, res) => {
             price
         } = req.body;
 
-        // Kontrollime, kas vajalikud andmed on olemas.
+        // Check that required data is provided.
+
         if (!result || !bouquetTitle) {
             return res.status(400).json({
                 message: "Результат теста не передан"
             });
         }
 
-        // Salvestame testi tulemuse andmebaasi.
+        // By default, the result is saved without a user.
+
+        let userId = null;
+
+        // Check whether the request contains an authorization token.
+
+        const authHeader = req.headers.authorization;
+
+        if (authHeader && authHeader.startsWith("Bearer ")) {
+
+            try {
+
+                // Extract and verify the JWT token.
+
+                const token = authHeader.split(" ")[1];
+                const decoded = jwt.verify(token, JWT_SECRET);
+
+                // Save the authenticated user's ID.
+
+                userId = decoded.id;
+            } catch (error) {
+
+                // If the token is invalid, save the result as a guest result.
+
+                userId = null;
+            }
+        }
+
+        // Save the test result in the database.
+
         await pool.query(
             `INSERT INTO test_results 
             (user_id, result, bouquet_title, bouquet_image, price) 
             VALUES (?, ?, ?, ?, ?)`,
             [
-                null,
+                userId,
                 result,
                 bouquetTitle,
                 bouquetImage || "",
@@ -46,9 +83,14 @@ router.post("/", async (req, res) => {
     }
 });
 
-// Tagastab sisselogitud kasutaja testi tulemused.
+// Retrieves saved test results for the currently authenticated user.
+
 router.get("/my", auth, async (req, res) => {
+
     try {
+
+        // Select all test results that belong to the current user.
+
         const [rows] = await pool.query(
             `SELECT 
                 id,
@@ -74,7 +116,3 @@ router.get("/my", auth, async (req, res) => {
 });
 
 module.exports = router;
-
-// Этот файл отвечает за сохранение и получение результатов теста пользователя. 
-// Первый маршрут сохраняет результат теста, название букета, изображение и цену в таблицу test_results, привязывая запись к авторизованному пользователю. 
-// Второй маршрут возвращает все результаты тестов текущего пользователя, отсортированные по дате создания от новых к старым.

@@ -6,9 +6,16 @@ const transporter = require("../utils/mailer");
 const router = express.Router();
 const JWT_SECRET = "secret123";
 
+// Creates a new customer order and saves it to the database.
+// The route supports both authenticated and guest users.
+
 router.post("/", async (req, res) => {
 
+    // Get a dedicated database connection for transaction handling.
+
     const connection = await pool.getConnection();
+
+    // Extract order information from the request body.
 
     try {
         const {
@@ -24,17 +31,27 @@ router.post("/", async (req, res) => {
             price
         } = req.body;
 
+        // Check that the required customer fields are provided.
+
         if (!customerName || !email) {
             return res.status(400).json({ message: "Please fill in all required fields." });
         }
 
+        // Use the provided cart items if they exist.
+
         let orderItems = Array.isArray(items) && items.length ? items : null;
 
+        // If no cart items were provided, create a single-item order.
+
         if (!orderItems) {
+
+            // If no bouquet title is provided, the order cannot be created.
 
             if (!bouquetTitle) {
                 return res.status(400).json({ message: "The cart is empty." });
             }
+
+            // Create a single bouquet order.
 
             orderItems = [{
                 productId: null,
@@ -47,13 +64,22 @@ router.post("/", async (req, res) => {
 
         }
 
+        // By default, the order is treated as a guest order.
+
         let userId = null;
+
+        // Check whether the request contains an authorization token.
+
         const authHeader = req.headers.authorization;
 
         if (authHeader && authHeader.startsWith("Bearer ")) {
 
             try {
+
+                // Extract and verify the JWT token.
+
                 const token = authHeader.split(" ")[1];
+
                 const decoded = jwt.verify(token, JWT_SECRET);
                 userId = decoded.id;
             } catch (error) {
@@ -61,13 +87,21 @@ router.post("/", async (req, res) => {
             }
         }
 
+        // Calculate the total price of all ordered items.
+
         const totalPrice = orderItems.reduce((sum, item) => {
             return sum + (Number(item.price) || 0) * (Number(item.quantity) || 1);
         }, 0);
 
+        // Get the first item for storing preview information in the orders table.
+
         const firstItem = orderItems[0];
 
+        // Start a database transaction.
+
         await connection.beginTransaction();
+
+        // Insert the main order record.
 
         const [orderResult] = await connection.query(
             `INSERT INTO orders
@@ -88,9 +122,12 @@ router.post("/", async (req, res) => {
             ]
         );
 
+        // Get the generated order ID.
+
         const orderId = orderResult.insertId;
 
-        // Salvestame kõik tellimuse tooted eraldi tabelisse.
+        // Save each ordered item in the order_items table.
+
         for (const item of orderItems) {
             await connection.query(
                 `INSERT INTO order_items
@@ -108,10 +145,10 @@ router.post("/", async (req, res) => {
             );
         }
 
-        // Kinnitame andmebaasi muudatused.
         await connection.commit();
 
-        // Loome tellitud toodete HTML-nimekirja e-kirja jaoks.
+        // Generate an HTML list of all ordered bouquets for the email message.
+
         const itemsHtml = orderItems.map(item => `
             <li>
                 ${item.bouquetTitle || item.title} —
@@ -120,10 +157,13 @@ router.post("/", async (req, res) => {
             </li>
         `).join("");
 
-        // Valime e-kirja keele.
+        // Select the email language.
+        // If the provided language is not supported, English is used by default.
+
         const mailLang = ["ru", "et", "en"].includes(lang) ? lang : "en";
 
-        // E-kirja tekstid eri keeltes.
+        // Text content for the confirmation email in three languages.
+
         const mailText = {
             en: {
                 subject: "Thank you for your order! 💐",
@@ -157,9 +197,12 @@ router.post("/", async (req, res) => {
             }
         };
 
+        // Get the selected translation object.
+
         const m = mailText[mailLang];
 
-        // Saadame kliendile tellimuse kinnituse.
+        // Send the order confirmation email to the customer.
+
         await transporter.sendMail({
             from: '"PetalSpeak" <lunjevanatalja@gmail.com>',
             to: email,
@@ -181,30 +224,37 @@ router.post("/", async (req, res) => {
             `
         });
 
+        // Return a success response after the order is created and the email is sent.
+
         res.json({
             message: "Заказ успешно оформлен",
             orderId
         });
     } catch (error) {
-        // Kui midagi läheb valesti, tühistame transaktsiooni.
         await connection.rollback();
         console.error("Ошибка оформления заказа:", error);
         res.status(500).json({ message: "Ошибка при оформлении заказа" });
     } finally {
-        // Vabastame andmebaasiühenduse.
         connection.release();
     }
 });
 
-// Tagastab sisselogitud kasutaja tellimused.
+// Retrieves all orders made by the currently authenticated user.
+// Access is allowed only for users with a valid JWT token.
+
 router.get("/my", auth, async (req, res) => {
+
+    // Find all orders that belong to the current user.
+    // Orders are sorted from newest to oldest.
+
     try {
         const [orders] = await pool.query(
             "SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC",
             [req.user.id]
         );
 
-        // Lisame igale tellimusele selle tooted.
+        // For each order, retrieve the bouquets included in it.
+
         for (const order of orders) {
             const [items] = await pool.query(
                 "SELECT * FROM order_items WHERE order_id = ?",
@@ -222,8 +272,3 @@ router.get("/my", auth, async (req, res) => {
 });
 
 module.exports = router;
-
-// Этот файл отвечает за оформление заказов и получение заказов текущего пользователя. 
-// При создании заказа данные берутся либо из корзины items, либо из одного выбранного букета. 
-// Если пользователь авторизован, заказ связывается с его id, а если токен отсутствует или недействителен, заказ оформляется как гостевой. 
-// Заказ и его товары сохраняются в базе данных внутри транзакции, после чего клиенту отправляется письмо с подтверждением на выбранном языке: русском, эстонском или английском.

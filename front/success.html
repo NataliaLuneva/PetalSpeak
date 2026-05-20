@@ -1,23 +1,54 @@
 <!doctype html>
 <html lang="en">
 <head>
+
+    <!-- Character encoding and responsive viewport settings -->
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Page title displayed in the browser tab -->
+
     <title>Order Success | PetalSpeak</title>
+
+    <!-- Main stylesheet -->
+
     <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 <body>
+
+    <!-- Simple header with a link to the homepage -->
+
     <header class="topbar">
         <a href="/index.html" class="brand">PETALSPEAK</a>
     </header>
 
+    <!-- Main success message content -->
+
     <main>
         <section class="section">
             <div class="panel order-panel" style="text-align:center;">
+
+                <!-- Order success title -->
+
                 <h2 id="success-title">Thank you for your order! 💐</h2>
+
+                <!-- Order success description -->
+
                 <p id="success-text">Your bouquet order has been placed successfully.</p>
+
+                <!-- Ordered bouquet information -->
+
                 <p id="success-bouquet" style="margin-top:20px; font-size:20px;"></p>
-                <a href="/" class="btn" id="success-home-btn" style="margin-top:25px; display:inline-block;">
+
+                <!-- Link back to the homepage -->
+
+                <a
+                    href="/"
+                    class="btn"
+                    id="success-home-btn"
+                    style="margin-top:25px; display:inline-block;"
+                >
                     Back to Home
                 </a>
             </div>
@@ -25,8 +56,16 @@
     </main>
 
     <script>
+
+        // Get the selected language from local storage.
+
         const lang = localStorage.getItem("lang") || "en";
+
+        // Get information about the last ordered bouquet.
+
         const order = JSON.parse(localStorage.getItem("lastOrderedBouquet"));
+
+        // Text translations for the success page.
 
         const text = {
             en: {
@@ -49,16 +88,25 @@
             }
         };
 
+        // Select translations based on the current language.
+
         const t = text[lang] || text.en;
+
+        // Apply translated text to the page.
 
         document.getElementById("success-title").textContent = t.title;
         document.getElementById("success-text").textContent = t.desc;
         document.getElementById("success-home-btn").textContent = t.home;
 
+        // Display multiple ordered items if the order contains an items array.
+
         if (order?.items?.length) {
             document.getElementById("success-bouquet").innerHTML =
                 `${t.bouquetPrefix}<br>` +
                 order.items.map(item => `${item.title} × ${item.quantity || 1}`).join("<br>");
+
+        // Display a single ordered bouquet for older order format.
+        
         } else if (order) {
             document.getElementById("success-bouquet").textContent =
                 `${t.bouquetPrefix} ${order.titleText || order.title || ""}`;

@@ -1,18 +1,40 @@
 <!doctype html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Cart | PetalSpeak</title>
-        <link rel="stylesheet" href="/assets/css/style.css">
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Page title displayed in the browser tab -->
+
+    <title>Cart | PetalSpeak</title>
+
+    <!-- Main stylesheet -->
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
     <body>
+
+        <!-- Website header -->
+
         <header class="topbar">
+
+            <!-- Link to the homepage -->
+
             <a href="/index.html" class="brand">PETALSPEAK</a>
 
+            <!-- Main navigation menu -->
+
             <nav class="nav" id="nav">
+
+                <!-- Link back to the homepage -->
+
                 <a href="/" class="back-btn" data-i18n="back_home">Back</a>
+
+                <!-- Link to the feelings test page -->
+
                 <a href="/test.html" data-i18n="test">Feelings Test</a>
+
+                <!-- Language switch buttons -->
 
                 <div class="lang-switch">
                     <button class="lang-btn active" data-lang="en">EN</button>
@@ -20,15 +42,34 @@
                     <button class="lang-btn" data-lang="ru">RU</button>
                 </div>
             </nav>
-            <button class="burger" onclick="toggleMenu()">☰</button>
-        </header>
+
+        <!-- Burger menu button for mobile navigation -->
+
+        <button class="burger" onclick="toggleMenu()">☰</button>
+    </header>
                 
+        <!-- Main page content -->
+
         <main>
+
+            <!-- Shopping cart section -->
+
             <section class="section">
                 <div class="panel order-panel">
+
+                    <!-- Cart title -->
+
                     <h2 class="center" id="cartTitle">Cart</h2>
+
+                    <!-- Container where cart items will be displayed -->
+
                     <div id="cartList"></div>
+
+                    <!-- Element showing the total cart price -->
+
                     <div id="cartTotal" style="margin-top:20px; font-size:22px; text-align:center;"></div>
+
+                    <!-- Button for purchasing selected items -->
 
                     <div style="text-align:center; margin-top:24px;">
                         <button id="buySelectedBtn" class="btn" type="button">
@@ -40,9 +81,17 @@
         </main>
 
         <script>
-            /* ===== MENU TOGGLE ===== */
+
+            // Toggles the visibility of the mobile navigation menu.
+
             function toggleMenu() {
+
+                // Get the navigation element by its ID.
+
                 const nav = document.getElementById('nav');
+
+                // Add or remove the 'open' class if the element exists.
+
                 if (nav) {
                     nav.classList.toggle('open');
                 }
@@ -53,7 +102,12 @@
 
             const MAX_CART_QTY = 40;
 
+            // Returns a message shown when the maximum allowed quantity is exceeded.
+
             function maxQtyMessage() {
+
+                // Select the message based on the currently chosen language.
+
                 return currentLang === "ru"
                     ? "Для большого заказа напишите нам на почту."
                     : currentLang === "et"
@@ -61,64 +115,148 @@
                         : "For a large order, please contact us by email.";
             }
 
+            // Returns the translated text for the specified key.
+            // If the translation is missing, the key itself is returned.
+
             function t(key) {
                 return translations[key] || key;
             }
 
+            function showToast(message) {
+                const oldToast = document.querySelector(".toast-message");
+                if (oldToast) oldToast.remove();
+
+                const toast = document.createElement("div");
+                toast.className = "toast-message";
+                toast.textContent = message;
+
+                document.body.appendChild(toast);
+
+                setTimeout(() => toast.classList.add("show"), 100);
+
+                setTimeout(() => {
+                    toast.classList.remove("show");
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
+            }
+
+            // Retrieves the shopping cart data from local storage.
+
             function getCart() {
+
                 try {
+
+                    // Parse the stored cart JSON and return it as an array.
+
                     return JSON.parse(localStorage.getItem("cart")) || [];
                 } catch {
                     return [];
                 }
             }
 
+            // Saves the updated shopping cart to local storage.
+
             function saveCart(cart) {
+
+                // Convert the cart array to JSON and store it.
+
                 localStorage.setItem("cart", JSON.stringify(cart));
+
+                // Refresh the cart item counter in the header.
+
                 updateCartCount();
+
+                // Re-render the cart contents on the page.
+
                 renderCart();
             }
 
+            // Updates the cart item counter displayed in the page header.
+
             function updateCartCount() {
+
+                // Get the element that displays the cart item count.
+
                 const countEl = document.getElementById("cartCount");
                 if (!countEl) return;
 
+                // Retrieve the current cart from local storage.
+
                 const cart = getCart();
-                const count = cart.reduce((sum, item) => sum + Number(item.quantity || 1), 0);
+
+                // Calculate the total quantity of all items in the cart.
+
+                const count = cart.reduce(
+                    (sum, item) => sum + Number(item.quantity || 1),
+                    0
+                );
+
+                // Display the calculated quantity.
+
                 countEl.textContent = count;
             }
 
+            // Loads translation data for the selected language.
+
             async function loadLanguage(lang) {
+
+                // Save the selected language in memory and local storage.
+                
                 currentLang = lang;
                 localStorage.setItem("lang", lang);
 
                 try {
+
+                    // Request the corresponding translation file.
+
                     const res = await fetch(`/locales/${lang}.json`);
+
+                    // Store the loaded translations.
+
                     translations = await res.json();
                 } catch {
                     translations = {};
                 }
 
+                // Apply translated texts to the page.
+
                 applyTexts();
+
+                // Re-render the cart to update translated labels.
+
                 renderCart();
             }
 
+            // Applies translated text and updates language-dependent elements.
+
             function applyTexts() {
+
+                // Replace text in elements marked with the data-i18n attribute.
+
                 document.querySelectorAll("[data-i18n]").forEach(el => {
+
                     const key = el.getAttribute("data-i18n");
 
                     if (translations[key]) {
                         el.innerHTML = translations[key];
                     }
                 });
+
+                // Highlight the currently selected language button.
+
                 document.querySelectorAll(".lang-btn").forEach(btn => {
+
                     btn.classList.toggle("active", btn.dataset.lang === currentLang);
                 });
+
+                // Update the cart title according to the selected language.
 
                 document.getElementById("cartTitle").textContent =
                     currentLang === "ru" ? "Корзина" :
                     currentLang === "et" ? "Ostukorv" :
                     "Cart";
+
+                // Update the purchase button text according to the selected language.
 
                 document.getElementById("buySelectedBtn").textContent =
                     currentLang === "ru" ? "Купить выбранное" :
@@ -126,10 +264,17 @@
                     "Buy selected";
             }
 
+            // Renders all shopping cart items and calculates the total price.
+
             function renderCart() {
+
+                // Retrieve cart data and target elements.
+
                 const cart = getCart();
                 const list = document.getElementById("cartList");
                 const totalEl = document.getElementById("cartTotal");
+
+                // Display a message if the cart is empty.
 
                 if (!cart.length) {
                     list.innerHTML = `
@@ -145,8 +290,12 @@
                     return;
                 }
 
+                // Generate HTML for each cart item.
+
                 list.innerHTML = cart.map((item, index) => `
                     <div class="cart-item" style="background: #faf6f7; border-radius: 16px; padding: 16px; margin-bottom: 16px; display: grid; grid-template-columns: 40px 130px 1fr; gap: 16px; align-items: start;">
+                        
+                        <!-- Checkbox for selecting the item -->
                         <input
                             type="checkbox"
                             class="cart-check"
@@ -155,6 +304,7 @@
                             style="margin-top: 6px;"
                         >
 
+                        <!-- Bouquet image -->
                         <div style="text-align: center;">
                             <img
                                 src="${item.img || ""}"
@@ -163,15 +313,31 @@
                             >
                         </div>
 
+                        <!-- Product information and controls -->
                         <div style="display: flex; flex-direction: column; gap: 10px;">
-                            <div class="item-title" style="font-size: 18px; margin: 0;">${item.title || "Bouquet"}</div>
-                            <div class="item-meta" style="font-size: 16px; margin: 0;">€${Number(item.price || 0).toFixed(2)}</div>
+                            <div class="item-title" style="font-size: 18px; margin: 0;">
+                                ${item.title || "Bouquet"}
+                            </div>
 
+                            <div class="item-meta" style="font-size: 16px; margin: 0;">
+                                €${Number(item.price || 0).toFixed(2)}
+                            </div>
+
+                            <!-- Quantity controls -->
                             <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-                            <span style="font-size: 14px; color: #6b6b6b; min-width: 60px;">
-                                ${t("quantity_label")}
-                            </span>
-                                <button type="button" class="cart-minus profile-btn secondary" data-index="${index}" style="padding: 8px 10px; font-size: 16px;">−</button>
+                                <span style="font-size: 14px; color: #6b6b6b; min-width: 60px;">
+                                    ${t("quantity_label")}
+                                </span>
+
+                                <button
+                                    type="button"
+                                    class="cart-minus profile-btn secondary"
+                                    data-index="${index}"
+                                    style="padding: 8px 10px; font-size: 16px;"
+                                >
+                                    −
+                                </button>
+
                                 <input
                                     type="number"
                                     min="1"
@@ -180,8 +346,23 @@
                                     data-index="${index}"
                                     value="${item.quantity || 1}"
                                 >
-                                <button type="button" class="cart-plus profile-btn" data-index="${index}" style="padding: 8px 10px; font-size: 16px;">+</button>
-                                <button type="button" class="cart-remove profile-btn secondary" data-index="${index}" style="padding: 8px 12px; font-size: 13px;">
+
+                                <button
+                                    type="button"
+                                    class="cart-plus profile-btn"
+                                    data-index="${index}"
+                                    style="padding: 8px 10px; font-size: 16px;"
+                                >
+                                    +
+                                </button>
+
+                                <!-- Button for removing the item from the cart -->
+                                <button
+                                    type="button"
+                                    class="cart-remove profile-btn secondary"
+                                    data-index="${index}"
+                                    style="padding: 8px 12px; font-size: 13px;"
+                                >
                                     ${
                                         currentLang === "ru" ? "Удалить" :
                                         currentLang === "et" ? "Kustuta" :
@@ -193,37 +374,62 @@
                     </div>
                 `).join("");
 
+                // Calculate the total price of selected items.
+
                 const selectedItems = cart.filter(item => item.selected !== false);
                 const total = selectedItems.reduce((sum, item) => {
                     return sum + Number(item.price || 0) * Number(item.quantity || 1);
                 }, 0);
+
+                // Display the total price in the selected language.
 
                 totalEl.textContent =
                     currentLang === "ru" ? `Итого: €${total.toFixed(2)}` :
                     currentLang === "et" ? `Kokku: €${total.toFixed(2)}` :
                     `Total: €${total.toFixed(2)}`;
 
+                // Attach event handlers and update the cart counter.
+
                 initCartButtons();
                 updateCartCount();
             }
 
+            // Attaches event handlers to all cart control buttons and inputs.
+
             function initCartButtons() {
+
+                // Handle item selection changes.
+
                 document.querySelectorAll(".cart-check").forEach(input => {
+
                     input.onchange = () => {
                         const cart = getCart();
                         const index = Number(input.dataset.index);
+
+                        // Save whether the item is selected for purchase.
+
                         cart[index].selected = input.checked;
                         localStorage.setItem("cart", JSON.stringify(cart));
+
+                        // Re-render the cart after selection changes.
+
                         renderCart();
                     };
                 });
 
+                // Handle decreasing item quantity.
+
                 document.querySelectorAll(".cart-minus").forEach(btn => {
+
                     btn.onclick = () => {
                         const cart = getCart();
                         const index = Number(btn.dataset.index);
 
+                        // Decrease the quantity by one.
+
                         cart[index].quantity = Number(cart[index].quantity || 1) - 1;
+
+                        // Remove the item if quantity becomes zero.
 
                         if (cart[index].quantity <= 0) {
                             cart.splice(index, 1);
@@ -233,13 +439,18 @@
                     };
                 });
 
+                // Handle increasing item quantity.
+
                 document.querySelectorAll(".cart-plus").forEach(btn => {
+
                     btn.onclick = () => {
                         const cart = getCart();
                         const index = Number(btn.dataset.index);
 
+                        // Prevent quantity from exceeding the allowed limit.
+
                         if (Number(cart[index].quantity || 1) >= MAX_CART_QTY) {
-                            alert(maxQtyMessage());
+                            showToast(maxQtyMessage());
                             return;
                         }
 
@@ -248,32 +459,49 @@
                     };
                 });
 
+                // Handle item removal from the cart.
+
                 document.querySelectorAll(".cart-remove").forEach(btn => {
+
                     btn.onclick = () => {
                         const cart = getCart();
                         const index = Number(btn.dataset.index);
+
+                        // Remove the selected item from the cart array.
 
                         cart.splice(index, 1);
                         saveCart(cart);
                     };
                 });
+
+                // Handle manual quantity input changes.
+
                 document.querySelectorAll(".cart-qty-input").forEach(input => {
+
                     input.onchange = () => {
                         const cart = getCart();
                         const index = Number(input.dataset.index);
 
                         let value = Number(input.value);
 
+                        // Use one as the minimum allowed quantity.
+
                         if (!value || value < 1) {
                             value = 1;
                         }
 
+                        // Convert the quantity to a whole number.
+
                         value = Math.floor(value);
+
+                        // Limit the quantity to the maximum allowed value.
 
                         if (value > MAX_CART_QTY) {
                             value = MAX_CART_QTY;
-                            alert(maxQtyMessage());
+                            showToast(maxQtyMessage());
                         }
+
+                        // Save the corrected quantity.
 
                         cart[index].quantity = value;
                         input.value = value;
@@ -283,12 +511,23 @@
                 });
             }
 
+            // Saves selected cart items and redirects the user to the order page.
+
             function buySelected() {
+                
+                // Retrieve all items from the cart.
+
                 const cart = getCart();
+
+                // Keep only selected items for checkout.
+
                 const selected = cart.filter(item => item.selected !== false);
 
+                // Require at least one selected bouquet.
+
                 if (!selected.length) {
-                    alert(
+
+                    showToast(
                         currentLang === "ru" ? "Выберите хотя бы один букет" :
                         currentLang === "et" ? "Vali vähemalt üks kimp" :
                         "Select at least one bouquet"
@@ -296,16 +535,31 @@
                     return;
                 }
 
+                // Store selected items for the checkout process.
+
                 localStorage.setItem("checkoutCart", JSON.stringify(selected));
+
+                // Redirect the user to the order page.
+
                 window.location.href = "/order.html";
             }
 
+            // Initializes the cart page after the document is loaded.
+
             document.addEventListener("DOMContentLoaded", async () => {
+
+                // Load the saved interface language.
+
                 await loadLanguage(currentLang);
+
+                // Attach the checkout button handler.
 
                 document.getElementById("buySelectedBtn").addEventListener("click", buySelected);
 
+                // Attach language switch handlers.
+
                 document.querySelectorAll(".lang-btn").forEach(btn => {
+
                     btn.addEventListener("click", async () => {
                         await loadLanguage(btn.dataset.lang);
                     });

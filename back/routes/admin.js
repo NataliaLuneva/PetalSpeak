@@ -1,15 +1,15 @@
-const express = require("express");
+const express = require( "express" );
 const router = express.Router();
-const pool = require("../config/mysql");
+const pool = require( "../config/mysql" );
 const auth = require("../middleware/auth");
 const requireRole = require("../middleware/requireRole");
 
-// This file contains routes for the super administrator panel.
-// It is used to manage users, orders, and system statistics.
+// Retrieves a list of all registered users from the database.
+// Access is allowed only for authenticated users with the "superadmin" role.
 
 router.get("/users", auth, requireRole("superadmin"), async (req, res) => {
 
-// This route retrieves all registered users from the database.
+    // Execute an SQL query to select user information and sort the results by registration date (newest first).
 
     try {
         const [users] = await pool.query(`
@@ -25,15 +25,20 @@ router.get("/users", auth, requireRole("superadmin"), async (req, res) => {
 
 });
 
+// Assigns the "admin" role to a selected user.
+// Access is allowed only for authenticated users with the "superadmin" role.
+
 router.put("/users/:id/make-admin", auth, requireRole("superadmin"), async (req, res) => {
 
-    // This route assigns the administrator role to a selected user.
+    // Convert the user ID from the URL parameter to a number.
 
     try {
         const userId = Number(req.params.id);
         if (userId === req.user.id) {
             return res.status(400).json({ message: "You do not need to change yourself." });
         }
+
+        // Update the user's role to "admin", but only if the account is not marked as deleted.
 
         await pool.query(
             "UPDATE users SET role = 'admin' WHERE id = ? AND is_deleted = 0",
@@ -47,15 +52,21 @@ router.put("/users/:id/make-admin", auth, requireRole("superadmin"), async (req,
 
 });
 
+// Removes administrator privileges from a selected user.
+// The user's role is changed from "admin" to "user".
+// Access is allowed only for authenticated users with the "superadmin" role.
+
 router.put("/users/:id/remove-admin", auth, requireRole("superadmin"), async (req, res) => {
 
-    // This route removes administrator privileges from a user.
+    // Convert the user ID from the URL parameter to a number.
 
     try {
         const userId = Number(req.params.id);
         if (userId === req.user.id) {
             return res.status(400).json({ message: "You cannot remove your own administrator privileges." });
         }
+
+        // Update the user's role to "user", but only if the account is not marked as deleted.
         await pool.query(
             "UPDATE users SET role = 'user' WHERE id = ? AND is_deleted = 0",
             [userId]
@@ -68,15 +79,23 @@ router.put("/users/:id/remove-admin", auth, requireRole("superadmin"), async (re
 
 });
 
+// Blocks a selected user account by setting the is_blocked flag to 1.
+// A blocked user cannot log in or use the system.
+// Access is allowed only for authenticated users with the "superadmin" role.
+
 router.put("/users/:id/block", auth, requireRole("superadmin"), async (req, res) => {
 
-    // This route blocks a user account.
+    // Convert the user ID from the URL parameter to a number.
+    // Prevent the super administrator from blocking their own account.
 
     try {
         const userId = Number(req.params.id);
         if (userId === req.user.id) {
             return res.status(400).json({ message: "You cannot block yourself." });
         }
+
+        // Update the user's account status by setting is_blocked to 1.
+        // Only active (not deleted) accounts can be blocked.
         await pool.query(
             "UPDATE users SET is_blocked = 1 WHERE id = ? AND is_deleted = 0",
             [userId]
@@ -87,12 +106,16 @@ router.put("/users/:id/block", auth, requireRole("superadmin"), async (req, res)
         res.status(500).json({ message: "Error blocking user." });
     }
 
-
 });
+
+// Removes the block from a selected user account by setting is_blocked to 0.
+// After this operation, the user can log in and use the system again.
+// Access is allowed only for authenticated users with the "superadmin" role.
 
 router.put("/users/:id/unblock", auth, requireRole("superadmin"), async (req, res) => {
 
-    // This route restores access to a blocked user
+    // Update the user's account status by setting is_blocked to 0.
+    // Only active (not deleted) accounts can be unblocked.
 
     try {
         const userId = Number(req.params.id);
@@ -110,15 +133,23 @@ router.put("/users/:id/unblock", auth, requireRole("superadmin"), async (req, re
 
 });
 
+// Marks a selected user account as deleted by setting is_deleted to 1.
+// The user record remains in the database, but the account is treated as inactive.
+// Access is allowed only for authenticated users with the "superadmin" role.
+
 router.put("/users/:id/delete", auth, requireRole("superadmin"), async (req, res) => {
 
-    // This route performs a soft delete of a user account.
+    // Prevent the super administrator from deleting their own account.
 
     try {
         const userId = Number(req.params.id);
         if (userId === req.user.id) {
             return res.status(400).json({ message: "You cannot delete yourself." });
         }
+
+        // Mark the user account as deleted by setting is_deleted to 1.
+        // The user data is preserved in the database for future reference.
+
         await pool.query(
             "UPDATE users SET is_deleted = 1 WHERE id = ?",
             [userId]
@@ -128,22 +159,32 @@ router.put("/users/:id/delete", auth, requireRole("superadmin"), async (req, res
         console.error("Delete user error:", error);
         res.status(500).json({ message: "Error deleting user." });
     }
-
 });
+
+// Retrieves all customer orders for the administration panel.
+// Access is allowed only for authenticated users with the "superadmin" role.
+// Orders can optionally be filtered by a date range.
 
 router.get("/orders", auth, requireRole("superadmin"), async (req, res) => {
 
-    // This route retrieves all customer orders with their items.
+    // Extract optional start and end dates from query parameters.
+    // SQL WHERE clause used for filtering orders by date.
 
     try {
         const { from, to } = req.query;
         let where = "";
 
         const params = [];
+
+        // If both dates are provided, add a date filter.
+        // The end date is extended by one day to include the full selected day.
+
         if (from && to) {
             where = "WHERE o.created_at >= ? AND o.created_at < DATE_ADD(?, INTERVAL 1 DAY)";
             params.push(from, to);
         }
+
+        // Retrieve all orders together with the customer's name and role.
 
         const [orders] = await pool.query(`
             SELECT o.*, u.name AS user_name, u.role AS user_role
@@ -152,6 +193,8 @@ router.get("/orders", auth, requireRole("superadmin"), async (req, res) => {
             ${where}
             ORDER BY o.created_at DESC
         `, params);
+
+        // For each order, retrieve the list of ordered products.
 
         for (const order of orders) {
             const [items] = await pool.query(
@@ -169,9 +212,11 @@ router.get("/orders", auth, requireRole("superadmin"), async (req, res) => {
 
 });
 
-router.get("/stats", auth, requireRole("superadmin"), async (req, res) => {
+// Retrieves statistics for the administration panel.
+// Access is allowed only for authenticated users with the "superadmin" role.
+// Statistics can optionally be filtered by a date range.
 
-    // This route generates sales and revenue statistics.
+router.get("/stats", auth, requireRole("superadmin"), async (req, res) => {
 
     try {
         const { from, to } = req.query;

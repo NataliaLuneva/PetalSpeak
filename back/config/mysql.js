@@ -1,7 +1,8 @@
+// Import the mysql2 library with Promise support,
+// which allows using async/await for database queries.
 const mysql = require("mysql2/promise");
 
-// This file creates a connection pool to the MySQL database and exports it for use in other parts of the application.
-
+// Create a connection pool to the MySQL database.
 const pool = mysql.createPool({
     host: "127.0.0.1",
     user: "root",

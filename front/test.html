@@ -1,54 +1,126 @@
 <!doctype html>
 <html lang="en">
 <head>
+
+    <!-- Character encoding and responsive viewport settings -->
+
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    />
+
+    <!-- Page title shown in the browser tab -->
+
     <title>Feelings Test</title>
+
+    <!-- Main stylesheet -->
+
     <link rel="stylesheet" href="/assets/css/style.css" />
 </head>
 
 <body>
+
+    <!-- Page header with navigation and language switch -->
+
     <header class="topbar">
+
+        <!-- Website logo linking to the homepage -->
+
         <a href="/index.html" class="brand">PETALSPEAK</a>
+
+        <!-- Navigation menu -->
+
         <nav class="nav" id="nav">
-            <a href="/" class="back-btn" data-i18n="back_home">Back</a>
+
+            <!-- Link back to the homepage -->
+
+            <a href="/" class="back-btn" data-i18n="back_home">
+                Back
+            </a>
+
+            <!-- Language switch and cart link -->
+
             <div class="lang-switch">
+
+                <!-- Language selection buttons -->
+
                 <button class="lang-btn active" data-lang="en">EN</button>
                 <button class="lang-btn" data-lang="et">ET</button>
-                <button class="lang-btn" data-lang="ru">RU</button>            
+                <button class="lang-btn" data-lang="ru">RU</button>
+
+                <!-- Shopping cart link with item counter -->
+
                 <a href="/cart.html" class="cart-link">
                     🛒 <span id="cartCount">0</span>
                 </a>
             </div>
         </nav>
+
+        <!-- Burger menu button for mobile devices -->
+
         <button class="burger" onclick="toggleMenu()">☰</button>
     </header>
 
+    <!-- Main test section -->
+
     <section class="test-wrapper">
         <div class="test-card">
-            <h2 id="test-title" data-i18n="test_title">Feelings Test</h2>
+
+            <!-- Test title -->
+
+            <h2 id="test-title" data-i18n="test_title">
+                Feelings Test
+            </h2>
+
+            <!-- Current question text -->
 
             <h3 id="question"></h3>
+
+            <!-- Answer options are rendered here dynamically -->
+
             <div id="answers"></div>
+
+            <!-- Navigation buttons for moving between questions -->
+
             <div class="nav-buttons">
+
+                <!-- Button for the previous question -->
+
                 <button id="prev-btn">←</button>
-                <button id="next-btn" data-i18n="next">Next</button>
+
+                <!-- Button for the next question -->
+
+                <button id="next-btn" data-i18n="next">
+                    Next
+                </button>
             </div>
         </div>
     </section>
 
+    <!-- Main JavaScript module containing test logic -->
+
     <script type="module" src="/assets/js/main.js"></script>
+
+    <!-- Script that saves the test result after completion -->
+
     <script type="module">
         import { saveTest } from "/assets/js/test-api.js";
 
-        // перехватываем показ результата
+        // Save a reference to the original result display function.
+
         const originalShowResult = window.showResult;
 
+        // Replace the original function with a wrapper.
+
         window.showResult = function () {
-            // сначала вызываем старую функцию
+
+            // First display the test result to the user.
+
             originalShowResult();
 
-            // потом сохраняем результат
+            // Then save the result to the database.
+            
             try {
                 const result = window.getResult();
                 saveTest({ result });

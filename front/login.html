@@ -1,40 +1,107 @@
 <!doctype html>
 <html lang="en">
 <head>
+
+    <!-- Character encoding used by the document -->
+
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Responsive viewport settings for mobile and tablet devices -->
+     
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <!-- Title displayed in the browser tab -->
+
     <title>PetalSpeak</title>
 
+    <!-- Main stylesheet containing all site styles -->
+
     <link rel="stylesheet" href="/assets/css/style.css" />
+
+    <!-- Preconnect to Google Fonts servers to improve font loading speed -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Custom font used for branding and headings -->
+
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
+
+    <!-- Website header with navigation and language selection -->
+
     <header class="topbar">
+
+        <!-- Website logo linking to the homepage -->
+
         <a href="/index.html" class="brand">PETALSPEAK</a>
+
+        <!-- Main navigation menu -->
+
         <nav class="nav" id="nav">
-            <a href="/index.html#about" data-i18n="back_home">На главную</a>
-            <a href="/test.html" data-i18n="test">Feelings Test</a>
+
+            <!-- Link back to the About section on the homepage -->
+
+            <a href="/index.html#about" data-i18n="back_home">
+                На главную
+            </a>
+
+            <!-- Link to the Feelings Test page -->
+
+            <a href="/test.html" data-i18n="test">
+                Feelings Test
+            </a>
+
+            <!-- Language switch and login link -->
+
             <div class="lang-switch">
+
+                <!-- Language selection buttons -->
+
                 <button class="lang-btn active" data-lang="en">EN</button>
                 <button class="lang-btn" data-lang="et">ET</button>
                 <button class="lang-btn" data-lang="ru">RU</button>
-                <a href="/login.html" class="login-icon" title="Login">
-                    <img src="/assets/img/user.png" alt="Login">
+
+                <!-- Login icon linking to the authorization page -->
+
+                <a
+                    href="/login.html"
+                    class="login-icon"
+                    title="Login"
+                >
+                    <img
+                        src="/assets/img/user.png"
+                        alt="Login"
+                    >
                 </a>
             </div>
         </nav>
+
+        <!-- Burger menu button for mobile devices -->
+
         <button class="burger" onclick="toggleMenu()">☰</button>
     </header>
 
+    <!-- Main authentication page content -->
+
     <main class="auth-page">
         <div class="auth-card">
+
+            <!-- Login form section (hidden by default) -->
+
             <section id="loginBlock" class="hidden">
-                <h1 class="auth-title" data-i18n="login_title">Login</h1>
+                <h1 class="auth-title" data-i18n="login_title">
+                    Login
+                </h1>
+
+                <!-- User login form -->
 
                 <form id="loginForm" class="auth-form">
+
+                    <!-- Email input -->
+
                     <input
                         id="loginEmail"
                         type="email"
@@ -43,6 +110,8 @@
                         placeholder="Email"
                         required
                     >
+
+                    <!-- Password input -->
 
                     <input
                         id="loginPassword"
@@ -53,19 +122,46 @@
                         required
                     >
 
-                    <button type="submit" class="auth-btn" data-i18n="login_btn">Login</button>
+                    <!-- Submit button -->
+
+                    <button
+                        type="submit"
+                        class="auth-btn"
+                        data-i18n="login_btn"
+                    >
+                        Login
+                    </button>
                 </form>
 
+                <!-- Link to switch to the registration form -->
+
                 <div class="auth-switch">
-                    <span data-i18n="no_account">No account?</span>
-                    <button type="button" id="showRegister" data-i18n="register_link">Register</button>
+                    <span data-i18n="no_account">
+                        No account?
+                    </span>
+                    <button
+                        type="button"
+                        id="showRegister"
+                        data-i18n="register_link"
+                    >
+                        Register
+                    </button>
                 </div>
             </section>
 
+            <!-- Registration form section -->
+
             <section id="registerBlock">
-                <h1 class="auth-title" data-i18n="register_title">Registration</h1>
+                <h1 class="auth-title" data-i18n="register_title">
+                    Registration
+                </h1>
+
+                <!-- User registration form -->
 
                 <form id="registerForm" class="auth-form">
+
+                    <!-- Name input -->
+
                     <input
                         id="registerName"
                         type="text"
@@ -74,6 +170,8 @@
                         placeholder="Your name"
                         required
                     >
+
+                    <!-- Email input -->
 
                     <input
                         id="registerEmail"
@@ -84,6 +182,8 @@
                         required
                     >
 
+                    <!-- Password input -->
+
                     <input
                         id="registerPassword"
                         type="password"
@@ -92,6 +192,8 @@
                         placeholder="Password"
                         required
                     >
+
+                    <!-- Password confirmation input -->
 
                     <input
                         id="registerConfirmPassword"
@@ -102,19 +204,41 @@
                         required
                     >
 
-                    <button type="submit" class="auth-btn" data-i18n="register_btn">Register</button>
+                    <!-- Submit button -->
+
+                    <button
+                        type="submit"
+                        class="auth-btn"
+                        data-i18n="register_btn"
+                    >
+                        Register
+                    </button>
                 </form>
 
+                <!-- Link to switch to the login form -->
+
                 <div class="auth-switch">
-                    <span data-i18n="have_account">Already have an account?</span>
-                    <button type="button" id="showLogin" data-i18n="login_link">Login</button>
+                    <span data-i18n="have_account">
+                        Already have an account?
+                    </span>
+                    <button
+                        type="button"
+                        id="showLogin"
+                        data-i18n="login_link"
+                    >
+                        Login
+                    </button>
                 </div>
             </section>
+
+            <!-- Element used to display success and error messages -->
 
             <div id="authMessage" class="auth-message"></div>
         </div>
     </main>
 
+    <!-- JavaScript file handling authentication logic -->
+     
     <script src="/assets/js/auth.js"></script>
 </body>
 </html>

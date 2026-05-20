@@ -1,17 +1,19 @@
-/**
- * Initsialiseerib päise autentimise oleku.
- * Kontrollib, kas kasutajal on salvestatud JWT token,
- * laadib kasutaja andmed serverist ja uuendab päise elemente.
- */
+// Initializes the authentication section in the website header.
+// Checks whether the user is logged in and displays either guest links or the authenticated user block.
+
 async function initHeaderAuth() {
-    // Võtab tokeni brauseri kohalikust salvestusest
+
+    // Gets the saved JWT token.
+
     const token = localStorage.getItem("token");
 
-    // Leiab külalise ja autentitud kasutaja plokid
+    // Gets header elements.
+
     const guestBlock = document.getElementById("guestBlock");
     const authBlock = document.getElementById("authBlock");
 
-    // Kui token puudub, kuvatakse külalise plokk ja peidetakse kasutaja plokk
+    // If there is no token, shows the guest section.
+
     if (!token) {
         if (guestBlock) guestBlock.style.display = "flex";
         if (authBlock) authBlock.style.display = "none";
@@ -19,55 +21,52 @@ async function initHeaderAuth() {
     }
 
     try {
-        // Saadab päringu serverile kasutaja andmete saamiseks
+
+        // Requests information about the current user.
+
         const res = await fetch("/api/auth/me", {
             headers: {
-                // Lisab tokeni Authorization päisesse
                 Authorization: `Bearer ${token}`
             }
         });
 
-        // Kui token on vigane või aegunud
+        // If the token is invalid, removes it and shows the guest section.
         if (!res.ok) {
-            // Eemaldab tokeni kohalikust salvestusest
             localStorage.removeItem("token");
 
-            // Kuvab külalise ploki ja peidab kasutaja ploki
             if (guestBlock) guestBlock.style.display = "flex";
             if (authBlock) authBlock.style.display = "none";
             return;
         }
 
-        // Loeb serveri vastusest kasutaja andmed
+        // Reads user data from the response.
+
         const user = await res.json();
 
-        // Peidab külalise ploki ja kuvab autentitud kasutaja ploki
+        // Shows the authenticated user section.
+
         if (guestBlock) guestBlock.style.display = "none";
         if (authBlock) authBlock.style.display = "flex";
 
-        // Leiab kasutaja nime ja avatari elemendid
+        // Gets elements for displaying the user's name and avatar.
+
         const nameEl = document.getElementById("headerUserName");
         const avatarEl = document.getElementById("headerAvatar");
 
-        // Kuvab kasutaja nime, e-posti või vaikimisi teksti "Profile"
+        // Displays the user's name, email, or a default label if no name is available.
         if (nameEl) {
             nameEl.textContent = user.name || user.email || "Profile";
         }
 
-        // Kui kasutajal on avatar, määratakse selle pildi URL
+        // Displays the user's avatar if one exists.
+
         if (avatarEl && user.avatar) {
             avatarEl.src = user.avatar;
         }
+
     } catch (error) {
-        // Kuvab veateate konsoolis, kui päringu käigus tekib viga
         console.error("Header auth error:", error);
     }
 }
 
-// Käivitab autentimise initsialiseerimise pärast HTML-dokumendi täielikku laadimist
 document.addEventListener("DOMContentLoaded", initHeaderAuth);
-
-// Функция initHeaderAuth() проверяет наличие токена авторизации в localStorage. 
-// Если токен существует, отправляется запрос на сервер для получения данных пользователя. 
-// После этого в шапке сайта отображается либо блок для гостей, либо информация об авторизованном пользователе (имя и аватар). 
-// Если токен недействителен, он удаляется, и показывается интерфейс для неавторизованного пользователя.

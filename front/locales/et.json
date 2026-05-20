@@ -454,5 +454,7 @@
     "your_cart" : "Teie korv",
     "next": "Edasi",
     "quantity_label": "Kogus:",
-    "role": "Roll"
+    "role": "Roll",
+    "privacy_consent": "Nõustun oma isikuandmete töötlemisega",
+    "privacy_required": "Palun kinnitage nõusolek isikuandmete töötlemiseks"
 }

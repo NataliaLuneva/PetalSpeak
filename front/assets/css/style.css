@@ -2645,5 +2645,50 @@ textarea:-webkit-autofill {
 
 }
 
+.toast-message {
+    position: fixed;
+    top: 90px;
+    right: 24px;
+    background: #9CBFA7;
+    color: #2f2f2f;
+    padding: 14px 22px;
+    border-radius: 10px;
+    font-size: 18px;
+    font-family: "Georgia", serif;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+
+    opacity: 0;
+    transform: translateX(30px);
+    transition: all 0.3s ease;
+}
+
+.toast-message.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.privacy-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 20px 0;
+    font-size: 15px;
+    line-height: 1.4;
+    color: #444;
+    cursor: pointer;
+}
+
+.privacy-checkbox input[type="checkbox"] {
+    width: 28px;
+    height: 28px;
+    accent-color: #9CBFA7;
+    cursor: pointer;
+}
+
+.privacy-checkbox span {
+    cursor: pointer;
+}
+
 
 /* Я добавила документацию по основным смысловым блокам CSS: общие стили, шрифты, шапка, навигация, hero-блок, кнопки, секции, коллекция, аккордеон, тест, заказ, профиль, авторизация, футер и адаптивность.*/

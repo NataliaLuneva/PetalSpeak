@@ -1,572 +1,954 @@
 <!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <head>
+        <!-- Character encoding used by the document -->
 
-    <title>PetalSpeak</title>
+        <meta charset="UTF-8" />
 
-    <link rel="stylesheet" href="/assets/css/style.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-</head>
+        <!-- Responsive settings for mobile and tablet devices -->
 
-<body>
-    <header class="topbar">
-    <a href="/index.html" class="brand">PETALSPEAK</a>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <nav class="nav" id="nav">
-        <a href="#about" data-i18n="about">About Us</a>
-        <a href="/test.html" data-i18n="test">Feelings Test</a>
+        <!-- Title displayed in the browser tab -->
 
-        <a href="/cart.html" class="cart-link">
-            🛒 <span id="cartCount">0</span>
-        </a>
+        <title>PetalSpeak</title>
 
-        <div class="lang-switch">
-    <button class="lang-btn active" data-lang="en">EN</button>
-    <button class="lang-btn" data-lang="et">ET</button>
-    <button class="lang-btn" data-lang="ru">RU</button>
+        <!-- Main stylesheet containing all page styles -->
 
-    <div id="guestBlock" class="header-auth">
-        <a href="/login.html" class="login-icon" title="Login">
-            <img src="/assets/img/user.png" alt="Login">
-        </a>
-    </div>
+        <link rel="stylesheet" href="/assets/css/style.css" />
 
-    <div id="authBlock" class="header-auth" style="display: none;">
-        <a href="/profile.html" class="header-profile-link" title="Profile">
-            <img id="headerAvatar" src="/assets/img/user.png" alt="Avatar">
-            <span id="headerUserName">Profile</span>
-        </a>
-    </div>
-    </div>
-    </nav>
+        <!-- Preconnect to Google Fonts servers to improve font loading speed -->
 
-    <button class="burger" onclick="toggleMenu()">☰</button>
-</header>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <main>
-        <!-- HERO -->
-        <section class="hero reveal">
-            <div class="hero-overlay"></div>
-            <div class="hero-card">
-                <div class="logo">
-                    <img src="/assets/img/logo.png" alt="PetalSpeak logo" class="logo-img">
-                </div>
-                <div class="tagline" data-i18n="tagline">
-                    BOUQUETS THAT SAY WHAT YOU FEEL
-                </div>
-                <a class="btn" href="/test.html" data-i18n="cta">
-                    Take The Feelings Test
+        <!-- Custom font used for headings and branding -->
+
+        <link
+            href="https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet"
+        >
+    </head>
+
+    <body>
+
+        <!-- Website header with navigation and user controls -->
+        
+        <header class="topbar">
+
+            <!-- Website logo linking to the homepage -->
+
+            <a href="/index.html" class="brand">PETALSPEAK</a>
+
+            <!-- Main navigation menu -->
+
+            <nav class="nav" id="nav">
+
+                <!-- Link to the About section -->
+
+                <a href="#about" data-i18n="about">About Us</a>
+
+                <!-- Link to the Feelings Test page -->
+
+                <a href="/test.html" data-i18n="test">Feelings Test</a>
+
+                <!-- Shopping cart link with item counter -->
+
+                <a href="/cart.html" class="cart-link">
+                    🛒 <span id="cartCount">0</span>
                 </a>
-                <p class="hint" data-i18n="hint">
-                    Not sure what to say?<br/>Flowers know.
-                </p>
-            </div>
-        </section>
 
-        <!-- INTRO -->
-        <section id = "about" class="section reveal">
-            <div class="panel intro-panel">
-                <h2 data-i18n="section_title">
-                    Where Feelings Find Their Flower
+                <!-- Language switch and authentication controls -->
+
+                <div class="lang-switch">
+
+                    <!-- Language selection buttons -->
+
+                    <button class="lang-btn active" data-lang="en">EN</button>
+                    <button class="lang-btn" data-lang="et">ET</button>
+                    <button class="lang-btn" data-lang="ru">RU</button>
+
+                    <!-- Login icon shown to unauthenticated users -->
+
+                    <div id="guestBlock" class="header-auth">
+                        <a href="/login.html" class="login-icon" title="Login">
+                            <img src="/assets/img/user.png" alt="Login">
+                        </a>
+                    </div>
+
+                    <!-- Profile link shown to authenticated users -->
+
+                    <div id="authBlock" class="header-auth" style="display: none;">
+                        <a href="/profile.html" class="header-profile-link" title="Profile">
+
+                            <!-- User avatar -->
+
+                            <img id="headerAvatar" src="/assets/img/user.png" alt="Avatar">
+
+                            <!-- User name displayed in the header -->
+
+                            <span id="headerUserName">Profile</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Burger button for opening the mobile menu -->
+
+            <button class="burger" onclick="toggleMenu()">☰</button>
+        </header>
+
+        <main>
+
+            <!-- Hero section displayed at the top of the homepage -->
+
+            <section class="hero reveal">
+
+                <!-- Decorative overlay placed above the background image -->
+
+                <div class="hero-overlay"></div>
+
+                <!-- Central content block of the hero section -->
+
+                <div class="hero-card">
+
+                    <!-- Website logo -->
+
+                    <div class="logo">
+                        <img
+                            src="/assets/img/logo.png"
+                            alt="PetalSpeak logo"
+                            class="logo-img"
+                        >
+                    </div>
+
+                    <!-- Main slogan of the website -->
+
+                    <div class="tagline" data-i18n="tagline">
+                        BOUQUETS THAT SAY WHAT YOU FEEL
+                    </div>
+
+                    <!-- Call-to-action button leading to the feelings test -->
+                    
+                    <a class="btn" href="/test.html" data-i18n="cta">
+                        Take The Feelings Test
+                    </a>
+
+                    <!-- Supporting text shown below the button -->
+
+                    <p class="hint" data-i18n="hint">
+                        Not sure what to say?<br/>Flowers know.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Introductory section describing the purpose of the project -->
+
+            <section id="about" class="section reveal">
+                <div class="panel intro-panel">
+
+                    <!-- Section heading -->
+
+                    <h2 data-i18n="section_title">
+                        Where Feelings Find Their Flower
+                    </h2>
+
+                    <!-- First paragraph explaining the concept of emotion-based bouquets -->
+
+                    <p data-i18n="section_text1"></p>
+
+                    <!-- Second paragraph describing bouquet design and symbolism -->
+
+                    <p data-i18n="section_text2"></p>
+                </div>
+            </section>
+
+            <!-- Section explaining how the Feelings Test works -->
+
+            <section class="section reveal">
+
+                <!-- Main heading of the section -->
+
+                <h2 class="center" data-i18n="test_title">
+                    Feelings Test
                 </h2>
-                <p data-i18n="section_text1"></p>
-                <p data-i18n="section_text2"></p>
-            </div>
-        </section>
 
-        <!-- HOW IT WORKS -->
-        <section class="section reveal">
-            <h2 class="center" data-i18n="test_title">
-                Feelings Test
-            </h2>
-            <div class="panel small how">
-                <h3 data-i18n="how">How It Works</h3>
-                <ul>
-                    <li data-i18n="li1"></li>
-                    <li data-i18n="li2"></li>
-                    <li data-i18n="li3"></li>
-                </ul>
-                <a class="btn center-btn" href="/test.html" data-i18n="cta"></a>
-            </div>
-        </section>
+                <!-- Informational panel with step-by-step instructions -->
 
-        <!-- COLLECTION -->
-        <section class="section reveal">
-            <h2 class="center" data-i18n="collection_title">
-                Bouquet Collection
-            </h2>
-            <div class="panel collection">
+                <div class="panel small how">
 
-                <!-- 1 LOVE -->
-                <div class="accordion">
-                    <button class="accordion-btn" data-i18n="love_romance">
-                        Love & Romance
-                    </button>
-                    <div class="accordion-content">
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b1.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b1_title"></h4>
-                                <p data-i18n="b1_text"></p>
-                            </div>
-                        </article>
+                    <!-- Subheading -->
 
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b2.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b2_title"></h4>
-                                <p data-i18n="b2_text"></p>
-                            </div>
-                        </article>
+                    <h3 data-i18n="how">How It Works</h3>
 
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b3.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b3_title"></h4>
-                                <p data-i18n="b3_text"></p>
-                            </div>
-                        </article>
+                    <!-- List of the main steps of the test -->
 
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b4.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b4_title"></h4>
-                                <p data-i18n="b4_text"></p>
-                            </div>
-                        </article>
+                    <ul>
+                        <li data-i18n="li1"></li>
+                        <li data-i18n="li2"></li>
+                        <li data-i18n="li3"></li>
+                    </ul>
 
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b5.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b5_title"></h4>
-                                <p data-i18n="b5_text"></p>
-                            </div>
-                        </article>
+                    <!-- Button linking to the test page -->
 
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b6.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b6_title"></h4>
-                                <p data-i18n="b6_text"></p>
-                            </div>
-                        </article>
+                    <a class="btn center-btn" href="/test.html" data-i18n="cta"></a>
+                </div>
+            </section>
 
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b7.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b7_title"></h4>
-                                <p data-i18n="b7_text"></p>
-                            </div>
-                        </article>
-                        <p class="collection-footer" data-i18n="love_text"></p>
+            <!-- Bouquet collection section -->
+
+            <section class="section reveal">
+
+                <!-- Main heading of the collection -->
+
+                <h2 class="center" data-i18n="collection_title">
+                    Bouquet Collection
+                </h2>
+
+                <!-- Container for all bouquet categories -->
+
+                <div class="panel collection">
+
+                    <!-- Accordion section for the Love & Romance category -->
+
+                    <div class="accordion">
+
+                        <!-- Button that opens and closes the category -->
+
+                        <button class="accordion-btn" data-i18n="love_romance">
+                            Love & Romance
+                        </button>
+
+                        <!-- Content displayed when the accordion is expanded -->
+
+                        <div class="accordion-content">
+
+                            <!-- Bouquet item 1 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b1.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b1_title"></h4>
+                                    <p data-i18n="b1_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Bouquet item 2 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b2.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b2_title"></h4>
+                                    <p data-i18n="b2_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Bouquet item 3 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b3.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b3_title"></h4>
+                                    <p data-i18n="b3_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Bouquet item 4 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b4.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b4_title"></h4>
+                                    <p data-i18n="b4_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Bouquet item 5 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b5.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b5_title"></h4>
+                                    <p data-i18n="b5_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Bouquet item 6 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b6.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b6_title"></h4>
+                                    <p data-i18n="b6_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Bouquet item 7 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b7.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b7_title"></h4>
+                                    <p data-i18n="b7_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Summary text for the category -->
+
+                            <p class="collection-footer" data-i18n="love_text"></p>
+                        </div>
+                    </div>
+
+                    <!-- Accordion section for the Friendship category -->
+
+                    <div class="accordion">
+
+                        <!-- Button that opens and closes the category -->
+
+                        <button class="accordion-btn" data-i18n="friendship">
+                            Friendship
+                        </button>
+
+                        <!-- Content displayed when the accordion is expanded -->
+
+                        <div class="accordion-content">
+
+                            <!-- Bouquet item 1 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b8.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b8_title"></h4>
+                                    <p data-i18n="b8_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Bouquet item 2 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b9.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b9_title"></h4>
+                                    <p data-i18n="b9_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Bouquet item 3 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b10.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b10_title"></h4>
+                                    <p data-i18n="b10_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Bouquet item 4 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b11.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b11_title"></h4>
+                                    <p data-i18n="b11_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Bouquet item 5 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b12.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b12_title"></h4>
+                                    <p data-i18n="b12_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Bouquet item 6 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b13.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b13_title"></h4>
+                                    <p data-i18n="b13_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Bouquet item 7 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b14.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b14_title"></h4>
+                                    <p data-i18n="b14_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Summary text for the category -->
+
+                            <p class="collection-footer" data-i18n="friendship_text"></p>
+                        </div>
+                    </div>
+
+                    <!-- Accordion section for the Gratitude category -->
+
+                    <div class="accordion">
+
+                        <!-- Button that opens and closes the category -->
+
+                        <button class="accordion-btn" data-i18n="gratitude">
+                            Gratitude
+                        </button>
+
+                        <!-- Content displayed when the accordion is expanded -->
+
+                        <div class="accordion-content">
+
+                            <!-- Bouquet item 1 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b15.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b15_title"></h4>
+                                    <p data-i18n="b15_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Bouquet item 2 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b16.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b16_title"></h4>
+                                    <p data-i18n="b16_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Bouquet item 3 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b17.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b17_title"></h4>
+                                    <p data-i18n="b17_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Bouquet item 4 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b18.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b18_title"></h4>
+                                    <p data-i18n="b18_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Bouquet item 5 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b19.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b19_title"></h4>
+                                    <p data-i18n="b19_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Bouquet item 6 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b20.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b20_title"></h4>
+                                    <p data-i18n="b20_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Bouquet item 7 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b21.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b21_title"></h4>
+                                    <p data-i18n="b21_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Summary text for the category -->
+
+                            <p class="collection-footer" data-i18n="gratitude_text"></p>
+                        </div>
+                    </div>
+
+                    <!-- Accordion section for the Apology category -->
+
+                    <div class="accordion">
+
+                        <!-- Button that opens and closes the category -->
+
+                        <button class="accordion-btn" data-i18n="apology">
+                            Apology
+                        </button>
+
+                        <!-- Content displayed when the accordion is expanded -->
+
+                        <div class="accordion-content">
+
+                            <!-- Bouquet item 1 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b22.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b22_title"></h4>
+                                    <p data-i18n="b22_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Bouquet item 2 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b23.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b23_title"></h4>
+                                    <p data-i18n="b23_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Bouquet item 3 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b24.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b24_title"></h4>
+                                    <p data-i18n="b24_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Bouquet item 4 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b25.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b25_title"></h4>
+                                    <p data-i18n="b25_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Bouquet item 5 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b26.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b26_title"></h4>
+                                    <p data-i18n="b26_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Bouquet item 6 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b27.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b27_title"></h4>
+                                    <p data-i18n="b27_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Bouquet item 7 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b28.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b28_title"></h4>
+                                    <p data-i18n="b28_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Summary text for the category -->
+
+                            <p class="collection-footer" data-i18n="apology_text"></p>
+                        </div>
+                    </div>
+
+                    <!-- Accordion section for the Sympathy category -->
+
+                    <div class="accordion">
+
+                        <!-- Button that opens and closes the category -->
+
+                        <button class="accordion-btn" data-i18n="sympathy">
+                            Sympathy
+                        </button>
+
+                        <!-- Content displayed when the accordion is expanded -->
+
+                        <div class="accordion-content">
+
+                            <!-- Bouquet item 1 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b29.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b29_title"></h4>
+                                    <p data-i18n="b29_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Bouquet item 2 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b30.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b30_title"></h4>
+                                    <p data-i18n="b30_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Bouquet item 3 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b31.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b31_title"></h4>
+                                    <p data-i18n="b31_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Bouquet item 4 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b32.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b32_title"></h4>
+                                    <p data-i18n="b32_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Bouquet item 5 -->
+                            
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b33.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b33_title"></h4>
+                                    <p data-i18n="b33_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Bouquet item 6 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b34.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b34_title"></h4>
+                                    <p data-i18n="b34_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Bouquet item 7 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b35.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b35_title"></h4>
+                                    <p data-i18n="b35_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Summary text for the category -->
+
+                            <p class="collection-footer" data-i18n="sympathy_text"></p>
+                        </div>
+                    </div>
+
+                    <!-- Accordion section for the Secret Love category -->
+
+                    <div class="accordion">
+
+                        <!-- Button that opens and closes the category -->
+
+                        <button class="accordion-btn" data-i18n="secret_love">
+                            Secret Love
+                        </button>
+
+                        <!-- Content displayed when the accordion is expanded -->
+
+                        <div class="accordion-content">
+
+                            <!-- Bouquet item 1 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b36.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b36_title"></h4>
+                                    <p data-i18n="b36_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Bouquet item 2 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b37.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b37_title"></h4>
+                                    <p data-i18n="b37_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Bouquet item 3 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b38.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b38_title"></h4>
+                                    <p data-i18n="b38_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Bouquet item 4 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b39.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b39_title"></h4>
+                                    <p data-i18n="b39_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Bouquet item 5 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b40.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b40_title"></h4>
+                                    <p data-i18n="b40_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Bouquet item 6 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b41.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b41_title"></h4>
+                                    <p data-i18n="b41_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Bouquet item 7 -->
+
+                            <article class="collection-item">
+                                <img class="collection-img" src="/assets/img/b42.jpg">
+                                <div class="collection-text">
+                                    <h4 data-i18n="b42_title"></h4>
+                                    <p data-i18n="b42_text"></p>
+                                </div>
+                            </article>
+
+                            <!-- Summary text for the category -->
+
+                            <p class="collection-footer" data-i18n="secret_love_text"></p>
+                        </div>
+                    </div>
+                    <p class="collection-footer" data-i18n="collection_footer"></p>
+                </div>
+            </section>
+
+            <!-- Assortment section displaying products available for purchase -->
+
+            <section class="section reveal">
+
+                <!-- Main heading of the assortment section -->
+
+                <h2 class="center" data-i18n="assortment_title">
+                    Assortment
+                </h2>
+
+                <!-- Content panel containing the description and product list -->
+
+                <div class="panel intro-panel">
+
+                    <!-- Short description of the bouquet assortment -->
+
+                    <p
+                        class="collection-footer"
+                        data-i18n="assortment_description"
+                    ></p>
+
+                    <!-- Button for adding a new product (visible only to administrators) -->
+
+                    <div style="margin-bottom:16px;">
+                        <button
+                            id="addProductBtn"
+                            class="btn"
+                            style="display:none;"
+                            data-i18n="add_product_btn"
+                        >
+                            Add product
+                        </button>
+                    </div>
+
+                    <!-- Container where products are rendered dynamically -->
+
+                    <div id="productsList" class="bucket_asortment"></div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Website footer containing contact information, shop locations, and partners -->
+
+        <footer class="footer">
+            <div class="footer-container">
+
+                <!-- Contact information section -->
+
+                <div class="footer-col">
+                    <h3 data-i18n="footer_contact">Contact us</h3>
+                    <p data-i18n="footer_phone1"></p>
+                    <p data-i18n="footer_phone2"></p>
+                    <p data-i18n="footer_email"></p>
+                </div>
+
+                <!-- Shop locations section -->
+
+                <div class="footer-col">
+                    <h3 data-i18n="footer_shops">Shops</h3>
+                    <p data-i18n="footer_shop1"></p>
+                    <p data-i18n="footer_shop2"></p>
+                    <p data-i18n="footer_shop3"></p>
+                    <p data-i18n="footer_shop4"></p>
+                </div>
+
+                <!-- Partner companies section -->
+
+                <div class="footer-col">
+                    <h3 data-i18n="footer_partners">Partners</h3>
+
+                    <!-- Partner logos -->
+
+                    <div class="partners">
+                        <img
+                            src="/assets/img/dummen.png"
+                            alt="Dümmen Orange"
+                        >
+                        <img
+                            src="/assets/img/royalflora.png"
+                            alt="Royal Flora Holland"
+                        >
                     </div>
                 </div>
-
-                <!-- 2 FRIENDSHIP -->
-                <div class="accordion">
-                    <button class="accordion-btn" data-i18n="friendship">
-                        Friendship
-                    </button>
-                    <div class="accordion-content">
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b8.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b8_title"></h4>
-                                <p data-i18n="b8_text"></p>
-                            </div>
-                        </article>
-
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b9.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b9_title"></h4>
-                                <p data-i18n="b9_text"></p>
-                            </div>
-                        </article>
-
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b10.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b10_title"></h4>
-                                <p data-i18n="b10_text"></p>
-                            </div>
-                        </article>
-
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b11.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b11_title"></h4>
-                                <p data-i18n="b11_text"></p>
-                            </div>
-                        </article>
-
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b12.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b12_title"></h4>
-                                <p data-i18n="b12_text"></p>
-                            </div>
-                        </article>
-
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b13.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b13_title"></h4>
-                                <p data-i18n="b13_text"></p>
-                            </div>
-                        </article>
-
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b14.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b14_title"></h4>
-                                <p data-i18n="b14_text"></p>
-                            </div>
-                        </article>
-                        <p class="collection-footer" data-i18n="friendship_text"></p>
-                    </div>
-                </div>
-
-                <!-- 3 GRATITUDE -->
-                <div class="accordion">
-                    <button class="accordion-btn" data-i18n="gratitude">
-                        Gratitude
-                    </button>
-                    <div class="accordion-content">
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b15.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b15_title"></h4>
-                                <p data-i18n="b15_text"></p>
-                            </div>
-                        </article>
-
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b16.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b16_title"></h4>
-                                <p data-i18n="b16_text"></p>
-                            </div>
-                        </article>
-
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b17.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b17_title"></h4>
-                                <p data-i18n="b17_text"></p>
-                            </div>
-                        </article>
-
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b18.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b18_title"></h4>
-                                <p data-i18n="b18_text"></p>
-                            </div>
-                        </article>
-
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b19.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b19_title"></h4>
-                                <p data-i18n="b19_text"></p>
-                            </div>
-                        </article>
-
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b20.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b20_title"></h4>
-                                <p data-i18n="b20_text"></p>
-                            </div>
-                        </article>
-
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b21.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b21_title"></h4>
-                                <p data-i18n="b21_text"></p>
-                            </div>
-                        </article>
-                        <p class="collection-footer" data-i18n="gratitude_text"></p>
-                    </div>
-                </div>
-
-                <!-- 4 APOLOGY -->
-                <div class="accordion">
-                    <button class="accordion-btn" data-i18n="apology">
-                        Apology
-                    </button>
-                    <div class="accordion-content">
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b22.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b22_title"></h4>
-                                <p data-i18n="b22_text"></p>
-                            </div>
-                        </article>
-
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b23.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b23_title"></h4>
-                                <p data-i18n="b23_text"></p>
-                            </div>
-                        </article>
-
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b24.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b24_title"></h4>
-                                <p data-i18n="b24_text"></p>
-                            </div>
-                        </article>
-
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b25.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b25_title"></h4>
-                                <p data-i18n="b25_text"></p>
-                            </div>
-                        </article>
-
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b26.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b26_title"></h4>
-                                <p data-i18n="b26_text"></p>
-                            </div>
-                        </article>
-
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b27.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b27_title"></h4>
-                                <p data-i18n="b27_text"></p>
-                            </div>
-                        </article>
-
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b28.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b28_title"></h4>
-                                <p data-i18n="b28_text"></p>
-                            </div>
-                        </article>
-                        <p class="collection-footer" data-i18n="apology_text"></p>
-                    </div>
-                </div>
-
-                <!-- 5 SYMPATHY -->
-                <div class="accordion">
-                    <button class="accordion-btn" data-i18n="sympathy">
-                        Sympathy
-                    </button>
-                    <div class="accordion-content">
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b29.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b29_title"></h4>
-                                <p data-i18n="b29_text"></p>
-                            </div>
-                        </article>
-
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b30.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b30_title"></h4>
-                                <p data-i18n="b30_text"></p>
-                            </div>
-                        </article>
-
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b31.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b31_title"></h4>
-                                <p data-i18n="b31_text"></p>
-                            </div>
-                        </article>
-
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b32.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b32_title"></h4>
-                                <p data-i18n="b32_text"></p>
-                            </div>
-                        </article>
-
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b33.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b33_title"></h4>
-                                <p data-i18n="b33_text"></p>
-                            </div>
-                        </article>
-
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b34.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b34_title"></h4>
-                                <p data-i18n="b34_text"></p>
-                            </div>
-                        </article>
-
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b35.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b35_title"></h4>
-                                <p data-i18n="b35_text"></p>
-                            </div>
-                        </article>
-                        <p class="collection-footer" data-i18n="sympathy_text"></p>
-                    </div>
-                </div>
-
-                <!-- 6 SECRET LOVE -->
-                <div class="accordion">
-                    <button class="accordion-btn" data-i18n="secret_love">
-                        Secret Love
-                    </button>
-                    <div class="accordion-content">
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b36.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b36_title"></h4>
-                                <p data-i18n="b36_text"></p>
-                            </div>
-                        </article>
-
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b37.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b37_title"></h4>
-                                <p data-i18n="b37_text"></p>
-                            </div>
-                        </article>
-
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b38.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b38_title"></h4>
-                                <p data-i18n="b38_text"></p>
-                            </div>
-                        </article>
-
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b39.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b39_title"></h4>
-                                <p data-i18n="b39_text"></p>
-                            </div>
-                        </article>
-
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b40.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b40_title"></h4>
-                                <p data-i18n="b40_text"></p>
-                            </div>
-                        </article>
-
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b41.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b41_title"></h4>
-                                <p data-i18n="b41_text"></p>
-                            </div>
-                        </article>
-
-                        <article class="collection-item">
-                            <img class="collection-img" src="/assets/img/b42.jpg">
-                            <div class="collection-text">
-                                <h4 data-i18n="b42_title"></h4>
-                                <p data-i18n="b42_text"></p>
-                            </div>
-                        </article>
-                        <p class="collection-footer" data-i18n="secret_love_text"></p>
-                    </div>
-                </div>
-
-                <p class="collection-footer" data-i18n="collection_footer"></p>
-            </div>
-        </section>
-
-        <section class="section reveal">
-            <h2 class="center" data-i18n="assortment_title">
-                Assortment
-            </h2>
-            <div class="panel intro-panel">
-                <p class="collection-footer" data-i18n="assortment_description"></p>
-                <div style="margin-bottom:16px;">
-                    <button id="addProductBtn" class="btn" style="display:none; " data-i18n="add_product_btn">
-                        Add product
-                    </button>
-                </div>
-                <div id="productsList" class="bucket_asortment"></div>
-            </div>
-        </section>
-    </main>
-
-    <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-col">
-                <h3 data-i18n="footer_contact">Contact us</h3>
-                <p data-i18n="footer_phone1"></p>
-                <p data-i18n="footer_phone2"></p>
-                <p data-i18n="footer_email"></p>
             </div>
 
-            <div class="footer-col">
-                <h3 data-i18n="footer_shops">Shops</h3>
-                <p data-i18n="footer_shop1"></p>
-                <p data-i18n="footer_shop2"></p>
-                <p data-i18n="footer_shop3"></p>
-                <p data-i18n="footer_shop4"></p>
-            </div>
+            <!-- Social media links displayed at the bottom of the footer -->
 
-            <div class="footer-col">
-                <h3 data-i18n="footer_partners">Partners</h3>
-                <div class="partners">
-                    <img src="/assets/img/dummen.png" alt="Dümmen Orange">
-                    <img src="/assets/img/royalflora.png" alt="Royal Flora Holland">
+            <div class="footer-social">
+
+                <!-- Link to X (formerly Twitter) -->
+
+                <a href="#">✕</a>
+
+                <!-- Link to Instagram -->
+
+                <a href="#">◎</a>
+
+                <!-- Link to Facebook -->
+
+                <a href="#">f</a>
+
+                <!-- Link to Pinterest -->
+
+                <a href="#">◉</a>
+
+                <!-- Link to WhatsApp or phone contact -->
+
+                <a href="#">✆</a>
+
+                <!-- Link to YouTube -->
+
+                <a href="#">▶</a>
+            </div>
+        </footer>
+
+        <!-- Main JavaScript file containing shared site functionality -->
+
+        <script src="/assets/js/main.js"></script>
+
+        <!-- Script responsible for displaying login or profile information in the header -->
+
+        <script src="/assets/js/header-auth.js"></script>
+
+        <!-- Modal window used for creating and editing products -->
+
+        <div id="productModal" class="modal-overlay" style="display:none;">
+            <div class="modal-card">
+
+                <!-- Modal title -->
+
+                <h3 id="productModalTitle" class="modal-title">Product</h3>
+
+                <!-- Form fields for product information -->
+
+                <div class="order-form">
+
+                    <!-- Translation key for the product title -->
+
+                    <input
+                        id="productTitleKey"
+                        class="order-input"
+                        placeholder="title key"
+                    />
+
+                    <!-- Translation key for the product description -->
+
+                    <input
+                        id="productTextKey"
+                        class="order-input"
+                        placeholder="text key"
+                    />
+
+                    <!-- File input for uploading the product image -->
+
+                    <input
+                        id="productImage"
+                        class="order-input"
+                        type="file"
+                        accept="image/*"
+                    />
+
+                    <!-- Input for product price -->
+
+                    <input
+                        id="productPrice"
+                        class="order-input"
+                        type="number"
+                        placeholder="price"
+                    />
+
+                    <!-- Input for product category -->
+
+                    <input
+                        id="productCategory"
+                        class="order-input"
+                        placeholder="category"
+                    />
+                </div>
+
+                <!-- Action buttons -->
+
+                <div class="modal-actions">
+                    <!-- Saves the new or edited product -->
+
+                    <button id="saveProductBtn" class="btn">Save</button>
+
+                    <!-- Closes the modal without saving -->
+                    
+                    <button
+                        id="cancelProductBtn"
+                        class="btn secondary"
+                        type="button"
+                    >
+                        Cancel
+                    </button>
                 </div>
             </div>
         </div>
-
-        <div class="footer-social">
-            <a href="#">✕</a>
-            <a href="#">◎</a>
-            <a href="#">f</a>
-            <a href="#">◉</a>
-            <a href="#">✆</a>
-            <a href="#">▶</a>
-        </div>
-    </footer>
-
-    <script src="/assets/js/main.js"></script>
-    <script src="/assets/js/header-auth.js"></script>
-
-    <div id="productModal" class="modal-overlay" style="display:none;">
-        <div class="modal-card">
-            <h3 id="productModalTitle" class="modal-title">Product</h3>
-
-            <div class="order-form">
-                <input id="productTitleKey" class="order-input" placeholder="title key" />
-                <input id="productTextKey" class="order-input" placeholder="text key" />
-                <input id="productImage" class="order-input" type="file" accept="image/*" />
-                <input id="productPrice" class="order-input" type="number" placeholder="price" />
-                <input id="productCategory" class="order-input" placeholder="category" />
-            </div>
-
-            <div class="modal-actions">
-                <button id="saveProductBtn" class="btn">Save</button>
-                <button id="cancelProductBtn" class="btn secondary" type="button">Cancel</button>
-            </div>
-        </div>
-    </div>
-</body>
+    </body>
 </html>

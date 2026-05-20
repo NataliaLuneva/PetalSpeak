@@ -454,5 +454,7 @@
     "your_cart" : "Your cart",
     "next": "Next",
     "quantity_label": "Qty:",
-    "role": "Roll"
+    "role": "Roll",
+    "privacy_consent": "I agree to the processing of my personal data",
+    "privacy_required": "Please confirm your consent to the processing of personal data"
 }

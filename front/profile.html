@@ -12,148 +12,400 @@
 </head>
 
 <body>
+    <!-- Website header with navigation, cart, language switch, and profile link -->
+
     <header class="topbar">
+
+        <!-- Website logo linking to the homepage -->
+
         <a href="/index.html" class="brand">PETALSPEAK</a>
 
+        <!-- Main navigation menu -->
+
         <nav class="nav" id="nav">
-            <a href="/index.html#about" data-i18n="about">About Us</a>
-            <a href="/test.html" data-i18n="test">Feelings Test</a>
+
+            <!-- Link to the About section on the homepage -->
+
+            <a href="/index.html#about" data-i18n="about">
+                About Us
+            </a>
+
+            <!-- Link to the Feelings Test page -->
+
+            <a href="/test.html" data-i18n="test">
+                Feelings Test
+            </a>
+
+            <!-- Shopping cart link with item counter -->
+
             <a href="/cart.html" class="cart-link">
                 🛒 <span id="cartCount">0</span>
             </a>
+
+            <!-- Language switch and user profile section -->
+
             <div class="lang-switch">
+
+                <!-- Language selection buttons -->
+
                 <button class="lang-btn active" data-lang="en">EN</button>
                 <button class="lang-btn" data-lang="et">ET</button>
                 <button class="lang-btn" data-lang="ru">RU</button>
 
+                <!-- Authenticated user profile link -->
+
                 <div class="header-auth">
                     <a href="/profile.html" class="header-profile-link">
-                        <img id="headerAvatar" src="/assets/img/user.png" alt="Avatar">
-                        <span id="headerUserName">Profile</span>
+
+                        <!-- User avatar -->
+
+                        <img
+                            id="headerAvatar"
+                            src="/assets/img/user.png"
+                            alt="Avatar"
+                        >
+
+                        <!-- User name shown in the header -->
+
+                        <span id="headerUserName">
+                            Profile
+                        </span>
                     </a>
                 </div>
             </div>
         </nav>
+
+        <!-- Burger menu button for mobile devices -->
+
         <button class="burger" onclick="toggleMenu()">☰</button>
     </header>
 
+    <!-- Main profile page content -->
+
     <main class="profile-page">
-        <h1 class="profile-title" data-i18n="profile_title">My Profile</h1>
+
+        <!-- Page title -->
+
+        <h1 class="profile-title" data-i18n="profile_title">
+            My Profile
+        </h1>
 
         <div class="profile-grid">
+
+            <!-- Sidebar with avatar and account information -->
+
             <aside class="profile-card">
                 <div class="avatar-box">
-                    <img id="avatarPreview" class="avatar" src="/assets/img/user.png" alt="Avatar">
+
+                    <!-- User avatar preview -->
+
+                    <img
+                        id="avatarPreview"
+                        class="avatar"
+                        src="/assets/img/user.png"
+                        alt="Avatar"
+                    >
+
+                    <!-- User name -->
+                     
                     <h2 id="profileName">User</h2>
-                    <p id="profileEmail" class="muted">email@example.com</p>
-                    <p id="profileRole" class="muted" data-i18n="role" >Role: user</p>
+
+                    <!-- User email -->
+
+                    <p id="profileEmail" class="muted">
+                        email@example.com
+                    </p>
+
+                    <!-- User role -->
+
+                    <p
+                        id="profileRole"
+                        class="muted"
+                        data-i18n="role"
+                    >
+                        Role: user
+                    </p>
+
+                    <!-- Button for selecting a new profile photo -->
 
                     <label class="upload-label" for="avatarInput">
-                        <span data-i18n="upload_photo">Upload photo</span>
+                        <span data-i18n="upload_photo">
+                            Upload photo
+                        </span>
                     </label>
-                    <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+
+                    <!-- Hidden file input for avatar upload -->
+
+                    <input
+                        type="file"
+                        id="avatarInput"
+                        accept="image/*"
+                        style="display: none;"
+                    >
+
+                    <!-- Message area for avatar upload results -->
 
                     <div id="avatarMessage" class="message"></div>
 
+                    <!-- Logout button -->
+
                     <div style="margin-top:16px;">
-                        <button id="logoutBtn" class="profile-btn secondary" type="button" data-i18n="logout_btn">Log out</button>
+                        <button
+                            id="logoutBtn"
+                            class="profile-btn secondary"
+                            type="button"
+                            data-i18n="logout_btn"
+                        >
+                            Log out
+                        </button>
                     </div>
                 </div>
             </aside>
 
+            <!-- Main profile settings section -->
+
             <section style="display:grid; gap:24px;">
                 <div class="profile-card">
-                    <h2 class="section-title" data-i18n="profile_settings">Profile settings</h2>
+
+                    <!-- Section title -->
+
+                    <h2
+                        class="section-title"
+                        data-i18n="profile_settings"
+                    >
+                        Profile settings
+                    </h2>
+
+                    <!-- Form for updating user name and email -->
 
                     <form id="profileForm">
                         <div class="form-grid">
-                            <input id="profileNameInput" class="profile-input" type="text" data-i18n-placeholder="name_placeholder" placeholder="Your name">
-                            <input id="profileEmailInput" class="profile-input" type="email" data-i18n-placeholder="email_placeholder" placeholder="Email">
+
+                            <!-- Name input -->
+
+                            <input
+                                id="profileNameInput"
+                                class="profile-input"
+                                type="text"
+                                data-i18n-placeholder="name_placeholder"
+                                placeholder="Your name"
+                            >
+
+                            <!-- Email input -->
+
+                            <input
+                                id="profileEmailInput"
+                                class="profile-input"
+                                type="email"
+                                data-i18n-placeholder="email_placeholder"
+                                placeholder="Email"
+                            >
                         </div>
 
+                        <!-- Save profile button -->
+
                         <div style="margin-top:14px;">
-                            <button class="profile-btn" type="submit" data-i18n="save_profile_btn">Save profile</button>
+                            <button
+                                class="profile-btn"
+                                type="submit"
+                                data-i18n="save_profile_btn"
+                            >
+                                Save profile
+                            </button>
                         </div>
+
+                        <!-- Message area for profile update results -->
 
                         <div id="profileMessage" class="message"></div>
                     </form>
                 </div>
 
-                <div class="profile-card">
-                    <h2 class="section-title" data-i18n="change_password_title">Change password</h2>
+                <!-- Card for changing the user's password -->
 
-                    <form id="passwordForm">
-                        <div class="form-grid full">
-                            <input id="currentPassword" class="profile-input" type="password" data-i18n-placeholder="current_password_placeholder" placeholder="Current password">
-                            <input id="newPassword" class="profile-input" type="password" data-i18n-placeholder="new_password_placeholder" placeholder="New password">
-                            <input id="confirmPassword" class="profile-input" type="password" data-i18n-placeholder="confirm_password_placeholder" placeholder="Repeat new password">
-                        </div>
+            <div class="profile-card">
 
-                        <div style="margin-top:14px;">
-                            <button class="profile-btn" type="submit" data-i18n="update_password_btn">Update password</button>
-                        </div>
+                <!-- Section title -->
 
-                        <div id="passwordMessage" class="message"></div>
-                    </form>
-                </div>
+                <h2 class="section-title" data-i18n="change_password_title">
+                    Change password
+                </h2>
 
-                <div class="profile-card">
-                    <h2 class="section-title" data-i18n="my_orders_title">My orders</h2>
-                    <div id="ordersList" class="list">
-                        <p class="empty" data-i18n="loading_orders">Loading orders...</p>
-                    </div>
-                </div>
+                <!-- Password update form -->
 
-                <div class="profile-card">
-                    <h2 class="section-title" data-i18n="test_history_title">Test history</h2>
-                    <div id="testsList" class="list">
-                        <p class="empty" data-i18n="loading_tests">Loading tests...</p>
-                    </div>
-                </div>
+                <form id="passwordForm">
+                    <div class="form-grid full">
 
-                <div id="adminDateFilterCard" class="profile-card" style="display:none;">
-                    <h2 class="section-title" data-i18n="filter_period_title">Filter period</h2>
+                        <!-- Current password input -->
 
-                    <div class="date-filter">
-                        <label>
-                            <span data-i18n="admin_from">From:</span>
-                            <input type="date" id="dateFrom">
-                        </label>
-
-                        <label>
-                            <span data-i18n="admin_to">To:</span>
-                            <input type="date" id="dateTo">
-                        </label>
-
-                        <button
-                            id="applyDateFilter"
-                            class="profile-btn"
-                            type="button"
-                            data-i18n="admin_show"
+                        <input
+                            id="currentPassword"
+                            class="profile-input"
+                            type="password"
+                            data-i18n-placeholder="current_password_placeholder"
+                            placeholder="Current password"
                         >
-                            Show
+
+                        <!-- New password input -->
+
+                        <input
+                            id="newPassword"
+                            class="profile-input"
+                            type="password"
+                            data-i18n-placeholder="new_password_placeholder"
+                            placeholder="New password"
+                        >
+
+                        <!-- New password confirmation input -->
+
+                        <input
+                            id="confirmPassword"
+                            class="profile-input"
+                            type="password"
+                            data-i18n-placeholder="confirm_password_placeholder"
+                            placeholder="Repeat new password"
+                        >
+                    </div>
+
+                    <!-- Submit button -->
+
+                    <div style="margin-top:14px;">
+                        <button
+                            class="profile-btn"
+                            type="submit"
+                            data-i18n="update_password_btn"
+                        >
+                            Update password
                         </button>
                     </div>
-                </div>
 
-                <div id="adminStatsCard" class="profile-card" style="display:none;">
-                    <h2 class="section-title" data-i18n="statistics_title">Statistics</h2>
-                    <div id="adminStatsList" class="list"></div>
-                </div>
+                    <!-- Message area for password update results -->
 
-                <div id="adminOrdersCard" class="profile-card" style="display:none;">
-                    <h2 class="section-title" data-i18n="all_orders_title">All orders</h2>
-                    <div id="adminOrdersList" class="list"></div>
-                </div>
+                    <div id="passwordMessage" class="message"></div>
+                </form>
+            </div>
 
-                <div id="adminUsersCard" class="profile-card" style="display:none;">
-                    <h2 class="section-title" data-i18n="users_title">Users</h2>
-                    <div id="adminUsersList" class="list"></div>
+            <!-- Card displaying the user's order history -->
+
+            <div class="profile-card">
+                <h2 class="section-title" data-i18n="my_orders_title">
+                    My orders
+                </h2>
+
+                <!-- Container where user orders are rendered -->
+
+                <div id="ordersList" class="list">
+                    <p class="empty" data-i18n="loading_orders">
+                        Loading orders...
+                    </p>
                 </div>
+            </div>
+
+            <!-- Card displaying the user's saved test results -->
+
+            <div class="profile-card">
+                <h2 class="section-title" data-i18n="test_history_title">
+                    Test history
+                </h2>
+
+                <!-- Container where test results are rendered -->
+
+                <div id="testsList" class="list">
+                    <p class="empty" data-i18n="loading_tests">
+                        Loading tests...
+                    </p>
+                </div>
+            </div>
+
+            <!-- Admin-only card for selecting a date range -->
+             
+            <div
+                id="adminDateFilterCard"
+                class="profile-card"
+                style="display:none;"
+            >
+                <h2 class="section-title" data-i18n="filter_period_title">
+                    Filter period
+                </h2>
+
+                <!-- Date filter controls -->
+
+                <div class="date-filter">
+                    <label>
+                        <span data-i18n="admin_from">From:</span>
+                        <input type="date" id="dateFrom">
+                    </label>
+
+                    <label>
+                        <span data-i18n="admin_to">To:</span>
+                        <input type="date" id="dateTo">
+                    </label>
+
+                    <!-- Button to apply the selected date range -->
+
+                    <button
+                        id="applyDateFilter"
+                        class="profile-btn"
+                        type="button"
+                        data-i18n="admin_show"
+                    >
+                        Show
+                    </button>
+                </div>
+            </div>
+
+            <!-- Admin-only card displaying sales statistics -->
+
+            <div
+                id="adminStatsCard"
+                class="profile-card"
+                style="display:none;"
+            >
+                <h2 class="section-title" data-i18n="statistics_title">
+                    Statistics
+                </h2>
+
+                <!-- Container where statistics are rendered -->
+
+                <div id="adminStatsList" class="list"></div>
+            </div>
+
+            <!-- Admin-only card displaying all customer orders -->
+
+            <div
+                id="adminOrdersCard"
+                class="profile-card"
+                style="display:none;"
+            >
+                <h2 class="section-title" data-i18n="all_orders_title">
+                    All orders
+                </h2>
+
+                <!-- Container where all orders are rendered -->
+
+                <div id="adminOrdersList" class="list"></div>
+            </div>
+
+            <!-- Admin-only card displaying all registered users -->
+
+            <div
+                id="adminUsersCard"
+                class="profile-card"
+                style="display:none;"
+            >
+                <h2 class="section-title" data-i18n="users_title">
+                    Users
+                </h2>
+
+                <!-- Container where users are rendered -->
+
+                <div id="adminUsersList" class="list"></div>
+            </div>
             </section>
-        </div>
-    </main>
+            </div>
+            </main>
 
-    <script src="/assets/js/profile.js"></script>
-</body>
+            <!-- JavaScript file handling profile and admin functionality -->
+             
+        <script src="/assets/js/profile.js"></script>
+    </body>
 </html>

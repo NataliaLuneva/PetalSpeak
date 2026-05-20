@@ -1,115 +1,154 @@
 <!doctype html>
 <html lang="en">
 <head>
+
+    <!-- Character encoding and page title -->
+
     <meta charset="UTF-8">
     <title>Admin | PetalSpeak</title>
 </head>
-<body>
-    <h1>Admin Panel</h1>
+    <body>
 
-    <div class="date-filter">
-        <label for="dateFrom">От:</label>
-        <input type="date" id="dateFrom">
+        <!-- Main heading of the administration page -->
 
-        <label for="dateTo">До:</label>
-        <input type="date" id="dateTo">
+        <h1>Admin Panel</h1>
 
-        <button id="applyDateFilter" type="button">Показать</button>
-    </div>
+        <!-- Date filter used to limit displayed orders -->
 
-    <h2>Users</h2>
-    <div id="users"></div>
+        <div class="date-filter">
+            <label for="dateFrom">От:</label>
+            <input type="date" id="dateFrom">
 
-    <h2>Orders</h2>
-    <div id="orders"></div>
+            <label for="dateTo">До:</label>
+            <input type="date" id="dateTo">
 
-    <h2>Tests</h2>
-    <div id="tests"></div>
+            <!-- Button for applying the selected date range -->
 
-    <script type="module">
-        import {
-            getCurrentUser,
-            getAdminUsers,
-            getAdminOrders,
-            getAdminTests,
-            updateOrderStatus
-        } from "/assets/js/api.js";
+            <button id="applyDateFilter" type="button">Показать</button>
+        </div>
 
-        const user = getCurrentUser();
+        <!-- Section displaying all registered users -->
 
-        if (!user || user.role !== "admin") {
-            document.body.innerHTML = "<h2>Access denied</h2>";
-            throw new Error("Access denied");
-        }
+        <h2>Users</h2>
+        <div id="users"></div>
 
-        function formatDate(date) {
-            if (!date) return "";
-            return new Date(date).toLocaleString("ru-RU");
-        }
+        <!-- Section displaying all customer orders -->
 
-        async function loadUsers() {
-            const users = await getAdminUsers();
+        <h2>Orders</h2>
+        <div id="orders"></div>
 
-            document.getElementById("users").innerHTML = users.map(user => `
-                <div style="margin-bottom: 10px; border-bottom: 1px solid #ccc; padding-bottom: 8px;">
-                    <div><strong>${user.name || "Без имени"}</strong></div>
-                    <div>${user.email || ""}</div>
-                    <div>Role: ${user.role || "user"}</div>
-                </div>
-            `).join("");
-        }
+        <!-- Section displaying saved test results -->
 
-        async function loadOrders() {
-            const from = document.getElementById("dateFrom").value;
-            const to = document.getElementById("dateTo").value;
+        <h2>Tests</h2>
+        <div id="tests"></div>
 
-            const orders = await getAdminOrders(from, to);
+        <script type="module">
 
-            document.getElementById("orders").innerHTML = orders.map(order => `
-                <div style="margin-bottom: 16px; border-bottom: 1px solid #ccc; padding-bottom: 8px;">
-                    <div><strong>${order.customer_name || ""}</strong> (${order.email || ""})</div>
-                    <div>Bouquet: ${order.bouquet_title || ""}</div>
-                    <div>Price: €${order.price || 0}</div>
-                    <div>Status: ${order.status || "new"}</div>
-                    <div>Date: ${formatDate(order.created_at)}</div>
+            // Import API functions for administrative operations.
 
-                    <button onclick="window.changeStatus(${order.id}, 'processing')">
-                        processing
-                    </button>
+            import {
+                getCurrentUser,
+                getAdminUsers,
+                getAdminOrders,
+                getAdminTests,
+                updateOrderStatus
+            } from "/assets/js/api.js";
 
-                    <button onclick="window.changeStatus(${order.id}, 'done')">
-                        done
-                    </button>
-                </div>
-            `).join("");
-        }
+            // Retrieve the currently authenticated user.
 
-        async function loadTests() {
-            const tests = await getAdminTests();
+            const user = getCurrentUser();
 
-            document.getElementById("tests").innerHTML = tests.map(test => `
-                <div style="margin-bottom: 16px; border-bottom: 1px solid #ccc; padding-bottom: 8px;">
-                    <div>User: ${test.email || "guest"}</div>
-                    <div>Result: ${test.result || ""}</div>
-                    <div>Bouquet: ${test.bouquet_title || ""}</div>
-                    <div>Price: €${test.price || 0}</div>
-                    <div>Date: ${formatDate(test.created_at)}</div>
-                </div>
-            `).join("");
-        }
+            // Restrict access to users with the administrator role.
 
-        window.changeStatus = async (id, status) => {
-            await updateOrderStatus(id, status);
-            await loadOrders();
-        };
+            if (!user || user.role !== "admin") {
+                document.body.innerHTML = "<h2>Access denied</h2>";
+                throw new Error("Access denied");
+            }
 
-        document.getElementById("applyDateFilter").onclick = () => {
+            // Formats a date into a readable string.
+            
+            function formatDate(date) {
+                if (!date) return "";
+                return new Date(date).toLocaleString("ru-RU");
+            }
+
+            // Loads and displays all users.
+
+            async function loadUsers() {
+                const users = await getAdminUsers();
+
+                document.getElementById("users").innerHTML = users.map(user => `
+                    <div style="margin-bottom: 10px; border-bottom: 1px solid #ccc; padding-bottom: 8px;">
+                        <div><strong>${user.name || "Без имени"}</strong></div>
+                        <div>${user.email || ""}</div>
+                        <div>Role: ${user.role || "user"}</div>
+                    </div>
+                `).join("");
+            }
+
+            // Loads and displays orders with optional date filtering.
+
+            async function loadOrders() {
+                const from = document.getElementById("dateFrom").value;
+                const to = document.getElementById("dateTo").value;
+
+                const orders = await getAdminOrders(from, to);
+
+                document.getElementById("orders").innerHTML = orders.map(order => `
+                    <div style="margin-bottom: 16px; border-bottom: 1px solid #ccc; padding-bottom: 8px;">
+                        <div><strong>${order.customer_name || ""}</strong> (${order.email || ""})</div>
+                        <div>Bouquet: ${order.bouquet_title || ""}</div>
+                        <div>Price: €${order.price || 0}</div>
+                        <div>Status: ${order.status || "new"}</div>
+                        <div>Date: ${formatDate(order.created_at)}</div>
+
+                        <!-- Buttons for changing order status -->
+                        <button onclick="window.changeStatus(${order.id}, 'processing')">
+                            processing
+                        </button>
+
+                        <button onclick="window.changeStatus(${order.id}, 'done')">
+                            done
+                        </button>
+                    </div>
+                `).join("");
+            }
+
+            // Loads and displays all saved test results.
+
+            async function loadTests() {
+                const tests = await getAdminTests();
+
+                document.getElementById("tests").innerHTML = tests.map(test => `
+                    <div style="margin-bottom: 16px; border-bottom: 1px solid #ccc; padding-bottom: 8px;">
+                        <div>User: ${test.email || "guest"}</div>
+                        <div>Result: ${test.result || ""}</div>
+                        <div>Bouquet: ${test.bouquet_title || ""}</div>
+                        <div>Price: €${test.price || 0}</div>
+                        <div>Date: ${formatDate(test.created_at)}</div>
+                    </div>
+                `).join("");
+            }
+
+            // Updates the status of an order and reloads the order list.
+
+            window.changeStatus = async (id, status) => {
+                await updateOrderStatus(id, status);
+                await loadOrders();
+            };
+
+            // Apply the date filter when the button is clicked.
+
+            document.getElementById("applyDateFilter").onclick = () => {
+
+                loadOrders();
+            };
+
+            // Load all administrative data when the page opens.
+            
+            loadUsers();
             loadOrders();
-        };
-
-        loadUsers();
-        loadOrders();
-        loadTests();
-    </script>
-</body>
+            loadTests();
+        </script>
+    </body>
 </html>
