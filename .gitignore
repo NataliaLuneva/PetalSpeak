@@ -3,3 +3,4 @@ back/node_modules/
 front/node_modules/
 package-lock.json
 back/uploads/
+.env
