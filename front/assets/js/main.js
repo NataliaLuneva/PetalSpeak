@@ -3,7 +3,7 @@ let currentLang = localStorage.getItem("lang") || "en";
 let currentUser = null;
 let editingProductId = null;
 
-const MAX_CART_QTY = 40;
+const MAX_CART_QTY = 10;
 
 // Returns a message shown when the maximum allowed quantity of bouquets in the cart is exceeded.
 // The text is displayed in the currently selected language.
@@ -1617,21 +1617,69 @@ async function showResult() {
         // Handles clicks on the "Add to cart" button.
         // Adds the recommended bouquet to the shopping cart.
 
+        let testResultAddedToCart = false;
+
         document.querySelector(".add-cart-result-btn").onclick = () => {
+            const cartBtn = document.querySelector(".add-cart-result-btn");
 
-            const added = addToCart({
-                id: product.id,
-                type: product.feeling_type || resultType,
-                title,
-                img: product.image,
-                price: Number(product.price) || 0
-            });
-
-            // Shows a confirmation message if the bouquet was added.
-
-            if (added) {
-                showToast(cartText);
+            // Показываем сообщение, если этот букет уже был добавлен из результата теста.
+            if (testResultAddedToCart) {
+                showToast(
+                    currentLang === "ru"
+                        ? "Букет из результата теста можно добавить в корзину только один раз"
+                        : currentLang === "et"
+                            ? "Testi tulemusena saadud kimpu saab ostukorvi lisada ainult ühe korra"
+                            : "The bouquet from the test result can only be added to the cart once"
+                );
+                return;
             }
+
+            // Блокируем кнопку и показываем состояние загрузки.
+            cartBtn.disabled = true;
+            cartBtn.textContent =
+                currentLang === "ru"
+                    ? "Добавление..."
+                    : currentLang === "et"
+                        ? "Lisamine..."
+                        : "Adding...";
+
+            setTimeout(() => {
+                const added = addToCart({
+                    id: product.id,
+                    type: product.feeling_type || resultType,
+                    title,
+                    img: product.image,
+                    price: Number(product.price) || 0
+                });
+
+                if (added) {
+                    // Запоминаем, что этот букет уже был добавлен.
+                    testResultAddedToCart = true;
+
+                    // Меняем текст кнопки.
+                    cartBtn.disabled = false;
+
+                    cartBtn.textContent =
+                        currentLang === "ru"
+                            ? "Добавлено в корзину"
+                            : currentLang === "et"
+                                ? "Lisatud ostukorvi"
+                                : "Added to cart";
+
+                    // Показываем уведомление.
+                    showToast(
+                        currentLang === "ru"
+                            ? "Добавлено в корзину"
+                            : currentLang === "et"
+                                ? "Lisatud ostukorvi"
+                                : "Added to cart"
+                    );
+                } else {
+                    // Если добавить не удалось, возвращаем кнопку в исходное состояние.
+                    cartBtn.disabled = false;
+                    cartBtn.textContent = cartText;
+                }
+            }, 500);
         };
 
         // Finds the button for improving the quiz result.
@@ -1640,6 +1688,8 @@ async function showResult() {
 
         if (refineBtn) {
             refineBtn.onclick = () => {
+
+                testResultAddedToCart = false;
 
                 // Enables advanced quiz mode.
 

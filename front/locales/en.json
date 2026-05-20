@@ -456,5 +456,9 @@
     "quantity_label": "Qty:",
     "role": "Roll",
     "privacy_consent": "I agree to the processing of my personal data",
-    "privacy_required": "Please confirm your consent to the processing of personal data"
+    "privacy_required": "Please confirm your consent to the processing of personal data",
+    "add_to_cart": "Add to cart",
+    "added_to_cart": "Added to cart",
+    "adding_to_cart": "Adding...",
+    "test_result_cart_limit": "The bouquet from the test result can only be added to the cart once"
 }

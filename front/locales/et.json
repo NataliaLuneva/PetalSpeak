@@ -456,5 +456,9 @@
     "quantity_label": "Kogus:",
     "role": "Roll",
     "privacy_consent": "Nõustun oma isikuandmete töötlemisega",
-    "privacy_required": "Palun kinnitage nõusolek isikuandmete töötlemiseks"
+    "privacy_required": "Palun kinnitage nõusolek isikuandmete töötlemiseks",
+    "add_to_cart": "Lisa ostukorvi",
+    "added_to_cart": "Lisatud ostukorvi",
+    "adding_to_cart": "Lisamine...",
+    "test_result_cart_limit": "Testi tulemusena saadud kimpu saab ostukorvi lisada ainult ühe korra"
 }
