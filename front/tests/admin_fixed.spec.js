@@ -1,42 +1,42 @@
-import { test, expect } from '@playwright/test';
+﻿import { test, expect } from '@playwright/test';
 import path from 'path';
 
-test.describe('Superadmin stable flow', () => {
+test.describe('Admin panel smoke test', () => {
+  let products = [];
+  let savedProductName = '';
 
   test.beforeEach(async ({ page }) => {
+    products = [];
+    savedProductName = '';
 
-    // ================= AUTH =================
     await page.addInitScript(() => {
-      localStorage.setItem('token', 'test-token');
+      localStorage.setItem('token', 'admin-token');
       localStorage.setItem('user', JSON.stringify({
         id: 1,
-        name: 'Super Admin',
+        name: 'Admin User',
         email: 'admin@test.com',
-        role: 'superadmin'
+        role: 'admin'
       }));
     });
 
-    // ================= AUTH API =================
     await page.route('**/api/auth/me', async route => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify({
           id: 1,
-          name: 'Super Admin',
+          name: 'Admin User',
           email: 'admin@test.com',
-          role: 'superadmin'
+          role: 'admin'
         })
       });
     });
 
-    // ================= PRODUCTS MOCK =================
-    let products = [];
+    products = [];
 
     await page.route('**/api/products*', async route => {
       const method = route.request().method();
 
-      // GET PRODUCTS
       if (method === 'GET') {
         return route.fulfill({
           status: 200,
@@ -45,128 +45,120 @@ test.describe('Superadmin stable flow', () => {
         });
       }
 
-      // CREATE PRODUCT
       if (method === 'POST') {
-        const product = {
+        const productName = savedProductName || `Test flower ${Date.now()}`;
+        const newProduct = {
           id: Date.now(),
-
-          // 🔥 как в твоём backend / frontend
-          title_ru: `Flower ${Date.now()}`,
-          title_en: `Flower ${Date.now()}`,
-          title_et: `Flower ${Date.now()}`,
-
-          text_ru: 'Beautiful flower',
+          title_en: productName,
+          title_ru: productName,
+          title_et: productName,
           text_en: 'Beautiful flower',
+          text_ru: 'Beautiful flower',
           text_et: 'Beautiful flower',
-
+          title_key: '',
+          text_key: '',
           category: 'assortment',
-          price: 19.9,
+          price: 19.90,
           image: '/assets/img/b1.jpg'
         };
-
-        products.unshift(product);
+        products.unshift(newProduct);
 
         return route.fulfill({
           status: 200,
           contentType: 'application/json',
-          body: JSON.stringify(products)
+          body: JSON.stringify({ success: true, product: newProduct })
         });
       }
 
       return route.continue();
     });
 
-    // ================= USERS MOCK =================
+    await page.route('**/api/auth/avatar', async route => {
+      return route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true, avatar: '/uploads/avatars/admin-avatar.jpg' })
+      });
+    });
+
+    await page.route('**/api/auth/profile', async route => {
+      return route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true })
+      });
+    });
+
     await page.route('**/api/users*', async route => {
-      const method = route.request().method();
-
-      if (['GET', 'POST', 'PUT', 'DELETE'].includes(method)) {
-        return route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify({ success: true })
-        });
-      }
-
-      return route.continue();
+      return route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ success: true })
+      });
     });
   });
 
-  test('create product + profile update', async ({ page }) => {
+  test('admin can add product and update profile photo + name', async ({ page }) => {
+    await page.goto('/index.html');
+    await page.waitForLoadState('domcontentloaded');
 
-    // ================= LOAD =================
-    await page.goto('/index.html', { waitUntil: 'networkidle' });
+    const addProductBtn = page.locator('#addProductBtn');
+    await expect(addProductBtn).toBeVisible({ timeout: 20000 });
+    await addProductBtn.click();
 
-    await page.waitForLoadState('networkidle');
-
-    // ================= ADMIN BUTTON =================
-    const addBtn = page.locator('#addProductBtn');
-    await expect(addBtn).toBeVisible({ timeout: 20000 });
-
-    await addBtn.click();
-
-    // ================= MODAL =================
     await expect(page.locator('#productModal')).toBeVisible();
 
-    // ================= CREATE PRODUCT =================
-    const productName = `Flower ${Date.now()}`;
-
+    const productName = `Test flower ${Date.now()}`;
+    savedProductName = productName;
     await page.fill('#productTitleKey', productName);
     await page.fill('#productTextKey', 'Beautiful flower');
     await page.fill('#productPrice', '19.90');
     await page.fill('#productCategory', 'assortment');
 
-    const imageFile = path.resolve(__dirname, 'assets', 'avatar.jpg');
-    await page.setInputFiles('#productImage', imageFile);
+    const productImage = path.resolve('tests', 'assets', 'avatar.jpg');
+    await page.setInputFiles('#productImage', productImage);
 
-    const [res] = await Promise.all([
+    const [productResponse] = await Promise.all([
       page.waitForResponse(r =>
-        r.url().includes('/api/products') &&
-        r.request().method() === 'POST'
+        r.url().includes('/api/products') && r.request().method() === 'POST'
       ),
       page.click('#saveProductBtn')
     ]);
 
-    expect(res.ok()).toBeTruthy();
+    expect(productResponse.ok()).toBeTruthy();
 
-    // ================= VERIFY PRODUCT =================
-    await page.reload();
     await page.waitForResponse(r =>
       r.url().includes('/api/products?category=assortment') &&
       r.request().method() === 'GET'
     );
 
-    await expect(
-      page.locator('.collection-item').first()
-    ).toBeVisible({ timeout: 20000 });
+    await expect(page.getByText(productName, { exact: false }))
+      .toBeVisible({ timeout: 20000 });
 
-    await expect(
-      page.locator('.collection-item')
-    ).toHaveCount(1, { timeout: 20000 });
-
-    // ================= PROFILE =================
-    await page.goto('/profile.html', { waitUntil: 'networkidle' });
-
-    await page.waitForLoadState('networkidle');
+    await page.goto('/profile.html');
+    await page.waitForLoadState('domcontentloaded');
 
     const avatarInput = page.locator('#avatarInput');
-    await expect(avatarInput).toBeAttached();
+    await expect(avatarInput).toBeAttached({ timeout: 10000 });
 
-    await avatarInput.setInputFiles(imageFile);
-    await page.fill('#profileNameInput', 'Superadmin E2E');
-
-    const [profileRes] = await Promise.all([
+    const [avatarResponse] = await Promise.all([
       page.waitForResponse(r =>
-        r.url().includes('/api/users') &&
-        ['POST', 'PUT'].includes(r.request().method())
+        r.url().includes('/api/auth/avatar') && r.request().method() === 'POST'
+      ),
+      avatarInput.setInputFiles(productImage)
+    ]);
+    expect(avatarResponse.ok()).toBeTruthy();
+
+    await page.fill('#profileNameInput', 'Admin E2E');
+
+    const [profileResponse] = await Promise.all([
+      page.waitForResponse(r =>
+        r.url().includes('/api/auth/profile') && r.request().method() === 'PUT'
       ),
       page.click('button[type="submit"]')
     ]);
 
-    expect(profileRes.ok()).toBeTruthy();
-
-    await expect(page.locator('#profileMessage'))
-      .toBeVisible({ timeout: 15000 });
+    expect(profileResponse.ok()).toBeTruthy();
+    await expect(page.locator('#profileMessage')).toBeVisible({ timeout: 15000 });
   });
-
 });

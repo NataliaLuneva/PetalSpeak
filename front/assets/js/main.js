@@ -477,6 +477,13 @@ function updateCartCount() {
     countEl.textContent = count;
 }
 
+function animateCartCount() {
+    const countEl = document.getElementById("cartCount");
+    if (!countEl) return;
+    countEl.classList.add("bump");
+    setTimeout(() => countEl.classList.remove("bump"), 300);
+}
+
 // Adds a product to the shopping cart.
 // If the product is already in the cart, its quantity is increased by one.
 // If the maximum allowed quantity is reached, a warning message is displayed.
@@ -515,6 +522,7 @@ function addToCart(product) {
     // Saves the updated cart.
 
     saveCart(cart);
+    animateCartCount();
     return true;
 }
 

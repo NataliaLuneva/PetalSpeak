@@ -223,27 +223,33 @@ test.describe('FULL MULTILANGUAGE AUTH SUITE (bulletproof)', () => {
 
     await page.fill('#profileNameInput', newName);
 
-    // Save updated profile
+    // Save updated profile and wait for the profile API call.
 
-    await page.click('#profileForm button[type="submit"]');
+    await Promise.all([
+      page.waitForResponse(res =>
+        res.url().includes('/api/auth/profile') &&
+        res.request().method() === 'PUT' &&
+        res.status() < 500
+      ),
+      page.click('#profileForm button[type="submit"]')
+    ]);
 
-    // Verify profile update message
-    // Supports English, Russian and Estonian
+    // Verify profile update message.
+    // Supports English, Russian and Estonian.
 
     await expect(page.locator('#profileMessage'))
       .toContainText(
-        /updated|saved|успеш|обновл|uuend/i
+        /updated|saved|успеш|обновл|uuend/i,
+        { timeout: 15000 }
       );
 
-    // Verify new name appears in profile
+    // Verify the profile name and header have updated.
 
     await expect(page.locator('#profileName'))
-      .toContainText(newName);
-
-    // Verify header username updated
+      .toHaveText(newName, { timeout: 15000 });
 
     await expect(page.locator('#headerUserName'))
-      .toContainText(newName);
+      .toHaveText(newName, { timeout: 15000 });
 
     /* =========================
        PASSWORD CHANGE
