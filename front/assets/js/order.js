@@ -220,11 +220,10 @@ function setLoading(isLoading) {
 
         // Displays the loading text.
 
-        submitBtn.textContent = "Processing...";
+        submitBtn.textContent = t("processing");
     } else {
         submitBtn.disabled = false;
-        submitBtn.textContent =
-            submitBtn.dataset.originalText || "Order";
+        submitBtn.textContent = submitBtn.dataset.originalText || t("order_btn");
     }
 }
 
@@ -244,7 +243,7 @@ async function submitOrder(event) {
     // Stops if no bouquet is available.
 
     if (!bouquet) {
-        showMessage("Bouquet not found", true);
+        showMessage(t("bouquet_not_found"), true);
         return;
     }
 
@@ -259,7 +258,7 @@ async function submitOrder(event) {
     // Checks that required fields are filled.
 
     if (!customerName || !email) {
-        showMessage("fill_required_fields", true);
+        showMessage(t("fill_required_fields"), true);
         return;
     }
 
@@ -292,7 +291,11 @@ async function submitOrder(event) {
                 bouquetTitle: bouquet.title || "",
                 bouquetImage: bouquet.img || "",
                 price: bouquet.price || null,
-                message
+                message,
+
+                cardNumber: document.getElementById("cardNumber")?.value.trim() || "",
+                cardDate: document.getElementById("cardDate")?.value.trim() || "",
+                cardCvv: document.getElementById("cardCvv")?.value.trim() || ""
             })
         });
 
@@ -303,12 +306,16 @@ async function submitOrder(event) {
         // Handles server errors.
 
         if (!res.ok) {
-            throw new Error(data.message || "Order error");
+            throw new Error(
+                data.messageKey
+                    ? t(data.messageKey)
+                    : data.message || t("order_error")
+            );
         }
 
         // Displays a success message.
 
-        showMessage("order_success");
+        showMessage(t("order_success"));
 
         // Saves the order information for the success page.
 
@@ -334,7 +341,10 @@ async function submitOrder(event) {
         // Logs and displays the error.
 
         console.error("Submit order error:", error);
-        showMessage(error.message || "Order error", true);
+        showMessage(
+            error.message || t("order_error"),
+            true
+        );
 
     } finally {
 

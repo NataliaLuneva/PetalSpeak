@@ -2,7 +2,7 @@ const request = require("supertest");
 const app = require("../server");
 
 //Unit tests for authentication API routes.
-// These tests verify that the backend correctly handles invalid requests with missing data.
+//These tests verify that the backend correctly handles invalid requests with missing data.
 
 describe("Auth API", () => {
 

@@ -219,24 +219,36 @@ router.get("/orders", auth, requireRole("superadmin"), async (req, res) => {
 router.get("/stats", auth, requireRole("superadmin"), async (req, res) => {
 
     try {
+
+        // Get optional date filters from query
+
         const { from, to } = req.query;
+
         let where = "";
         const params = [];
+
+        // Filter statistics by date range if provided
 
         if (from && to) {
             where = "WHERE created_at >= ? AND created_at < DATE_ADD(?, INTERVAL 1 DAY)";
             params.push(from, to);
         }
 
+        // Get total number of orders
+
         const [[totalOrdersRow]] = await pool.query(
             `SELECT COUNT(*) AS count FROM orders ${where}`,
             params
         );
 
+        // Get total revenue from all orders
+
         const [[totalRevenueRow]] = await pool.query(
             `SELECT COALESCE(SUM(price), 0) AS total FROM orders ${where}`,
             params
         );
+
+        // Get revenue for the current month
 
         const [[monthRevenueRow]] = await pool.query(`
             SELECT COALESCE(SUM(price), 0) AS total
@@ -244,6 +256,8 @@ router.get("/stats", auth, requireRole("superadmin"), async (req, res) => {
             WHERE YEAR(created_at) = YEAR(CURDATE())
               AND MONTH(created_at) = MONTH(CURDATE())
         `);
+
+        // Get top 5 best-selling bouquets
 
         const [topSales] = await pool.query(`
             SELECT 
@@ -257,17 +271,20 @@ router.get("/stats", auth, requireRole("superadmin"), async (req, res) => {
             ORDER BY total_sales DESC, revenue DESC
             LIMIT 5
         `, params);
+
+        // Send statistics response
+
         res.json({
             totalOrders: totalOrdersRow.count,
             totalRevenue: totalRevenueRow.total,
             monthRevenue: monthRevenueRow.total,
             topSales
         });
+
     } catch (error) {
         console.error("Get stats error:", error);
         res.status(500).json({ message: "Error retrieving statistics." });
     }
-
 });
 
 module.exports = router;

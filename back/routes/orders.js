@@ -28,15 +28,33 @@ router.post("/", async (req, res) => {
             bouquetType,
             bouquetTitle,
             bouquetImage,
-            price
+            price,
+            cardNumber,
+            cardDate,
+            cardCvv,
         } = req.body;
 
         // Check that the required customer fields are provided.
 
         if (!customerName || !email) {
-            return res.status(400).json({ message: "Please fill in all required fields." });
+            return res.status(400).json({
+                messageKey: "error_required_fields"
+            });
         }
 
+        const cleanCardNumber = String(cardNumber || "").replace(/\s/g, "");
+
+        if (!cleanCardNumber || !cardDate || !cardCvv) {
+            return res.status(400).json({
+                messageKey: "error_card_required"
+            });
+        }
+
+        if (cleanCardNumber.length < 16) {
+            return res.status(400).json({
+                messageKey: "error_card_number_invalid"
+            });
+        }
         // Use the provided cart items if they exist.
 
         let orderItems = Array.isArray(items) && items.length ? items : null;
@@ -113,7 +131,7 @@ router.post("/", async (req, res) => {
                 firstItem.bouquetType || firstItem.type || "",
                 orderItems.length === 1
                     ? firstItem.bouquetTitle || firstItem.title
-                    : `${orderItems.length} bouquets`,
+                    : `order_${orderItems.length}_items`,
                 firstItem.bouquetImage || firstItem.img || "",
                 totalPrice,
                 message || "",
@@ -227,13 +245,17 @@ router.post("/", async (req, res) => {
         // Return a success response after the order is created and the email is sent.
 
         res.json({
-            message: "Заказ успешно оформлен",
+            messageKey: "order_success",
             orderId
         });
     } catch (error) {
-        await connection.rollback();
-        console.error("Ошибка оформления заказа:", error);
-        res.status(500).json({ message: "Ошибка при оформлении заказа" });
+    await connection.rollback();
+    console.error("Order creation error:", error);
+
+    res.status(500).json({
+        messageKey: "error_order_create"
+    });
+    
     } finally {
         connection.release();
     }
@@ -266,8 +288,11 @@ router.get("/my", auth, async (req, res) => {
 
         res.json(orders);
     } catch (error) {
-        console.error("Ошибка получения заказов:", error);
-        res.status(500).json({ message: "Ошибка получения заказов" });
+        console.error("Get user orders error:", error);
+
+        res.status(500).json({
+            messageKey: "error_orders_get"
+        });
     }
 });
 

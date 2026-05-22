@@ -525,39 +525,39 @@ function translateFeelingType(type) {
 
     const map = {
         love: {
-            ru: "Любовь",
-            en: "Love",
-            et: "Armastus"
+            ru: t("feeling_love"),
+            en: t("feeling_love"),
+            et: t("feeling_love")
         },
         friendship: {
-            ru: "Дружба",
-            en: "Friendship",
-            et: "Sõprus"
+            ru: t("feeling_friendship"),
+            en: t("feeling_friendship"),
+            et: t("feeling_friendship")
         },
         gratitude: {
-            ru: "Благодарность",
-            en: "Gratitude",
-            et: "Tänulikkus"
+            ru: t("feeling_gratitude"),
+            en: t("feeling_gratitude"),
+            et: t("feeling_gratitude")
         },
         apology: {
-            ru: "Извинение",
-            en: "Apology",
-            et: "Vabandus"
+            ru: t("feeling_apology"),
+            en: t("feeling_apology"),
+            et: t("feeling_apology")
         },
         sympathy: {
-            ru: "Сочувствие",
-            en: "Sympathy",
-            et: "Kaastunne"
+            ru: t("feeling_sympathy"),
+            en: t("feeling_sympathy"),
+            et: t("feeling_sympathy")
         },
         secret_love: {
-            ru: "Тайная любовь",
-            en: "Secret love",
-            et: "Salajane armastus"
+            ru: t("feeling_secret_love"),
+            en: t("feeling_secret_love"),
+            et: t("feeling_secret_love")
         },
         comfort: {
-            ru: "Поддержка",
-            en: "Comfort",
-            et: "Lohutus"
+            ru: t("feeling_comfort"),
+            en: t("feeling_comfort"),
+            et: t("feeling_comfort")
         }
     };
 

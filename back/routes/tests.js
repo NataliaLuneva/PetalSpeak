@@ -25,7 +25,7 @@ router.post("/", async (req, res) => {
 
         if (!result || !bouquetTitle) {
             return res.status(400).json({
-                message: "Результат теста не передан"
+                messageKey: "error_test_result_missing"
             });
         }
 
@@ -73,12 +73,12 @@ router.post("/", async (req, res) => {
         );
 
         res.json({
-            message: "Результат теста сохранен"
+            messageKey: "test_saved"
         });
     } catch (error) {
         console.error("Save test error:", error);
         res.status(500).json({
-            message: "Ошибка сохранения теста"
+            messageKey: "error_test_save"
         });
     }
 });
@@ -110,7 +110,7 @@ router.get("/my", auth, async (req, res) => {
     } catch (error) {
         console.error("Get my tests error:", error);
         res.status(500).json({
-            message: "Ошибка получения тестов"
+            messageKey: "error_tests_get"
         });
     }
 });

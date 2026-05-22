@@ -11,35 +11,35 @@
 
         <!-- Main heading of the administration page -->
 
-        <h1>Admin Panel</h1>
+        <h1 data-i18n="admin_panel_title">Admin Panel</h1>
 
         <!-- Date filter used to limit displayed orders -->
 
         <div class="date-filter">
-            <label for="dateFrom">От:</label>
+            <label for="dateFrom" data-i18n="from_label">От:</label>
             <input type="date" id="dateFrom">
 
-            <label for="dateTo">До:</label>
+            <label for="dateTo" data-i18n="to_label">До:</label>
             <input type="date" id="dateTo">
 
             <!-- Button for applying the selected date range -->
 
-            <button id="applyDateFilter" type="button">Показать</button>
+            <button id="applyDateFilter" type="button" data-i18n="show_btn">Показать</button>
         </div>
 
         <!-- Section displaying all registered users -->
 
-        <h2>Users</h2>
+        <h2 data-i18n="users_title">Users</h2>
         <div id="users"></div>
 
         <!-- Section displaying all customer orders -->
 
-        <h2>Orders</h2>
+        <h2 data-i18n="orders_title">Orders</h2>
         <div id="orders"></div>
 
         <!-- Section displaying saved test results -->
 
-        <h2>Tests</h2>
+        <h2 data-i18n="tests_title">Tests</h2>
         <div id="tests"></div>
 
         <script type="module">
@@ -61,15 +61,15 @@
             // Restrict access to users with the administrator role.
 
             if (!user || user.role !== "admin") {
-                document.body.innerHTML = "<h2>Access denied</h2>";
-                throw new Error("Access denied");
+                document.body.innerHTML = `<h2>${t("access_denied")}</h2>`;
+                throw new Error(t("access_denied"));
             }
 
             // Formats a date into a readable string.
             
             function formatDate(date) {
                 if (!date) return "";
-                return new Date(date).toLocaleString("ru-RU");
+                return new Date(date).toLocaleString(currentLang);
             }
 
             // Loads and displays all users.
@@ -79,9 +79,9 @@
 
                 document.getElementById("users").innerHTML = users.map(user => `
                     <div style="margin-bottom: 10px; border-bottom: 1px solid #ccc; padding-bottom: 8px;">
-                        <div><strong>${user.name || "Без имени"}</strong></div>
+                        <div><strong>${user.name || t("no_name_label")}</strong></div>
                         <div>${user.email || ""}</div>
-                        <div>Role: ${user.role || "user"}</div>
+                        <div>${t("role_label")}: ${user.role || "user"}</div>
                     </div>
                 `).join("");
             }
@@ -97,18 +97,18 @@
                 document.getElementById("orders").innerHTML = orders.map(order => `
                     <div style="margin-bottom: 16px; border-bottom: 1px solid #ccc; padding-bottom: 8px;">
                         <div><strong>${order.customer_name || ""}</strong> (${order.email || ""})</div>
-                        <div>Bouquet: ${order.bouquet_title || ""}</div>
-                        <div>Price: €${order.price || 0}</div>
-                        <div>Status: ${order.status || "new"}</div>
-                        <div>Date: ${formatDate(order.created_at)}</div>
+                        <div>${t("bouquet_label")}: ${order.bouquet_title || ""}</div>
+                        <div>${t("price_label")}: €${order.price || 0}</div>
+                        <div>${t("status_label")}: ${order.status || t("new_status")}</div>
+                        <div>${t("date_label")}: ${formatDate(order.created_at)}</div>
 
                         <!-- Buttons for changing order status -->
                         <button onclick="window.changeStatus(${order.id}, 'processing')">
-                            processing
+                            ${t("processing_status")}
                         </button>
 
                         <button onclick="window.changeStatus(${order.id}, 'done')">
-                            done
+                            ${t("done_status")}
                         </button>
                     </div>
                 `).join("");
@@ -121,11 +121,11 @@
 
                 document.getElementById("tests").innerHTML = tests.map(test => `
                     <div style="margin-bottom: 16px; border-bottom: 1px solid #ccc; padding-bottom: 8px;">
-                        <div>User: ${test.email || "guest"}</div>
-                        <div>Result: ${test.result || ""}</div>
-                        <div>Bouquet: ${test.bouquet_title || ""}</div>
-                        <div>Price: €${test.price || 0}</div>
-                        <div>Date: ${formatDate(test.created_at)}</div>
+                        <div>${t("user_label")}: ${test.email || t("guest_label")}</div>
+                        <div>${t("result_label")}: ${test.result || ""}</div>
+                        <div>${t("bouquet_label")}: ${test.bouquet_title || ""}</div>
+                        <div>${t("price_label")}: €${test.price || 0}</div>
+                        <div>${t("date_label")}: ${formatDate(test.created_at)}</div>
                     </div>
                 `).join("");
             }

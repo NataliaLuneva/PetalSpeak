@@ -72,9 +72,7 @@ async function translateText(text, sourceLang, targetLang) {
 
     try {
 
-        // ---------------------------------------------------------------------
-        // 1. Try Google Translate API.
-        // ---------------------------------------------------------------------
+        //Try Google Translate API.
 
         // Build the request URL with source and target languages.
 
@@ -96,9 +94,7 @@ async function translateText(text, sourceLang, targetLang) {
             if (translated) return translated;
         }
 
-        // ---------------------------------------------------------------------
-        // 2. Try LibreTranslate as a fallback service.
-        // ---------------------------------------------------------------------
+        //Try LibreTranslate as a fallback service.
 
         const libreResponse = await fetch(
             "https://libretranslate.com/translate",
@@ -125,9 +121,7 @@ async function translateText(text, sourceLang, targetLang) {
             }
         }
 
-        // ---------------------------------------------------------------------
-        // 3. Try MyMemory Translation API as the final fallback.
-        // ---------------------------------------------------------------------
+        //  Try MyMemory Translation API as the final fallback.
 
         const url =
             `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${sourceLang}|${targetLang}`;

@@ -1,5 +1,4 @@
-// Import the mysql2 library with Promise support,
-// which allows using async/await for database queries.
+// Import the mysql2 library with Promise support, which allows using async/await for database queries.
 const mysql = require("mysql2/promise");
 
 // Create a connection pool to the MySQL database.

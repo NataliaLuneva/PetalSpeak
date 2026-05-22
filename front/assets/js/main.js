@@ -9,11 +9,7 @@ const MAX_CART_QTY = 10;
 // The text is displayed in the currently selected language.
 
 function maxQtyMessage() {
-    return currentLang === "ru"
-        ? "Для большого заказа напишите нам на почту."
-        : currentLang === "et"
-            ? "Suure tellimuse jaoks kirjuta meile e-posti."
-            : "For a large order, please contact us by email.";
+    return t("max_qty_message");
 }
 
 const burger = document.querySelector(".burger");
@@ -325,7 +321,7 @@ async function loadProducts() {
             throw new Error(
                 products.messageKey
                     ? t(products.messageKey)
-                    : products.message || "Product loading error"
+                    : products.message || t("product_loading_error")
             );
         }
 
@@ -419,7 +415,7 @@ async function loadProducts() {
     } catch (error) {
         // Displays an error in the console and on the page if products cannot be loaded.
         console.error("Load products error:", error);
-        list.innerHTML = `<p>Product loading error</p>`;
+        list.innerHTML = `<p>${t("product_loading_error")}</p>`;
     }
 }
 
@@ -1024,7 +1020,7 @@ async function saveProduct() {
             throw new Error(
                 t(messageKey) ||
                 data.message ||
-                "Save error"
+                t("save_error")
             );
         }
 
@@ -1235,7 +1231,6 @@ const advancedQuestions = [
 // STATE
 
 // Stores the current state of the bouquet recommendation test.
-
 // Index of the currently displayed question.
 
 let currentQuestion = 0;
@@ -1374,7 +1369,7 @@ function nextQuestion() {
     // Requires the user to choose an answer first.
 
     if (!selectedType) {
-        showToast(translations["choose_answer"] || "Choose an answer");
+        showToast(t("choose_answer"));
         return;
     }
 
@@ -1475,10 +1470,7 @@ async function showResult() {
 
     // Clears the question text.
 
-    questionEl.textContent =
-        currentLang === "ru" ? "  " :
-        currentLang === "et" ? " " :
-        " ";
+    questionEl.textContent = "";
 
     // Hides navigation buttons.
 
@@ -1498,12 +1490,12 @@ async function showResult() {
 
             // Handles loading error.
 
-            if (!res.ok) throw new Error("Product loading error");
+            if (!res.ok) throw new Error(t("product_loading_error"));
 
             // Shows a message if no bouquet was found.
 
             if (!products.length) {
-                answersEl.innerHTML = `<p>Bouquet not found</p>`;
+                answersEl.innerHTML = `<p>${t("bouquet_not_found")}</p>`;
                 return;
             }
 
@@ -1550,25 +1542,13 @@ async function showResult() {
 
         // Creates translated button and subtitle texts for the final quiz result.
 
-        const subtitle =
-            currentLang === "ru" ? "Ваш идеальный букет" :
-            currentLang === "et" ? "Sinu ideaalne kimp" :
-            "Your perfect bouquet";
+        const subtitle = t("perfect_bouquet");
 
-        const orderText =
-            currentLang === "ru" ? "Заказать этот букет" :
-            currentLang === "et" ? "Telli see kimp" :
-            "Order this bouquet";
+        const orderText = t("order_this_bouquet");
 
-        const refineText =
-            currentLang === "ru" ? "Найти более точное совпадение" :
-            currentLang === "et" ? "Leia täpsem sobivus" :
-            "Find a more precise match";
+        const refineText = t("find_precise_match");
 
-        const cartText =
-            currentLang === "ru" ? "Добавлено в корзину" :
-            currentLang === "et" ? "Lisa ostukorvi" :
-            "Add to cart";
+        const cartText = t("add_to_cart");
 
         // Displays the final bouquet result on the page.
         // Shows the bouquet image, title, description, price and action buttons.
@@ -1628,30 +1608,25 @@ async function showResult() {
         let testResultAddedToCart = false;
 
         document.querySelector(".add-cart-result-btn").onclick = () => {
+
             const cartBtn = document.querySelector(".add-cart-result-btn");
 
-            // Показываем сообщение, если этот букет уже был добавлен из результата теста.
+            // Show message if bouquet was already added from test result
+
             if (testResultAddedToCart) {
-                showToast(
-                    currentLang === "ru"
-                        ? "Букет из результата теста можно добавить в корзину только один раз"
-                        : currentLang === "et"
-                            ? "Testi tulemusena saadud kimpu saab ostukorvi lisada ainult ühe korra"
-                            : "The bouquet from the test result can only be added to the cart once"
-                );
+                showToast(t("test_bouquet_once"));
                 return;
             }
 
-            // Блокируем кнопку и показываем состояние загрузки.
+            // Disable button and show loading state
+
             cartBtn.disabled = true;
-            cartBtn.textContent =
-                currentLang === "ru"
-                    ? "Добавление..."
-                    : currentLang === "et"
-                        ? "Lisamine..."
-                        : "Adding...";
+            cartBtn.textContent = t("adding");
 
             setTimeout(() => {
+
+                // Add bouquet to cart
+
                 const added = addToCart({
                     id: product.id,
                     type: product.feeling_type || resultType,
@@ -1661,32 +1636,28 @@ async function showResult() {
                 });
 
                 if (added) {
-                    // Запоминаем, что этот букет уже был добавлен.
+
+                    // Remember that bouquet was already added
+
                     testResultAddedToCart = true;
 
-                    // Меняем текст кнопки.
+                    // Enable button again
+
                     cartBtn.disabled = false;
 
-                    cartBtn.textContent =
-                        currentLang === "ru"
-                            ? "Добавлено в корзину"
-                            : currentLang === "et"
-                                ? "Lisatud ostukorvi"
-                                : "Added to cart";
+                    // Change button text
 
-                    // Показываем уведомление.
-                    showToast(
-                        currentLang === "ru"
-                            ? "Добавлено в корзину"
-                            : currentLang === "et"
-                                ? "Lisatud ostukorvi"
-                                : "Added to cart"
-                    );
+                    cartBtn.textContent = t("added_to_cart");
+
+                    // Show success notification
+
+                    showToast(t("added_to_cart"));
+
                 } else {
-                    // Если добавить не удалось, возвращаем кнопку в исходное состояние.
                     cartBtn.disabled = false;
                     cartBtn.textContent = cartText;
                 }
+
             }, 500);
         };
 
@@ -1733,7 +1704,7 @@ async function showResult() {
 
         } catch (error) {
             console.error(error);
-            answersEl.innerHTML = `<p>Bouquet loading error</p>`;
+            answersEl.innerHTML = `<p>${t("bouquet_loading_error")}</p>`;
         }
         }
 

@@ -108,11 +108,7 @@
 
                 // Select the message based on the currently chosen language.
 
-                return currentLang === "ru"
-                    ? "Для большого заказа напишите нам на почту."
-                    : currentLang === "et"
-                        ? "Suure tellimuse jaoks kirjuta meile e-posti."
-                        : "For a large order, please contact us by email.";
+                return t("max_qty_message");
             }
 
             // Returns the translated text for the specified key.
@@ -280,9 +276,7 @@
                     list.innerHTML = `
                         <p class="empty" style="text-align:center;">
                             ${
-                                currentLang === "ru" ? "Корзина пустая" :
-                                currentLang === "et" ? "Ostukorv on tühi" :
-                                "Cart is empty"
+                                t("cart_empty")
                             }
                         </p>
                     `;
@@ -316,7 +310,7 @@
                         <!-- Product information and controls -->
                         <div style="display: flex; flex-direction: column; gap: 10px;">
                             <div class="item-title" style="font-size: 18px; margin: 0;">
-                                ${item.title || "Bouquet"}
+                                ${item.title || t("bouquet_default")}
                             </div>
 
                             <div class="item-meta" style="font-size: 16px; margin: 0;">
@@ -364,9 +358,7 @@
                                     style="padding: 8px 12px; font-size: 13px;"
                                 >
                                     ${
-                                        currentLang === "ru" ? "Удалить" :
-                                        currentLang === "et" ? "Kustuta" :
-                                        "Remove"
+                                        t("remove_btn")
                                     }
                                 </button>
                             </div>
@@ -383,10 +375,7 @@
 
                 // Display the total price in the selected language.
 
-                totalEl.textContent =
-                    currentLang === "ru" ? `Итого: €${total.toFixed(2)}` :
-                    currentLang === "et" ? `Kokku: €${total.toFixed(2)}` :
-                    `Total: €${total.toFixed(2)}`;
+                totalEl.textContent = `${t("total")}: €${total.toFixed(2)}`;
 
                 // Attach event handlers and update the cart counter.
 
@@ -450,7 +439,7 @@
                         // Prevent quantity from exceeding the allowed limit.
 
                         if (Number(cart[index].quantity || 1) >= MAX_CART_QTY) {
-                            showToast(maxQtyMessage());
+                            showToast(t("max_qty_message"));
                             return;
                         }
 
@@ -482,7 +471,7 @@
                         const cart = getCart();
                         const index = Number(input.dataset.index);
 
-                        let value = Number(input.value);
+                        let value = Math.max(1, Math.floor(Number(input.value || 1)));
 
                         // Use one as the minimum allowed quantity.
 
@@ -493,13 +482,6 @@
                         // Convert the quantity to a whole number.
 
                         value = Math.floor(value);
-
-                        // Limit the quantity to the maximum allowed value.
-
-                        if (value > MAX_CART_QTY) {
-                            value = MAX_CART_QTY;
-                            showToast(maxQtyMessage());
-                        }
 
                         // Save the corrected quantity.
 
@@ -528,9 +510,7 @@
                 if (!selected.length) {
 
                     showToast(
-                        currentLang === "ru" ? "Выберите хотя бы один букет" :
-                        currentLang === "et" ? "Vali vähemalt üks kimp" :
-                        "Select at least one bouquet"
+                        t("select_at_least_one")
                     );
                     return;
                 }

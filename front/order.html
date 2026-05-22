@@ -302,6 +302,21 @@
                 "Content-Type": "application/json"
             };
 
+            // Get payment card input values from the form.
+
+            const cardNumber = document.getElementById("cardNumber").value.trim();
+            const cardDate = document.getElementById("expiry").value.trim();
+            const cardCvv = document.getElementById("cvv").value.trim();
+
+            // Validate that all payment fields are filled in before sending the order request.
+
+            if (!cardNumber || !cardDate || !cardCvv) {
+                resultEl.textContent =
+                    translations["card_required"] ||
+                    "Please fill in payment details";
+                return;
+            }
+
             const token = getToken();
             if (token) {
                 headers.Authorization = `Bearer ${token}`;
@@ -319,12 +334,29 @@
                     method: "POST",
                     headers,
                     body: JSON.stringify({
+
+                        // Customer information.
+
                         customerName,
                         email,
                         message,
                         address,
+
+                        // Ordered bouquets.
+
                         items: cart,
-                        lang: localStorage.getItem("lang") || "en"
+
+                        // Selected website language for email translations.
+
+                        lang: localStorage.getItem("lang") || "en",
+
+                        // Payment card information.
+                        // These fields are validated on the backend,
+                        // but are NOT stored in the database.
+
+                        cardNumber,
+                        cardDate,
+                        cardCvv
                     })
                 });
 

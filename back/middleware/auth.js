@@ -1,5 +1,4 @@
-// Import the jsonwebtoken library,
-// which is used to verify JWT authentication tokens.
+// Import the jsonwebtoken library, which is used to verify JWT authentication tokens.
 const jwt = require("jsonwebtoken");
 const JWT_SECRET = "secret123";
 

@@ -134,9 +134,14 @@ router.post("/register", async (req, res) => {
 
         // Insert the new user into the database.
 
-        await pool.query(
+        const [result] = await pool.query(
             "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
             [name, email, hashedPassword]
+        );
+
+        await pool.query(
+            "UPDATE orders SET user_id = ? WHERE email = ? AND user_id IS NULL",
+            [result.insertId, email]
         );
         res.json({
             messageKey: "registration_success"
@@ -230,6 +235,11 @@ router.post("/login", async (req, res) => {
             await pool.query(
                 "UPDATE users SET failed_attempts = ? WHERE id = ?",
                 [attempts, user.id]
+            );
+
+            await pool.query(
+                "UPDATE orders SET user_id = ? WHERE email = ? AND user_id IS NULL",
+                [user.id, user.email]
             );
 
             // Return an error and indicate how many attempts remain.

@@ -158,7 +158,7 @@ async function apiRequest(url, options = {}) {
         // Gets the translation key from the response or uses a default error key.
 
         const messageKey = data.messageKey || "request_error";
-        let message = t(messageKey) || data.message || "Ошибка запроса";
+        let message = t(messageKey) || data.message || "Request error";
 
         if (data.count !== undefined) {
 
@@ -294,7 +294,11 @@ async function login(event) {
 
     try {
 
+        // Show loading state on submit button
+
         setLoading(submitBtn, t("login_loading"));
+
+        // Send login request to server
 
         const data = await apiRequest(`${AUTH_API}/login`, {
             method: "POST",
@@ -304,16 +308,26 @@ async function login(event) {
             body: JSON.stringify({ email, password })
         });
 
+        // Check if token exists in response
+
         if (!data.token) {
             throw new Error(t("request_error"));
         }
 
+        // Save user token in local storage
+
         saveToken(data.token);
+
+        // Show success message
+
         showMessage(t("login_success"));
+
+        // Redirect user to home page
 
         setTimeout(() => {
             window.location.href = "/index.html";
         }, 500);
+
     } catch (error) {
         showMessage(error.message || t("request_error"), true);
     } finally {
