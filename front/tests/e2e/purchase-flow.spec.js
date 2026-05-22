@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+require('dotenv').config({ path: '../back/.env' });
 
 test.describe('Purchase Flow (stable deterministic version)', () => {
 

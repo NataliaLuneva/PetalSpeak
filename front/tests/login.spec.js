@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+require('dotenv').config({ path: '../back/.env' });
 
 function genEmail() {
   return `test_${Date.now()}_${Math.random().toString(36).slice(2)}@mail.com`;
@@ -118,7 +119,97 @@ test.describe('FULL MULTILANGUAGE AUTH SUITE (bulletproof)', () => {
   });
 
   /* =========================
-     3. LOGIN + FULL PROFILE FLOW
+     3. LOGIN VALIDATION + ERROR CHECKS
+  ========================= */
+
+  test('login validation errors are shown for empty credentials', async ({ page }) => {
+
+    await page.goto('/login.html', {
+      waitUntil: 'domcontentloaded'
+    });
+
+    await page.click('#showLogin');
+
+    await expect(page.locator('#loginEmail')).toBeVisible();
+
+    await page.evaluate(() => {
+      const loginForm = document.querySelector('#loginForm');
+      if (loginForm) loginForm.noValidate = true;
+    });
+
+    await page.click('#loginForm button[type="submit"]');
+
+    await expect(page.locator('#authMessage')).toBeVisible({
+      timeout: 10000
+    });
+
+    await expect(page.locator('#authMessage')).toContainText(
+      /Enter email and password|Введи email и пароль|Sisesta e-post ja parool/i
+    );
+
+    await expect(page).toHaveURL(/login\.html/);
+  });
+
+  test('login with invalid credentials does not redirect', async ({ page }) => {
+
+    await page.goto('/login.html', {
+      waitUntil: 'domcontentloaded'
+    });
+
+    await page.click('#showLogin');
+
+    await page.fill('#loginEmail', genEmail());
+    await page.fill('#loginPassword', 'WrongPass123!');
+    await page.click('#loginForm button[type="submit"]');
+
+    await expect(page.locator('#authMessage')).toBeVisible({
+      timeout: 10000
+    });
+
+    await expect(page.locator('#authMessage')).toContainText(
+      /error_user_not_found|Incorrect password|Неверный пароль|не найден|not found|Аккаунт/i
+    );
+
+    await expect(page).toHaveURL(/login\.html/);
+  });
+
+  test('login with wrong password reports remaining attempts', async ({ page }) => {
+
+    const email = genEmail();
+    const password = 'Aa123456!';
+
+    await page.goto('/login.html', {
+      waitUntil: 'domcontentloaded'
+    });
+
+    await page.fill('#registerName', 'User');
+    await page.fill('#registerEmail', email);
+    await page.fill('#registerPassword', password);
+    await page.fill('#registerConfirmPassword', password);
+    await page.click('#registerForm button[type="submit"]');
+
+    await expect(page.locator('#authMessage')).toContainText(
+      /success|успеш|created|создан|loodud|õnnest/i,
+      { timeout: 15000 }
+    );
+
+    await page.click('#showLogin');
+
+    await page.fill('#loginEmail', email);
+    await page.fill('#loginPassword', 'Bb123456!');
+    await page.click('#loginForm button[type="submit"]');
+
+    await expect(page.locator('#authMessage')).toBeVisible({
+      timeout: 10000
+    });
+
+    await expect(page.locator('#authMessage')).toContainText(
+      /Attempts remaining|Осталось попыток|Allesjäänud katsed|Неверный пароль|Vale parool/i
+    );
+  });
+
+  /* =========================
+     4. LOGIN + FULL PROFILE FLOW
   ========================= */
 
   test('successful login + full profile interaction', async ({ page }) => {
@@ -209,11 +300,13 @@ test.describe('FULL MULTILANGUAGE AUTH SUITE (bulletproof)', () => {
 
     await expect(page).toHaveURL(/profile\.html/);
 
-    // Verify profile form loaded
+    // Verify profile form loaded and user data has finished loading.
 
     const profileInput = page.locator('#profileNameInput');
+    const profileEmailInput = page.locator('#profileEmailInput');
 
     await expect(profileInput).toBeVisible();
+    await expect(profileEmailInput).toHaveValue(email, { timeout: 15000 });
 
     /* =========================
        PROFILE NAME CHANGE
@@ -372,7 +465,13 @@ test.describe('FULL MULTILANGUAGE AUTH SUITE (bulletproof)', () => {
 // Veendub, et kuvatakse edukuse sõnum
 // Kontrollib edukuse sõnumeid erinevates keeltes
 
-// 3. Sisselogimine ja profiili täielik kontroll
+// 3. Login validation checks
+
+// Kontrollib, et tühjade sisselogimisandmete puhul kuvatakse veateade
+// Kontrollib, et vale konto andmetega ei toimu ümbersuunamist
+// Kontrollib, et vale parooliga näidatakse allesjäänud katsete arvu
+
+// 4. Sisselogimine ja profiili täielik kontroll
 
 // Registreerib kasutaja ja logib ta sisse
 // Kontrollib, et JWT token salvestatakse localStorage’i
@@ -381,26 +480,26 @@ test.describe('FULL MULTILANGUAGE AUTH SUITE (bulletproof)', () => {
 // Avab profiili lehe
 // Kontrollib, et profiili vorm laaditakse korrektselt
 
-// 4. Profiili muutmine
+// 5. Profiili muutmine
 
 // Muudab kasutaja nime
 // Kontrollib, et nimi uueneb profiilis
 // Kontrollib, et nimi uueneb headeris
 // Kontrollib profiili uuendamise sõnumeid EN / RU / ET keeltes
 
-// 5. Parooli muutmine
+// 6. Parooli muutmine
 
 // Muudab kasutaja parooli
 // Kontrollib, et uus parool salvestatakse edukalt
 // Kontrollib parooli uuendamise sõnumeid EN / RU / ET keeltes
 
-// 6. Profiilipildi üleslaadimine
+// 7. Profiilipildi üleslaadimine
 
 // Laeb üles profiilipildi
 // Kontrollib, et avatar muutub
 // Kontrollib avatar upload edukuse sõnumeid EN / RU / ET keeltes
 
-// 7. Logout ja korduv sisselogimine
+// 8. Logout ja korduv sisselogimine
 
 // Logib kasutaja välja
 // Avab uuesti login vormi

@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+require('dotenv').config({ path: '../back/.env' });
 
 // Generates unique email for each test run
 function genEmail() {

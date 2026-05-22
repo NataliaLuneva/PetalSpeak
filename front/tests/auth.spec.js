@@ -1,3 +1,4 @@
+require('dotenv').config({ path: '../back/.env' });
 const { test, expect } = require('@playwright/test');
 
 function genEmail() {
@@ -174,3 +175,13 @@ test.describe('AUTH + JWT + i18n FULL PRO SUITE', () => {
   });
 
 });
+
+// Testide käigus kontrollitakse:
+// - tühjade registreerimisväljade valideerimist;
+// - nõrga parooli tuvastamist;
+// - paroolide mittesobivuse kontrolli;
+// - eduka kasutaja registreerimise toimimist;
+// - sisselogimise protsessi ja JWT-tokeni salvestamist LocalStorage’i;
+// - väljalogimise funktsionaalsust ning autentimisandmete eemaldamist;
+// - kasutajaliidese keele vahetamist erinevate keelte vahel;
+// - süsteemi turvalisust vigase või võltsitud tokeni kasutamisel

@@ -39,7 +39,7 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: 'node back/server.js',
+    command: 'node ../back/server.js',
     url: 'http://localhost:3000',
     reuseExistingServer: true,
     timeout: 120000,

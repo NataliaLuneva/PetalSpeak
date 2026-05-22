@@ -1,5 +1,6 @@
 ﻿import { test, expect } from '@playwright/test';
 import path from 'path';
+require('dotenv').config({ path: '../back/.env' });
 
 test.describe('Admin panel smoke test', () => {
   let products = [];

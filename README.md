@@ -179,18 +179,13 @@ back/.env
 Sisu:
 
 ```env
-NODE_ENV=development
-PORT=3000
 
 JWT_SECRET=your-secret-key
 
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=
-DB_NAME=petalspeak
+MAIL_USER=your-email@gmail.com
+MAIL_PASS=your-app-password
 
-EMAIL_USER=your-email@gmail.com
-EMAIL_PASSWORD=your-app-password
+Kõik vajalikud paroolid leiate tööle lisatud failist envlogin.txt. 
 ```
 
 ---
@@ -233,7 +228,7 @@ npm start
 või
 
 ```bash
-node server.js
+node back/server.js
 ```
 
 Eduka käivitamise korral:
@@ -324,6 +319,10 @@ Testi raport:
 npx playwright show-report
 ```
 
+Konkretse test:
+```bash
+npx playwright test tests/admin_fixed.spec.js
+```
 ---
 
 # 🌐 API marsruudid
@@ -544,5 +543,3 @@ ISC License
 Küsimuste või probleemide korral avage issue repositooriumis.
 
 ---
-
-# 🌸 Happy coding!
