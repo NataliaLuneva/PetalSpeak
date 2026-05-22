@@ -1,6 +1,6 @@
 // Import the jsonwebtoken library, which is used to verify JWT authentication tokens.
 const jwt = require("jsonwebtoken");
-const JWT_SECRET = "secret123";
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // Export middleware function for checking user authentication.
 module.exports = (req, res, next) => {

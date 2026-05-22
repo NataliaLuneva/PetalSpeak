@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const pool = require("../config/mysql");
 const auth = require("../middleware/auth");
 const router = express.Router();
-const JWT_SECRET = "secret123";
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // Saves a bouquet test result.
 // The result can be saved both for authenticated users and guest users.

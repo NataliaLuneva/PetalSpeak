@@ -4,7 +4,7 @@ const pool = require("../config/mysql");
 const auth = require("../middleware/auth");
 const transporter = require("../utils/mailer");
 const router = express.Router();
-const JWT_SECRET = "secret123";
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // Creates a new customer order and saves it to the database.
 // The route supports both authenticated and guest users.
@@ -99,7 +99,7 @@ router.post("/", async (req, res) => {
                 const token = authHeader.split(" ")[1];
 
                 const decoded = jwt.verify(token, JWT_SECRET);
-                userId = decoded.id;
+                userId = decoded.id || decoded.userId || null;
             } catch (error) {
                 console.log("Order without a user:", error.message);
             }
@@ -118,6 +118,7 @@ router.post("/", async (req, res) => {
         // Start a database transaction.
 
         await connection.beginTransaction();
+        
 
         // Insert the main order record.
 

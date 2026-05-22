@@ -7,7 +7,7 @@ const fs = require("fs");
 const pool = require("../config/mysql");
 const auth = require("../middleware/auth");
 const router = express.Router();
-const JWT_SECRET = "secret123";
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // Checks whether the provided password meets security requirements.
 // Returns true if the password is strong enough, otherwise returns false.
