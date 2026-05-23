@@ -185,7 +185,7 @@ JWT_SECRET=your-secret-key
 MAIL_USER=your-email@gmail.com
 MAIL_PASS=your-app-password
 
-Kõik vajalikud paroolid leiate tööle lisatud failist envlogin.txt. 
+Kõik vajalikud paroolid leiate tööle lisatud failist env_login.txt. 
 ```
 
 ---
