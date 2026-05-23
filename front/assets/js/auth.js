@@ -4,11 +4,11 @@ let translations = {};
 let currentLang = localStorage.getItem("lang") || "ru";
 
 // Opens and closes the mobile navigation menu.
-// Adds or removes the "active" CSS class from the navigation element.
+// Adds or removes the "open" CSS class from the navigation element.
 
 function toggleMenu() {
 
-    document.getElementById("nav").classList.toggle("active");
+    document.getElementById("nav").classList.toggle("open");
 
 }
 
